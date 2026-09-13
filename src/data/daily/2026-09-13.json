@@ -1,6 +1,6 @@
 {
   "date": "2026-09-13",
-  "generatedAt": "2026-09-13T10:31:18.685Z",
+  "generatedAt": "2026-09-13T10:55:39.189Z",
   "windowDays": 7,
   "entries": [
     {
@@ -22,10 +22,10 @@
         "developer-tools",
         "llm"
       ],
-      "stars": 136900,
+      "stars": 136914,
       "forks": 7348,
-      "weeklyGain": 5244,
-      "dailyGain": 749.1,
+      "weeklyGain": 5250,
+      "dailyGain": 750,
       "growthRate": 3.8,
       "scores": {
         "heat": 100,
@@ -92,8 +92,8 @@
         "cli",
         "cursor"
       ],
-      "stars": 80065,
-      "forks": 6943,
+      "stars": 80082,
+      "forks": 6945,
       "weeklyGain": 5220,
       "dailyGain": 745.7,
       "growthRate": 6.5,
@@ -162,14 +162,14 @@
         "claude",
         "claude-code"
       ],
-      "stars": 65683,
+      "stars": 65693,
       "forks": 10774,
-      "weeklyGain": 4981,
-      "dailyGain": 711.6,
-      "growthRate": 7.6,
+      "weeklyGain": 4942,
+      "dailyGain": 706,
+      "growthRate": 7.5,
       "scores": {
         "heat": 100,
-        "community": 57,
+        "community": 56,
         "innovation": 100,
         "practical": 42,
         "ecosystem": 100,
@@ -228,8 +228,8 @@
         "dsh",
         "dsh-plugin"
       ],
-      "stars": 222014,
-      "forks": 26344,
+      "stars": 222035,
+      "forks": 26352,
       "weeklyGain": 4720,
       "dailyGain": 674.3,
       "growthRate": 2.1,
@@ -298,10 +298,10 @@
         "mcp",
         "productivity"
       ],
-      "stars": 257355,
-      "forks": 38502,
-      "weeklyGain": 3500,
-      "dailyGain": 500,
+      "stars": 257372,
+      "forks": 38504,
+      "weeklyGain": 3540,
+      "dailyGain": 505.7,
       "growthRate": 1.4,
       "scores": {
         "heat": 100,
@@ -364,10 +364,10 @@
         "python",
         "rag"
       ],
-      "stars": 137804,
-      "forks": 20251,
-      "weeklyGain": 3114,
-      "dailyGain": 444.9,
+      "stars": 137813,
+      "forks": 20252,
+      "weeklyGain": 3101,
+      "dailyGain": 443,
       "growthRate": 2.3,
       "scores": {
         "heat": 99,
@@ -434,8 +434,8 @@
         "cline",
         "codex"
       ],
-      "stars": 65468,
-      "forks": 9160,
+      "stars": 65475,
+      "forks": 9163,
       "weeklyGain": 2340,
       "dailyGain": 334.3,
       "growthRate": 3.6,
@@ -504,11 +504,11 @@
         "data-extraction",
         "html-to-markdown"
       ],
-      "stars": 179687,
+      "stars": 179696,
       "forks": 9770,
-      "weeklyGain": 2240,
-      "dailyGain": 320,
-      "growthRate": 1.2,
+      "weeklyGain": 2278,
+      "dailyGain": 325.4,
+      "growthRate": 1.3,
       "scores": {
         "heat": 94,
         "community": 89,
@@ -574,11 +574,11 @@
         "elevenlabs",
         "ffmpeg"
       ],
-      "stars": 58028,
-      "forks": 7315,
-      "weeklyGain": 2093,
-      "dailyGain": 299,
-      "growthRate": 3.6,
+      "stars": 58036,
+      "forks": 7316,
+      "weeklyGain": 2058,
+      "dailyGain": 294,
+      "growthRate": 3.5,
       "scores": {
         "heat": 92,
         "community": 56,
@@ -598,7 +598,7 @@
           "en": "Full video pipeline agentized: scripting, editing, voiceover, subtitles"
         },
         {
-          "zh": "供应商可插拔（见 docs/PR一下VIDERS.md），不锁定单一模型",
+          "zh": "供应商可插拔（见 docs/PROVIDERS.md），不锁定单一模型",
           "en": "Pluggable providers (docs/PROVIDERS.md), no single-model lock-in"
         },
         {
@@ -639,11 +639,11 @@
       "homepage": "",
       "language": "Shell",
       "topics": [],
-      "stars": 152009,
+      "stars": 152012,
       "forks": 24490,
-      "weeklyGain": 1607,
-      "dailyGain": 229.6,
-      "growthRate": 1.1,
+      "weeklyGain": 1593,
+      "dailyGain": 227.6,
+      "growthRate": 1,
       "scores": {
         "heat": 90,
         "community": 70,
