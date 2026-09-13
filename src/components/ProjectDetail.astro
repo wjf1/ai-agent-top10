@@ -1,0 +1,96 @@
+---
+/** 项目详情页（zh / en 复用） */
+import Base from "../layouts/Base.astro";
+import Radar from "./Radar.astro";
+import { L } from "../lib/data.ts";
+import { days } from "../lib/load-days.ts";
+
+interface Props {
+  entry: any;
+  date: string;
+  lang?: "zh" | "en";
+}
+const { entry, date, lang = "zh" } = Astro.props;
+const t = L[lang];
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+const listPath = lang === "en" ? `${B}/en/` : `${B}/`;
+const archivePath = lang === "en" ? `${B}/en/archive/` : `${B}/archive/`;
+const fmt = (n: number) => n.toLocaleString("en-US");
+const dims = ["heat", "community", "innovation", "practical", "ecosystem", "health"];
+const dimName = (k: string) => {
+  const i = dims.indexOf(k);
+  return t.dims[i][lang === "zh" ? 0 : 1];
+};
+---
+<Base lang={lang} langHref={lang === "en" ? `${B}/project/${entry.slug}/` : `${B}/en/project/${entry.slug}/`} title={entry.full_name} desc={entry.why[lang].slice(0, 150)}>
+  <section class="detail-head">
+    <div class="crumb">
+      <a href={listPath}>{lang === "zh" ? "今日榜单" : "Today's List"}</a> /
+      <a href={archivePath}>{t.archive}</a> /
+      {date} · #{entry.rank}
+    </div>
+    <h1>{entry.full_name}</h1>
+    <p class="sub" style="color:var(--muted);margin:0">{entry.description || (lang === "zh" ? "（仓库未提供描述）" : "(no description)")}</p>
+    <div class="meta-row">
+      <div class="meta-pill"><b>#{entry.rank}</b><span>{lang === "zh" ? "当日排名" : "Rank"}</span></div>
+      <div class="meta-pill"><b>{fmt(entry.stars)}</b><span>{t.stars}</span></div>
+      <div class="meta-pill"><b>+{fmt(entry.weeklyGain)}</b><span>{t.weekGain}</span></div>
+      <div class="meta-pill"><b>{entry.growthRate}%</b><span>{t.growthRate}</span></div>
+      <div class="meta-pill"><b>{entry.language}</b><span>{lang === "zh" ? "主语言" : "Language"}</span></div>
+      <div class="meta-pill"><b>{fmt(entry.forks)}</b><span>{t.forks}</span></div>
+    </div>
+    <div class="meta-row">
+      <a class="btn" href={entry.url} target="_blank" rel="noopener">GitHub →</a>
+      {entry.homepage && <a class="btn ghost" href={entry.homepage} target="_blank" rel="noopener">{t.homepage} →</a>}
+    </div>
+  </section>
+
+  <div class="detail-grid">
+    <div class="panel">
+      <div class="overall-big"><div class="n">{entry.scores.overall}</div><div class="l">{t.overall} / 100</div></div>
+      <div style="display:flex;justify-content:center">
+        <Radar scores={entry.scores} size={230} labels={t.dims} lang={lang} />
+      </div>
+      <div class="dim-rows" style="margin-top:16px">
+        {dims.map((k) => (
+          <div class="dim-row">
+            <span>{dimName(k)}</span>
+            <div class="dim-bar"><div class="dim-fill" style={`width:${entry.scores[k]}%`} /></div>
+            <b>{entry.scores[k]}</b>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div style="display:grid;gap:18px">
+      <div class="panel">
+        <h2>💡 {t.why}</h2>
+        <p class="prose" style="margin:0">{entry.why[lang]}</p>
+      </div>
+      {entry.highlights?.length > 0 && (
+        <div class="panel">
+          <h2>✨ {t.highlights}</h2>
+          <ul>{entry.highlights.map((h) => <li class="good">{h[lang]}</li>)}</ul>
+        </div>
+      )}
+      {entry.cons?.length > 0 && (
+        <div class="panel">
+          <h2>⚠️ {t.cons}</h2>
+          <ul>{entry.cons.map((c) => <li class="bad">{c[lang]}</li>)}</ul>
+        </div>
+      )}
+      {entry.fitFor?.length > 0 && (
+        <div class="panel">
+          <h2>🎯 {t.fitFor}</h2>
+          <div class="chips">{entry.fitFor.map((f) => <span class="chip">{f[lang]}</span>)}</div>
+        </div>
+      )}
+      {entry.quickstart && (
+        <div class="panel">
+          <h2>⌨️ {t.quickstart}</h2>
+          <pre class="code"><code>{entry.quickstart}</code></pre>
+        </div>
+      )}
+    </div>
+  </div>
+</Base>

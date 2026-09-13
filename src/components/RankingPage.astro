@@ -1,0 +1,32 @@
+---
+/** 榜单首页（zh / en 复用） */
+import Base from "../layouts/Base.astro";
+import EntryCard from "../components/EntryCard.astro";
+import { L } from "../lib/data.ts";
+import { days } from "../lib/load-days.ts";
+
+interface Props { lang?: "zh" | "en"; }
+const { lang = "zh" } = Astro.props;
+const t = L[lang];
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+const day = days[0];
+if (!day) throw new Error("no daily data");
+const otherLang = lang === "en" ? `${B}/` : `${B}/en/`;
+const totalGain = day.entries.reduce((s, e) => s + e.weeklyGain, 0);
+const heroTitle = lang === "zh" ? t.todayTop : t.todayTop;
+---
+<Base lang={lang} langHref={otherLang} title={day.date} desc={t.heroSub}>
+  <section class="hero">
+    <span class="date-chip">📅 {day.date} · {t.rankBy}</span>
+    <h1>{t.todayTop}</h1>
+    <p class="sub">{t.heroSub}</p>
+    <div class="stats">
+      <div class="stat"><b>{day.entries.length}</b><span>{t.entries}</span></div>
+      <div class="stat"><b>+{totalGain.toLocaleString("en-US")}</b><span>{t.totalGain}</span></div>
+      <div class="stat"><b>{day.entries[0].full_name.split("/")[1]}</b><span>{t.top1of}{day.entries[0].weeklyGain.toLocaleString("en-US")} stars/7d</span></div>
+    </div>
+  </section>
+  <section class="entry-list">
+    {day.entries.map((e) => <EntryCard entry={e} date={day.date} lang={lang} />)}
+  </section>
+</Base>

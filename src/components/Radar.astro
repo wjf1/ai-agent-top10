@@ -1,0 +1,39 @@
+---
+/** 六边形雷达图（纯 SVG，无运行时依赖） */
+interface Props {
+  scores: Record<string, number>;
+  size?: number;
+  labels?: [string, string][]; // 6 个维度 [zh, en]
+  lang?: "zh" | "en";
+}
+const { scores, size = 150, lang = "zh" } = Astro.props;
+const labels = Astro.props.labels ?? [
+  ["热度", "Heat"], ["社区", "Comm"], ["创新", "Innov"], ["实用", "Pract"], ["生态", "Eco"], ["健康", "Health"],
+];
+const keys = ["heat", "community", "innovation", "practical", "ecosystem", "health"];
+const vals = keys.map((k) => Math.max(4, scores[k] ?? 0));
+const cx = size / 2, cy = size / 2, R = size / 2 - (lang === "zh" ? 18 : 24);
+const pt = (i: number, r: number) => {
+  const a = (Math.PI * 2 * i) / 6 - Math.PI / 2;
+  return `${(cx + r * Math.cos(a)).toFixed(1)},${(cy + r * Math.sin(a)).toFixed(1)}`;
+};
+const ring = (r: number) => keys.map((_, i) => pt(i, r)).join(" ");
+const shape = vals.map((v, i) => pt(i, (v / 100) * R)).join(" ");
+const labPos = keys.map((_, i) => {
+  const a = (Math.PI * 2 * i) / 6 - Math.PI / 2;
+  return { x: cx + (R + 13) * Math.cos(a), y: cy + (R + 13) * Math.sin(a) + 4 };
+});
+const lbl = (i: number) => (lang === "zh" ? labels[i][0] : labels[i][1]);
+---
+<svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label="radar">
+  {[0.33, 0.66, 1].map((f) => <polygon points={ring(R * f)} fill="none" stroke="#e6e8ef" stroke-width="1" />)}
+  {keys.map((_, i) => <line x1={cx} y1={cy} x2={pt(i, R).split(",")[0]} y2={pt(i, R).split(",")[1]} stroke="#e6e8ef" stroke-width="1" />)}
+  <polygon points={shape} fill="rgba(79,70,229,.18)" stroke="#4f46e5" stroke-width="2" stroke-linejoin="round" />
+  {vals.map((v, i) => {
+    const [x, y] = pt(i, (v / 100) * R).split(",");
+    return <circle cx={x} cy={y} r="2.6" fill="#4f46e5" />;
+  })}
+  {labPos.map((p, i) => (
+    <text x={p.x} y={p.y} text-anchor="middle" font-size={size > 200 ? 12 : 9.5} fill="#6b7280">{lbl(i)}</text>
+  ))}
+</svg>

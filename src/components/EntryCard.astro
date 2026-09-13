@@ -1,0 +1,40 @@
+---
+import Radar from "./Radar.astro";
+import { L } from "../lib/data.ts";
+
+interface Props {
+  entry: any;
+  date: string;
+  lang?: "zh" | "en";
+}
+const { entry, date, lang = "zh" } = Astro.props;
+const t = L[lang];
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+const detailPath = lang === "en" ? `/en/project/${entry.slug}/` : `/project/${entry.slug}/`;
+const fmt = (n: number) => n.toLocaleString("en-US");
+---
+<article class="entry-card">
+  <div class={`rank ${entry.rank <= 3 ? "top" : ""}`}>{entry.rank}</div>
+  <div class="entry-main">
+    <div class="entry-title">
+      <h3><a href={detailPath}>{entry.full_name}</a></h3>
+      <span class="lang-tag">{entry.language}</span>
+      <span class="gain-chip">+{fmt(entry.weeklyGain)} / 7d</span>
+    </div>
+    <p class="entry-desc">{entry.why[lang]}</p>
+    <div class="entry-meta">
+      <span>⭐ {fmt(entry.stars)} {t.stars}</span>
+      <span>🍴 {fmt(entry.forks)} {t.forks}</span>
+      <span>📈 {t.dailyGain} {entry.dailyGain}</span>
+      <span>🚀 {t.growthRate} {entry.growthRate}%</span>
+    </div>
+  </div>
+  <div class="entry-side">
+    <Radar scores={entry.scores} size={132} lang={lang} />
+    <div class="score-block">
+      <div class="score-num">{entry.scores.overall}</div>
+      <div class="score-label">{t.overall}</div>
+      <a class="btn ghost" style="margin-top:8px" href={detailPath}>{t.viewDetail}</a>
+    </div>
+  </div>
+</article>

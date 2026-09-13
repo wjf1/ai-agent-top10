@@ -1,0 +1,42 @@
+---
+import "../styles/global.css";
+
+interface Props { lang?: "zh" | "en"; title?: string; desc?: string; langHref?: string; }
+const { lang = "zh", title, desc, langHref } = Astro.props;
+const t = {
+  zh: { site: "Agent Top10", tag: "每日 AI Agent 项目解读", home: "今日榜单", archive: "历史归档", sw: "English", foot: "数据来自 GitHub 公开 API · 排名依据近 7 天 star 增速 · 综合分为 6 维度评估结果" },
+  en: { site: "Agent Top10", tag: "Daily AI Agent Project Reviews", home: "Today's List", archive: "Archive", sw: "中文", foot: "Data from the public GitHub API · Ranked by 7-day star growth · Overall score is a 6-dimension evaluation" },
+}[lang];
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+const fullTitle = title ? `${title} · ${t.site}` : `${t.site} — ${t.tag}`;
+---
+<!doctype html>
+<html lang={lang === "zh" ? "zh-CN" : "en"}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    {desc && <meta name="description" content={desc} />}
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="logo" href={`${B}/${lang === "en" ? "en/" : ""}`}><span class="bolt">⚡</span>{t.site}<small style="font-weight:500;color:var(--muted)">{t.tag}</small></a>
+        <nav>
+          <a href={`${B}/${lang === "en" ? "en/" : ""}`}>{t.home}</a>
+          <a href={`${B}/${lang === "en" ? "en/archive/" : "archive/"}`}>{t.archive}</a>
+          {langHref && <a class="lang-switch" href={langHref}>{t.sw}</a>}
+        </nav>
+      </div>
+    </header>
+    <main class="wrap">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <span>{t.foot}</span>
+        <span>Agent Top10 · {new Date().getFullYear()}</span>
+      </div>
+    </footer>
+  </body>
+</html>

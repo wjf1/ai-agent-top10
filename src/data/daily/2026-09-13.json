@@ -1,0 +1,694 @@
+{
+  "date": "2026-09-13",
+  "generatedAt": "2026-09-13T10:31:18.685Z",
+  "windowDays": 7,
+  "entries": [
+    {
+      "rank": 1,
+      "slug": "dietrichgebert-ponytail",
+      "full_name": "DietrichGebert/ponytail",
+      "name": "ponytail",
+      "owner": "DietrichGebert",
+      "url": "https://github.com/DietrichGebert/ponytail",
+      "homepage": "https://ponytail.dev",
+      "language": "JavaScript",
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "cursor-rules",
+        "developer-tools",
+        "llm"
+      ],
+      "stars": 136900,
+      "forks": 7348,
+      "weeklyGain": 5244,
+      "dailyGain": 749.1,
+      "growthRate": 3.8,
+      "scores": {
+        "heat": 100,
+        "community": 68,
+        "innovation": 100,
+        "practical": 80,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 91
+      },
+      "why": {
+        "zh": "一个让 AI 编程代理「少写代码」的技能包：在真实 FastAPI + React 仓库的 12 个功能任务上实测，代码量平均减少约 54%（最高 94%），成本降约 20%、速度提升约 27%，且保留了全部安全防护。主打「资深工程师式克制」，兼容 Claude Code 等 20 个 agent，一周内以日均 750+ star 的速度引爆。",
+        "en": "A skill pack that makes AI coding agents write less code: benchmarked on 12 real tasks in a FastAPI + React repo, it cuts code volume by ~54% on average (up to 94%), ~20% cost and ~27% faster, while keeping all safety guards. Its 'senior engineer restraint' philosophy works with 20 agents including Claude Code, and it exploded at 750+ stars/day this week."
+      },
+      "highlights": [
+        {
+          "zh": "有完整可复现的基准测试（benchmarks/ 目录），不是纯营销数字",
+          "en": "Ships a fully reproducible benchmark (benchmarks/ directory), not just marketing numbers"
+        },
+        {
+          "zh": "npm 一行安装，兼容 20+ 编码代理（Claude Code、Cursor 等）",
+          "en": "One-line npm install, compatible with 20+ coding agents (Claude Code, Cursor, etc.)"
+        },
+        {
+          "zh": "MIT 协议，产品化程度高（logo、多语言文档、waitlist）",
+          "en": "MIT licensed, highly productized (branding, i18n docs, waitlist)"
+        }
+      ],
+      "cons": [
+        {
+          "zh": "收益依赖任务类型：代码本已精简的场景提升接近于零",
+          "en": "Gains depend on task type: near zero where code is already minimal"
+        }
+      ],
+      "fitFor": [
+        {
+          "zh": "觉得 AI 生成的代码过度设计的开发者",
+          "en": "Developers tired of AI over-building"
+        },
+        {
+          "zh": "控制 LLM 编码成本的团队",
+          "en": "Teams optimizing LLM coding costs"
+        }
+      ],
+      "quickstart": "npm install -g @dietrichgebert/ponytail",
+      "firstSeen": "2026-09-13"
+    },
+    {
+      "rank": 2,
+      "slug": "panniantong-agent-reach",
+      "full_name": "Panniantong/Agent-Reach",
+      "name": "Agent-Reach",
+      "owner": "Panniantong",
+      "url": "https://github.com/Panniantong/Agent-Reach",
+      "homepage": "",
+      "language": "Python",
+      "topics": [
+        "agent-infrastructure",
+        "ai-agent",
+        "ai-search",
+        "automation",
+        "bilibili",
+        "claude-code",
+        "cli",
+        "cursor"
+      ],
+      "stars": 80065,
+      "forks": 6943,
+      "weeklyGain": 5220,
+      "dailyGain": 745.7,
+      "growthRate": 6.5,
+      "scores": {
+        "heat": 100,
+        "community": 45,
+        "innovation": 100,
+        "practical": 80,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 88
+      },
+      "why": {
+        "zh": "「给你的 AI Agent 一键装上互联网能力」：为 agent 提供搜索、社交媒体（含 B 站）、内容抓取等网络接口的统一接入层，替你选好、装好、体检好最稳的接入方式并随平台换代自动升级。曾登 GitHub Trending 日榜 #1，本周再获 5100+ star。",
+        "en": "'One-click internet superpowers for your AI agent': a unified integration layer giving agents web search, social media (incl. Bilibili) and content-scraping capabilities. It picks, installs and health-checks the most stable integration for you and upgrades automatically as platforms change. A former GitHub Trending #1 of the day, adding 5,100+ stars this week."
+      },
+      "highlights": [
+        {
+          "zh": "CLI + Claude Code/Cursor 插件双形态，开箱即用",
+          "en": "Both a CLI and Claude Code/Cursor plugins, ready out of the box"
+        },
+        {
+          "zh": "中文开发者主导，文档覆盖中/英/日/韩四语",
+          "en": "Led by a Chinese developer, docs in Chinese/English/Japanese/Korean"
+        },
+        {
+          "zh": "接入方式平台化封装，平台改版不需要用户操心",
+          "en": "Integrations are platformized — platform redesigns don't break your setup"
+        }
+      ],
+      "cons": [
+        {
+          "zh": "依赖第三方平台接口，长期稳定性存在不确定性",
+          "en": "Relies on third-party platform APIs; long-term stability is uncertain"
+        }
+      ],
+      "fitFor": [
+        {
+          "zh": "需要让本地 agent 联网获取实时信息的用户",
+          "en": "Users who want local agents to fetch live web info"
+        },
+        {
+          "zh": "做多平台内容聚合/监控的自动化玩家",
+          "en": "Automators aggregating content across platforms"
+        }
+      ],
+      "quickstart": "pip install agent-reach && agent-reach setup",
+      "firstSeen": "2026-09-13"
+    },
+    {
+      "rank": 3,
+      "slug": "asgeirtj-system_prompts_leaks",
+      "full_name": "asgeirtj/system_prompts_leaks",
+      "name": "system_prompts_leaks",
+      "owner": "asgeirtj",
+      "url": "https://github.com/asgeirtj/system_prompts_leaks",
+      "homepage": "",
+      "language": "JavaScript",
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-prompts",
+        "anthropic",
+        "chatbot",
+        "chatgpt",
+        "claude",
+        "claude-code"
+      ],
+      "stars": 65683,
+      "forks": 10774,
+      "weeklyGain": 4981,
+      "dailyGain": 711.6,
+      "growthRate": 7.6,
+      "scores": {
+        "heat": 100,
+        "community": 57,
+        "innovation": 100,
+        "practical": 42,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 82
+      },
+      "why": {
+        "zh": "逐字收录 ChatGPT、Claude、Gemini、Grok 等主流 AI 产品的系统提示词（泄露原文），并持续更新：本月已跟进 Claude Code headless（Fable 5.1）、Codex GPT-6-Astra 等。被《华盛顿邮报》用于制作交互报道，被 CEPS AI World 做成数据看板——是研究各家 agent 行为约束的第一手语料库。",
+        "en": "A verbatim archive of leaked system prompts from ChatGPT, Claude, Gemini, Grok and other major AI products, continuously updated — this month alone it tracked Claude Code headless (Fable 5.1) and Codex GPT-6-Astra. Cited by The Washington Post for an interactive story and turned into a live dashboard by CEPS' AI World: the first-hand corpus for studying how AI vendors constrain their agents."
+      },
+      "highlights": [
+        {
+          "zh": "更新极快，几乎与新模型发布同步",
+          "en": "Extremely fast updates, nearly in sync with new model releases"
+        },
+        {
+          "zh": "按厂商/产品分目录组织，检索友好",
+          "en": "Organized by vendor/product directories, easy to navigate"
+        },
+        {
+          "zh": "已被主流媒体与学术机构引用",
+          "en": "Already cited by major media and research institutions"
+        }
+      ],
+      "cons": [
+        {
+          "zh": "内容为泄露性质，合规与可用性风险需自行评估",
+          "en": "Content is leaked material; compliance and availability risks are on you"
+        }
+      ],
+      "fitFor": [
+        {
+          "zh": "研究 prompt 工程与 agent 约束设计的工程师",
+          "en": "Engineers studying prompt engineering and agent guardrail design"
+        },
+        {
+          "zh": "对比各家产品行为差异的分析者",
+          "en": "Analysts comparing cross-vendor agent behavior"
+        }
+      ],
+      "quickstart": "",
+      "firstSeen": "2026-09-13"
+    },
+    {
+      "rank": 4,
+      "slug": "deepseek-ai-deepseek-harness",
+      "full_name": "deepseek-ai/deepseek-harness",
+      "name": "deepseek-harness",
+      "owner": "deepseek-ai",
+      "url": "https://github.com/deepseek-ai/deepseek-harness",
+      "homepage": "https://deepseek.com/harness",
+      "language": "TypeScript",
+      "topics": [
+        "ai-agents",
+        "cordis",
+        "dsh",
+        "dsh-plugin"
+      ],
+      "stars": 222014,
+      "forks": 26344,
+      "weeklyGain": 4720,
+      "dailyGain": 674.3,
+      "growthRate": 2.1,
+      "scores": {
+        "heat": 100,
+        "community": 55,
+        "innovation": 100,
+        "practical": 63,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 86
+      },
+      "why": {
+        "zh": "DeepSeek 官方开源的 agent 运行时（dsh），本周 +4720 star。核心是「一切皆插件」架构，底层基于 Cordis 并附论文《A Programming Paradigm for Spatiotemporal Composability》。`npx @deepseek-ai/dsh web` 一条命令即可在本地 3080 端口拉起完整 Web UI。头部实验室下场做 agent 基础设施，值得重点关注。",
+        "en": "DeepSeek's official open-source agent harness (dsh), +4,720 stars this week. Its core is an 'everything-is-a-plugin' architecture built on Cordis, with an accompanying paper on 'A Programming Paradigm for Spatiotemporal Composability'. One command (`npx @deepseek-ai/dsh web`) boots a full local Web UI on port 3080. A top lab shipping agent infrastructure deserves close attention."
+      },
+      "highlights": [
+        {
+          "zh": "大厂官方出品 + 学术论文背书，工程与理论双支撑",
+          "en": "Official release from a major lab, backed by an academic paper"
+        },
+        {
+          "zh": "插件化架构天然利于生态扩展（dsh-plugin 话题已上线）",
+          "en": "Plugin architecture favors ecosystem growth (dsh-plugin topic already live)"
+        },
+        {
+          "zh": "提供 Web UI、SSH、无头多种运行形态与官方文档站",
+          "en": "Multiple run modes (Web UI, SSH, headless) plus an official docs site"
+        }
+      ],
+      "cons": [
+        {
+          "zh": "仍处 developer preview，明确警告会有破坏性变更",
+          "en": "Still in developer preview with explicit breaking-change warnings"
+        }
+      ],
+      "fitFor": [
+        {
+          "zh": "想研究一线 agent harness 设计的工程师",
+          "en": "Engineers studying state-of-the-art agent harness design"
+        },
+        {
+          "zh": "想自建 agent 平台而非拼凑框架的团队",
+          "en": "Teams building their own agent platform instead of gluing frameworks"
+        }
+      ],
+      "quickstart": "npx @deepseek-ai/dsh web",
+      "firstSeen": "2026-09-13"
+    },
+    {
+      "rank": 5,
+      "slug": "affaan-m-ecc",
+      "full_name": "affaan-m/ECC",
+      "name": "ECC",
+      "owner": "affaan-m",
+      "url": "https://github.com/affaan-m/ECC",
+      "homepage": "https://ecc.tools",
+      "language": "JavaScript",
+      "topics": [
+        "ai-agents",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "developer-tools",
+        "llm",
+        "mcp",
+        "productivity"
+      ],
+      "stars": 257355,
+      "forks": 38502,
+      "weeklyGain": 3500,
+      "dailyGain": 500,
+      "growthRate": 1.4,
+      "scores": {
+        "heat": 100,
+        "community": 80,
+        "innovation": 100,
+        "practical": 80,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 93
+      },
+      "why": {
+        "zh": "自定位为「agent harness 操作系统」：围绕 Claude Code 等编码 agent 提供组织化管理层——GitHub App、官网 ecc.tools、活跃 Discord 社区与 13 种语言的文档一应俱全。产品化速度和社区运营是其一周 +3480 star 的主要推手。",
+        "en": "Self-described as the 'operating system for agent harnesses': an orchestration layer around coding agents like Claude Code, complete with a GitHub App, a website (ecc.tools), an active Discord, and docs in 13 languages. Rapid productization and community ops drove its +3,480 stars this week."
+      },
+      "highlights": [
+        {
+          "zh": "GitHub App 形态接入，对团队协作场景友好",
+          "en": "Integrates as a GitHub App, friendly to team workflows"
+        },
+        {
+          "zh": "本地化覆盖 13 种语言，国际化程度罕见地高",
+          "en": "Localized in 13 languages — unusually thorough internationalization"
+        },
+        {
+          "zh": "MIT 协议 + 官网 + 社区，商业化路径清晰",
+          "en": "MIT license + website + community: a clear commercialization path"
+        }
+      ],
+      "cons": [
+        {
+          "zh": "生态尚新，与既有工具链的整合深度有待观察",
+          "en": "Young ecosystem; depth of integration with existing toolchains remains to be seen"
+        }
+      ],
+      "fitFor": [
+        {
+          "zh": "管理多个编码 agent 的团队负责人",
+          "en": "Team leads coordinating multiple coding agents"
+        },
+        {
+          "zh": "想给 Claude Code 加管理层的重度用户",
+          "en": "Power users wanting a management layer over Claude Code"
+        }
+      ],
+      "quickstart": "",
+      "firstSeen": "2026-09-13"
+    },
+    {
+      "rank": 6,
+      "slug": "shubhamsaboo-awesome-llm-apps",
+      "full_name": "Shubhamsaboo/awesome-llm-apps",
+      "name": "awesome-llm-apps",
+      "owner": "Shubhamsaboo",
+      "url": "https://github.com/Shubhamsaboo/awesome-llm-apps",
+      "homepage": "https://www.theunwindai.com",
+      "language": "Python",
+      "topics": [
+        "agents",
+        "llms",
+        "python",
+        "rag"
+      ],
+      "stars": 137804,
+      "forks": 20251,
+      "weeklyGain": 3114,
+      "dailyGain": 444.9,
+      "growthRate": 2.3,
+      "scores": {
+        "heat": 99,
+        "community": 69,
+        "innovation": 100,
+        "practical": 80,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 91
+      },
+      "why": {
+        "zh": "100+ 个可运行的开源 AI agent / RAG 应用合集，全部 Apache-2.0，覆盖从「项目墓园解剖师」这类趣味 agent 到保险理赔语音 agent 团队等实战场景，兼容 Claude/Gemini/GPT/DeepSeek/Qwen。每周持续上新，是学做 agent 应用最实用的代码库。",
+        "en": "A collection of 100+ runnable open-source AI agent and RAG apps, all Apache-2.0 — from fun ones like the 'Project Graveyard' autopsier to production-grade teams like a live insurance-claim voice agent squad — compatible with Claude/Gemini/GPT/DeepSeek/Qwen. Updated weekly; the most practical code base for learning agent development."
+      },
+      "highlights": [
+        {
+          "zh": "每个示例端到端测试过，clone 即跑",
+          "en": "Every example is end-to-end tested — clone and run"
+        },
+        {
+          "zh": "分类清晰：单 agent / 多 agent / 语音 / RAG / agent skills",
+          "en": "Clean taxonomy: single-agent / multi-agent / voice / RAG / agent skills"
+        },
+        {
+          "zh": "Apache-2.0，可商用作学习模板",
+          "en": "Apache-2.0: usable as commercial learning templates"
+        }
+      ],
+      "cons": [
+        {
+          "zh": "数量庞大但深度不一，需自行甄别示例质量",
+          "en": "Huge count with uneven depth; quality varies per example"
+        }
+      ],
+      "fitFor": [
+        {
+          "zh": "寻找可改造起点的 agent 应用开发者",
+          "en": "Agent developers looking for a starting point to fork"
+        },
+        {
+          "zh": "教学/培训场景的实战素材库",
+          "en": "Educators needing hands-on material"
+        }
+      ],
+      "quickstart": "git clone https://github.com/Shubhamsaboo/awesome-llm-apps",
+      "firstSeen": "2026-09-13"
+    },
+    {
+      "rank": 7,
+      "slug": "diegosouzapw-omniroute",
+      "full_name": "diegosouzapw/OmniRoute",
+      "name": "OmniRoute",
+      "owner": "diegosouzapw",
+      "url": "https://github.com/diegosouzapw/OmniRoute",
+      "homepage": "https://omniroute.online",
+      "language": "TypeScript",
+      "topics": [
+        "a2a",
+        "ai-agents",
+        "ai-gateway",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "cline",
+        "codex"
+      ],
+      "stars": 65468,
+      "forks": 9160,
+      "weeklyGain": 2340,
+      "dailyGain": 334.3,
+      "growthRate": 3.6,
+      "scores": {
+        "heat": 97,
+        "community": 83,
+        "innovation": 100,
+        "practical": 80,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 93
+      },
+      "why": {
+        "zh": "免费 AI 网关：把 Claude Code、Codex、Cursor、Cline、Copilot 等 356 家服务商的模型收敛到一个端点，其中 150+ 免费档位经去重计算后约每月 14.7 亿免费 token，自动故障转移 + 19 种路由策略，还有平均约 89% 的 token 压缩。对被额度限制折磨的开发者是刚需型项目。",
+        "en": "The free AI gateway: one endpoint fronting 356 providers for Claude Code, Codex, Cursor, Cline and Copilot — 150+ free tiers totaling ~1.47B free tokens/month (deduplicated), auto-fallback, 19 routing strategies, and token compression averaging ~89%. A must-have for anyone fighting rate limits."
+      },
+      "highlights": [
+        {
+          "zh": "免费额度目录化 + 预算仪表盘，数字算得明明白白",
+          "en": "Cataloged free tiers + budget dashboard with transparent math"
+        },
+        {
+          "zh": "对标商业网关（LiteLLM/OpenRouter）的自托管替代",
+          "en": "A self-hosted alternative benchmarked against LiteLLM/OpenRouter"
+        },
+        {
+          "zh": "带完整 dashboard 截图与架构图，文档投入大",
+          "en": "Full dashboard screenshots and architecture diagrams — serious docs effort"
+        }
+      ],
+      "cons": [
+        {
+          "zh": "免费档位政策变动频繁，维护负担重",
+          "en": "Free-tier policies churn often — heavy maintenance burden"
+        }
+      ],
+      "fitFor": [
+        {
+          "zh": "多工具并用、想统一端点与路由的重度 AI 用户",
+          "en": "Heavy AI users unifying endpoints across many tools"
+        },
+        {
+          "zh": "预算敏感的个人开发者与小团队",
+          "en": "Budget-sensitive indie developers and small teams"
+        }
+      ],
+      "quickstart": "npx omniroute",
+      "firstSeen": "2026-09-13"
+    },
+    {
+      "rank": 8,
+      "slug": "firecrawl-firecrawl",
+      "full_name": "firecrawl/firecrawl",
+      "name": "firecrawl",
+      "owner": "firecrawl",
+      "url": "https://github.com/firecrawl/firecrawl",
+      "homepage": "https://firecrawl.dev",
+      "language": "TypeScript",
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-crawler",
+        "ai-scraping",
+        "ai-search",
+        "crawler",
+        "data-extraction",
+        "html-to-markdown"
+      ],
+      "stars": 179687,
+      "forks": 9770,
+      "weeklyGain": 2240,
+      "dailyGain": 320,
+      "growthRate": 1.2,
+      "scores": {
+        "heat": 94,
+        "community": 89,
+        "innovation": 100,
+        "practical": 42,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 86
+      },
+      "why": {
+        "zh": "AI 时代的数据基础设施常青树：为 LLM 提供规模化网页搜索、抓取与交互 API，自动输出 markdown/结构化数据，已处理数十亿页面。老牌项目本周仍以 +2232 star 增速上榜，说明 agent 抓数据的需求仍在指数增长。",
+        "en": "The evergreen data infrastructure of the AI era: a scale API for web search, scraping and interaction for LLMs, emitting markdown/structured data, having processed billions of pages. A veteran project still gaining +2,232 stars this week — proof that agents' appetite for web data keeps compounding."
+      },
+      "highlights": [
+        {
+          "zh": "Python/Node SDK + MCP server，agent 接入零门槛",
+          "en": "Python/Node SDKs + MCP server: zero-friction agent integration"
+        },
+        {
+          "zh": "开源可自托管 + 云服务双模式",
+          "en": "Open-source self-hostable, plus a managed cloud"
+        },
+        {
+          "zh": "处理 JS 渲染页、反爬与结构化提取能力强",
+          "en": "Strong on JS-rendered pages, anti-bot handling and structured extraction"
+        }
+      ],
+      "cons": [
+        {
+          "zh": "云服务收费，重度使用成本需评估",
+          "en": "Cloud tier is paid; heavy usage costs need estimating"
+        }
+      ],
+      "fitFor": [
+        {
+          "zh": "给 agent 提供实时网页上下文的 RAG/搜索应用",
+          "en": "RAG/search apps feeding agents live web context"
+        },
+        {
+          "zh": "批量内容提取管线",
+          "en": "Bulk content-extraction pipelines"
+        }
+      ],
+      "quickstart": "pip install firecrawl-py",
+      "firstSeen": "2026-09-13"
+    },
+    {
+      "rank": 9,
+      "slug": "calesthio-openmontage",
+      "full_name": "calesthio/OpenMontage",
+      "name": "OpenMontage",
+      "owner": "calesthio",
+      "url": "https://github.com/calesthio/OpenMontage",
+      "homepage": "https://www.openmontage.video/",
+      "language": "Python",
+      "topics": [
+        "agent",
+        "agentic-ai",
+        "ai",
+        "claude",
+        "copilot",
+        "cursor",
+        "elevenlabs",
+        "ffmpeg"
+      ],
+      "stars": 58028,
+      "forks": 7315,
+      "weeklyGain": 2093,
+      "dailyGain": 299,
+      "growthRate": 3.6,
+      "scores": {
+        "heat": 92,
+        "community": 56,
+        "innovation": 100,
+        "practical": 59,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 84
+      },
+      "why": {
+        "zh": "「第一个开源的 agentic 视频生产系统」：粘贴一个你喜欢的视频，agent 团队即可解析其结构并驱动 ffmpeg、ElevenLabs 等供应商完成成片生产，GitHub Trending 日榜 #1。多模态 agent 从对话走向实际生产力工具的标志性项目，本周 +2105 star。",
+        "en": "'The first open-source agentic video production system': paste a video you love and an agent team parses its structure, then drives providers like ffmpeg and ElevenLabs to produce finished cuts. #1 on GitHub Trending of the day — a landmark project taking multimodal agents from chat to real production, +2,105 stars this week."
+      },
+      "highlights": [
+        {
+          "zh": "视频生产全流程 agent 化：脚本、剪辑、配音、字幕",
+          "en": "Full video pipeline agentized: scripting, editing, voiceover, subtitles"
+        },
+        {
+          "zh": "供应商可插拔（见 docs/PR一下VIDERS.md），不锁定单一模型",
+          "en": "Pluggable providers (docs/PROVIDERS.md), no single-model lock-in"
+        },
+        {
+          "zh": "自带 mascot、网站与 prompt 示例库，社区氛围好",
+          "en": "Ships mascot, website and a prompt library — strong community vibes"
+        }
+      ],
+      "cons": [
+        {
+          "zh": "AGPLv3 协议对商用集成较严格",
+          "en": "AGPLv3 is restrictive for commercial integration"
+        },
+        {
+          "zh": "视频生成依赖付费供应商额度",
+          "en": "Video generation depends on paid provider quotas"
+        }
+      ],
+      "fitFor": [
+        {
+          "zh": "内容创作者与自动化视频工作流探索者",
+          "en": "Creators exploring automated video workflows"
+        },
+        {
+          "zh": "研究多模态 agent 协作的工程师",
+          "en": "Engineers researching multimodal agent collaboration"
+        }
+      ],
+      "quickstart": "git clone https://github.com/calesthio/OpenMontage",
+      "firstSeen": "2026-09-13"
+    },
+    {
+      "rank": 10,
+      "slug": "msitarzewski-agency-agents",
+      "full_name": "msitarzewski/agency-agents",
+      "name": "agency-agents",
+      "owner": "msitarzewski",
+      "url": "https://github.com/msitarzewski/agency-agents",
+      "homepage": "",
+      "language": "Shell",
+      "topics": [],
+      "stars": 152009,
+      "forks": 24490,
+      "weeklyGain": 1607,
+      "dailyGain": 229.6,
+      "growthRate": 1.1,
+      "scores": {
+        "heat": 90,
+        "community": 70,
+        "innovation": 100,
+        "practical": 80,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 90
+      },
+      "why": {
+        "zh": "「一个装在口袋里的 AI 代理公司」：精心设计的专家型 agent 人格合集——从前端专家到 Reddit 社区运营、从「奇思妙想注入器」到「现实检验员」，每个角色都有个性、流程与交付物模板，一键装进 Claude Code、Cursor、Codex、Gemini。已推出 macOS/Win/Linux 原生 App，本周 +1603 star。",
+        "en": "An AI agency in your pocket: a curated roster of specialist agent personas — from frontend wizards to Reddit community ninjas, from 'whimsy injectors' to 'reality checkers' — each with personality, processes and deliverable templates, one-click installable into Claude Code, Cursor, Codex and Gemini. Now with a native macOS/Win/Linux app; +1,603 stars this week."
+      },
+      "highlights": [
+        {
+          "zh": "角色设计细致到流程与交付物，可直接落地使用",
+          "en": "Personas detailed down to processes and deliverables — immediately usable"
+        },
+        {
+          "zh": "原生 App 免配置安装与自动更新",
+          "en": "Native app installs without config and auto-updates"
+        },
+        {
+          "zh": "MIT 协议，源自 Reddit 社区迭代",
+          "en": "MIT licensed, community-iterated from a Reddit thread"
+        }
+      ],
+      "cons": [
+        {
+          "zh": "人格化 prompt 收益因人而异，效果难量化",
+          "en": "Persona prompts deliver uneven gains; hard to quantify"
+        }
+      ],
+      "fitFor": [
+        {
+          "zh": "想让 AI 扮演明确职能角色的个人与团队",
+          "en": "Individuals/teams wanting role-specialized agents"
+        },
+        {
+          "zh": "管理咨询、营销等多职能场景的小团队",
+          "en": "Small teams spanning consulting, marketing and more"
+        }
+      ],
+      "quickstart": "",
+      "firstSeen": "2026-09-13"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+---
+/** 历史归档（zh / en 复用） */
+import Base from "../layouts/Base.astro";
+import { L } from "../lib/data.ts";
+import { days } from "../lib/load-days.ts";
+
+interface Props { lang?: "zh" | "en"; }
+const { lang = "zh" } = Astro.props;
+const t = L[lang];
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+const listPath = lang === "en" ? `${B}/en/` : `${B}/`;
+---
+<Base lang={lang} langHref={lang === "en" ? `${B}/archive/` : `${B}/en/archive/`} title={t.archive}>
+  <section class="hero" style="padding-bottom:0">
+    <h1>{t.archive}</h1>
+    <p class="sub">{t.rankBy} · {days.length} {lang === "zh" ? "期" : "issue(s)"}</p>
+  </section>
+  <section class="archive-list">
+    {days.map((d) => (
+      <a class="archive-item" href={listPath}>
+        <span class="d">📅 {d.date}</span>
+        <span style="color:var(--muted);font-size:13px">{d.entries.length} {t.entries}</span>
+        <span class="top1">{t.top1of}{d.entries[0].full_name} (+{d.entries[0].weeklyGain.toLocaleString("en-US")}/7d)</span>
+      </a>
+    ))}
+    {days.length === 0 && <p>{t.archiveEmpty}</p>}
+  </section>
+</Base>
