@@ -1,0 +1,417 @@
+{
+  "date": "2026-09-17",
+  "generatedAt": "2026-09-17T10:34:30.810Z",
+  "windowDays": 7,
+  "entries": [
+    {
+      "rank": 1,
+      "slug": "deepseek-ai-deepseek-harness",
+      "full_name": "deepseek-ai/deepseek-harness",
+      "name": "deepseek-harness",
+      "owner": "deepseek-ai",
+      "url": "https://github.com/deepseek-ai/deepseek-harness",
+      "homepage": "https://deepseek.com/harness",
+      "language": "TypeScript",
+      "topics": [
+        "ai-agents",
+        "cordis",
+        "dsh",
+        "dsh-plugin"
+      ],
+      "stars": 227376,
+      "forks": 27103,
+      "weeklyGain": 1256,
+      "dailyGain": 179.4,
+      "growthRate": 0.6,
+      "scores": {
+        "heat": 100,
+        "community": 55,
+        "innovation": 100,
+        "practical": 63,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 86
+      },
+      "why": {
+        "zh": "近 7 天新增 1,256 star（日均 179），采用 MIT 协议，社区近期保持活跃更新。",
+        "en": "Gained 1,256 stars in the last 7 days (~179/day), licensed under MIT, with active maintenance."
+      },
+      "highlights": [],
+      "cons": [],
+      "fitFor": [],
+      "quickstart": "",
+      "firstSeen": "2026-09-17"
+    },
+    {
+      "rank": 2,
+      "slug": "affaan-m-ecc",
+      "full_name": "affaan-m/ECC",
+      "name": "ECC",
+      "owner": "affaan-m",
+      "url": "https://github.com/affaan-m/ECC",
+      "homepage": "https://ecc.tools",
+      "language": "JavaScript",
+      "topics": [
+        "ai-agents",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "developer-tools",
+        "llm",
+        "mcp",
+        "productivity"
+      ],
+      "stars": 260745,
+      "forks": 39030,
+      "weeklyGain": 1095,
+      "dailyGain": 156.4,
+      "growthRate": 0.4,
+      "scores": {
+        "heat": 100,
+        "community": 82,
+        "innovation": 100,
+        "practical": 80,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 93
+      },
+      "why": {
+        "zh": "近 7 天新增 1,095 star（日均 156），采用 MIT 协议，社区近期保持活跃更新。",
+        "en": "Gained 1,095 stars in the last 7 days (~156/day), licensed under MIT, with active maintenance."
+      },
+      "highlights": [],
+      "cons": [],
+      "fitFor": [],
+      "quickstart": "",
+      "firstSeen": "2026-09-17"
+    },
+    {
+      "rank": 3,
+      "slug": "dietrichgebert-ponytail",
+      "full_name": "DietrichGebert/ponytail",
+      "name": "ponytail",
+      "owner": "DietrichGebert",
+      "url": "https://github.com/DietrichGebert/ponytail",
+      "homepage": "https://ponytail.dev",
+      "language": "JavaScript",
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "cursor-rules",
+        "developer-tools",
+        "llm"
+      ],
+      "stars": 140878,
+      "forks": 7558,
+      "weeklyGain": 1040,
+      "dailyGain": 148.6,
+      "growthRate": 0.7,
+      "scores": {
+        "heat": 100,
+        "community": 73,
+        "innovation": 100,
+        "practical": 80,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 92
+      },
+      "why": {
+        "zh": "近 7 天新增 1,040 star（日均 149），采用 MIT 协议，社区近期保持活跃更新。",
+        "en": "Gained 1,040 stars in the last 7 days (~149/day), licensed under MIT, with active maintenance."
+      },
+      "highlights": [],
+      "cons": [],
+      "fitFor": [],
+      "quickstart": "",
+      "firstSeen": "2026-09-17"
+    },
+    {
+      "rank": 4,
+      "slug": "coreyhaines31-marketingskills",
+      "full_name": "coreyhaines31/marketingskills",
+      "name": "marketingskills",
+      "owner": "coreyhaines31",
+      "url": "https://github.com/coreyhaines31/marketingskills",
+      "homepage": "https://marketing-skills.com",
+      "language": "JavaScript",
+      "topics": [
+        "claude",
+        "codex",
+        "marketing"
+      ],
+      "stars": 50666,
+      "forks": 7679,
+      "weeklyGain": 951,
+      "dailyGain": 135.9,
+      "growthRate": 1.9,
+      "scores": {
+        "heat": 100,
+        "community": 53,
+        "innovation": 100,
+        "practical": 80,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 89
+      },
+      "why": {
+        "zh": "近 7 天新增 951 star（日均 136），采用 MIT 协议，社区近期保持活跃更新。",
+        "en": "Gained 951 stars in the last 7 days (~136/day), licensed under MIT, with active maintenance."
+      },
+      "highlights": [],
+      "cons": [],
+      "fitFor": [],
+      "quickstart": "",
+      "firstSeen": "2026-09-17"
+    },
+    {
+      "rank": 5,
+      "slug": "stablyai-orca",
+      "full_name": "stablyai/orca",
+      "name": "orca",
+      "owner": "stablyai",
+      "url": "https://github.com/stablyai/orca",
+      "homepage": "https://onOrca.dev",
+      "language": "TypeScript",
+      "topics": [
+        "ade",
+        "agent-ide",
+        "ai-agents",
+        "claude-code",
+        "cli",
+        "codex",
+        "cursor-agent",
+        "devtools"
+      ],
+      "stars": 70649,
+      "forks": 4625,
+      "weeklyGain": 788,
+      "dailyGain": 112.6,
+      "growthRate": 1.1,
+      "scores": {
+        "heat": 100,
+        "community": 89,
+        "innovation": 100,
+        "practical": 80,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 94
+      },
+      "why": {
+        "zh": "近 7 天新增 788 star（日均 113），采用 MIT 协议，社区近期保持活跃更新。",
+        "en": "Gained 788 stars in the last 7 days (~113/day), licensed under MIT, with active maintenance."
+      },
+      "highlights": [],
+      "cons": [],
+      "fitFor": [],
+      "quickstart": "",
+      "firstSeen": "2026-09-17"
+    },
+    {
+      "rank": 6,
+      "slug": "addyosmani-agent-skills",
+      "full_name": "addyosmani/agent-skills",
+      "name": "agent-skills",
+      "owner": "addyosmani",
+      "url": "https://github.com/addyosmani/agent-skills",
+      "homepage": "https://skills.addy.ie",
+      "language": "JavaScript",
+      "topics": [
+        "agent-skills",
+        "antigravity",
+        "claude-code",
+        "codex",
+        "cursor",
+        "skills"
+      ],
+      "stars": 95742,
+      "forks": 10127,
+      "weeklyGain": 649,
+      "dailyGain": 92.7,
+      "growthRate": 0.7,
+      "scores": {
+        "heat": 99,
+        "community": 70,
+        "innovation": 100,
+        "practical": 80,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 91
+      },
+      "why": {
+        "zh": "近 7 天新增 649 star（日均 93），采用 MIT 协议，社区近期保持活跃更新。",
+        "en": "Gained 649 stars in the last 7 days (~93/day), licensed under MIT, with active maintenance."
+      },
+      "highlights": [],
+      "cons": [],
+      "fitFor": [],
+      "quickstart": "",
+      "firstSeen": "2026-09-17"
+    },
+    {
+      "rank": 7,
+      "slug": "graphify-labs-graphify",
+      "full_name": "Graphify-Labs/graphify",
+      "name": "graphify",
+      "owner": "Graphify-Labs",
+      "url": "https://github.com/Graphify-Labs/graphify",
+      "homepage": "https://www.graphify.com",
+      "language": "Python",
+      "topics": [
+        "ai-agents",
+        "antigravity",
+        "ast",
+        "claude-code",
+        "code-analysis",
+        "code-search",
+        "codex",
+        "cursor"
+      ],
+      "stars": 118776,
+      "forks": 11491,
+      "weeklyGain": 604,
+      "dailyGain": 86.3,
+      "growthRate": 0.5,
+      "scores": {
+        "heat": 97,
+        "community": 83,
+        "innovation": 100,
+        "practical": 80,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 93
+      },
+      "why": {
+        "zh": "近 7 天新增 604 star（日均 86），采用 Apache-2.0 协议，社区近期保持活跃更新。",
+        "en": "Gained 604 stars in the last 7 days (~86/day), licensed under Apache-2.0, with active maintenance."
+      },
+      "highlights": [],
+      "cons": [],
+      "fitFor": [],
+      "quickstart": "",
+      "firstSeen": "2026-09-17"
+    },
+    {
+      "rank": 8,
+      "slug": "panniantong-agent-reach",
+      "full_name": "Panniantong/Agent-Reach",
+      "name": "Agent-Reach",
+      "owner": "Panniantong",
+      "url": "https://github.com/Panniantong/Agent-Reach",
+      "homepage": "",
+      "language": "Python",
+      "topics": [
+        "agent-infrastructure",
+        "ai-agent",
+        "ai-search",
+        "automation",
+        "bilibili",
+        "claude-code",
+        "cli",
+        "cursor"
+      ],
+      "stars": 82688,
+      "forks": 7228,
+      "weeklyGain": 430,
+      "dailyGain": 61.4,
+      "growthRate": 0.5,
+      "scores": {
+        "heat": 94,
+        "community": 60,
+        "innovation": 100,
+        "practical": 80,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 89
+      },
+      "why": {
+        "zh": "近 7 天新增 430 star（日均 61），采用 MIT 协议，社区近期保持活跃更新。",
+        "en": "Gained 430 stars in the last 7 days (~61/day), licensed under MIT, with active maintenance."
+      },
+      "highlights": [],
+      "cons": [],
+      "fitFor": [],
+      "quickstart": "",
+      "firstSeen": "2026-09-17"
+    },
+    {
+      "rank": 9,
+      "slug": "diegosouzapw-omniroute",
+      "full_name": "diegosouzapw/OmniRoute",
+      "name": "OmniRoute",
+      "owner": "diegosouzapw",
+      "url": "https://github.com/diegosouzapw/OmniRoute",
+      "homepage": "https://omniroute.online",
+      "language": "TypeScript",
+      "topics": [
+        "a2a",
+        "ai-agents",
+        "ai-gateway",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "cline",
+        "codex"
+      ],
+      "stars": 67204,
+      "forks": 9459,
+      "weeklyGain": 416,
+      "dailyGain": 59.4,
+      "growthRate": 0.6,
+      "scores": {
+        "heat": 92,
+        "community": 84,
+        "innovation": 100,
+        "practical": 80,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 92
+      },
+      "why": {
+        "zh": "近 7 天新增 416 star（日均 59），采用 MIT 协议，社区近期保持活跃更新。",
+        "en": "Gained 416 stars in the last 7 days (~59/day), licensed under MIT, with active maintenance."
+      },
+      "highlights": [],
+      "cons": [],
+      "fitFor": [],
+      "quickstart": "",
+      "firstSeen": "2026-09-17"
+    },
+    {
+      "rank": 10,
+      "slug": "earendil-works-pi",
+      "full_name": "earendil-works/pi",
+      "name": "pi",
+      "owner": "earendil-works",
+      "url": "https://github.com/earendil-works/pi",
+      "homepage": "",
+      "language": "TypeScript",
+      "topics": [],
+      "stars": 106522,
+      "forks": 13413,
+      "weeklyGain": 416,
+      "dailyGain": 59.4,
+      "growthRate": 0.4,
+      "scores": {
+        "heat": 92,
+        "community": 84,
+        "innovation": 100,
+        "practical": 80,
+        "ecosystem": 100,
+        "health": 100,
+        "overall": 92
+      },
+      "why": {
+        "zh": "近 7 天新增 416 star（日均 59），采用 MIT 协议，社区近期保持活跃更新。",
+        "en": "Gained 416 stars in the last 7 days (~59/day), licensed under MIT, with active maintenance."
+      },
+      "highlights": [],
+      "cons": [],
+      "fitFor": [],
+      "quickstart": "",
+      "firstSeen": "2026-09-17"
+    }
+  ]
+}
