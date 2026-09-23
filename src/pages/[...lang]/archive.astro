@@ -1,0 +1,12 @@
+---
+/** 归档页（zh/en 共用） */
+import ArchivePage from "../../components/ArchivePage.astro";
+
+export function getStaticPaths() {
+  return [{ params: { lang: undefined } }, { params: { lang: "en" } }];
+}
+
+const lang = (Astro.params.lang === "en" ? "en" : "zh") as "zh" | "en";
+---
+
+<ArchivePage {lang} />

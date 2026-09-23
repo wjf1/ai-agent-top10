@@ -1,0 +1,39 @@
+---
+/** 子分类榜：框架 / 工具 / 应用 / 数据评测（P2-F1） */
+import ListPage from "../../../components/ListPage.astro";
+import { recentProjects, filterByCategory } from "../../../lib/aggregate";
+import { categories, categoryLabel } from "../../../lib/categorize.mjs";
+import { categoryPath } from "../../../lib/routes.ts";
+
+const WINDOW = 30;
+
+export async function getStaticPaths() {
+  const keys = categories().map((c) => c.key as string);
+  const langs = [{ lang: undefined as string | undefined }, { lang: "en" }];
+  return langs.flatMap(({ lang }) =>
+    keys.map((key) => ({ params: { lang, key }, props: { key, kind: lang ? "en" : "zh" } }))
+  );
+}
+
+const { key, kind } = Astro.props as { key: string; kind: "zh" | "en" };
+const lang = kind;
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const all = await recentProjects({ window: WINDOW });
+const projects = filterByCategory(all, key);
+const title = `${categoryLabel(key, lang)} · ${lang === "zh" ? "子分类榜" : "Category board"}`;
+const subtitle =
+  lang === "zh"
+    ? `最近 ${WINDOW} 期内归入「${categoryLabel(key, "zh")}」的项目，按窗口累计 star 增量排序。`
+    : `Projects classified as "${categoryLabel(key, "en")}" across the last ${WINDOW} issues, ranked by cumulative star gain.`;
+---
+
+<ListPage
+  {lang}
+  {title}
+  {subtitle}
+  {projects}
+  windowDays={WINDOW}
+  langHref={categoryPath(B, lang === "en" ? "zh" : "en", key)}
+  active="search"
+/>

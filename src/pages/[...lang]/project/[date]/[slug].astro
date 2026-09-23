@@ -1,0 +1,49 @@
+---
+/**
+ * 项目详情页 —— 路由带日期（P0-C1 修复）。
+ *
+ * 旧路由 /project/<slug>/ 下，同一个项目在不同日期生成同一个路径，
+ * 后建的页面静默覆盖先建的，除最后一天外全部丢失（50 个条目只剩 16 个页面）。
+ * 现在每个项目每天一个独立路径：/project/<date>/<slug>/。
+ */
+import ProjectDetail from "../../../../components/ProjectDetail.astro";
+import { index, loadDay } from "../../../../lib/load-days";
+import { starSeries } from "../../../../lib/periods";
+import { projectPath } from "../../../../lib/routes.ts";
+
+export async function getStaticPaths() {
+  const langVariants = [
+    { lang: undefined as string | undefined, kind: "zh" as const },
+    { lang: "en", kind: "en" as const },
+  ];
+  const out: any[] = [];
+  for (const day of index.days) {
+    for (const slug of day.slugs ?? []) {
+      for (const variant of langVariants) {
+        out.push({
+          params: { lang: variant.lang, date: day.date, slug },
+          props: { date: day.date, slug, kind: variant.kind },
+        });
+      }
+    }
+  }
+  return out;
+}
+
+const { date, slug, kind } = Astro.props as { date: string; slug: string; kind: "zh" | "en" };
+const lang = kind;
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const day = await loadDay(date);
+const entry = day?.entries.find((e) => e.slug === slug);
+if (!entry) throw new Error(`entry ${slug} not found in ${date}`);
+const series = starSeries(entry.full_name);
+---
+
+<ProjectDetail
+  {entry}
+  {date}
+  {lang}
+  {series}
+  langHref={projectPath(B, lang === "en" ? "zh" : "en", date, slug)}
+/>

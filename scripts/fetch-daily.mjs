@@ -1,284 +1,183 @@
 #!/usr/bin/env node
 /**
- * fetch-daily.mjs — 每日数据流水线
- * 1. 发现 AI Agent 候选项目（GitHub Search API）
- * 2. 用 stargazers 时间戳计算近 7 天 / 24h star 增速（冷启动日自动回填历史）
- * 3. 规则化计算 6 维度评分，按 star 增速排出 Top10
- * 4. 合并人工/AI 解读（data/interpretations/<date>.json，可选）
- * 5. 写入 src/data/daily/<date>.json，更新 src/data/index.json 与 star 快照
+ * fetch-daily.mjs — 每日数据流水线（编排层）
  *
- * 环境变量：GITHUB_TOKEN（或已登录的 gh CLI）
+ * 具体职责已拆到 scripts/lib/ 下：
+ *   github.mjs      限流 / 重试 / 调用预算
+ *   candidates.mjs  候选发现
+ *   growth.mjs      star / fork 增速
+ *   metrics.mjs     仓库指标采集（含 PR / issue 活跃度）
+ *   interpret.mjs   解读生成（人工 > LLM > 规则）
+ *   persist.mjs     落盘 + 快照 + 聚合索引
+ *   schema.mjs      结构校验
+ *
+ * 环境变量：
+ *   GITHUB_TOKEN      调用 GitHub API（缺失时回落 gh CLI）
+ *   LLM_API_KEY       可选，配置里 provider 非 none 时用于生成解读
+ *   MAX_CANDIDATES=N  只处理前 N 个候选，用于冒烟
+ *   DRY_RUN=1         跑完整流程但不写 src/data/
+ *   REPO_TIMEOUT_MS=N 覆盖单个候选的墙钟上限
+ *   DEBUG_REQUESTS=1  打印每次 API 请求的 URL 与耗时
+ * 用法：node scripts/fetch-daily.mjs [YYYY-MM-DD]
  */
-import { execSync } from "node:child_process";
-import fs from "node:fs";
+import assert from "node:assert";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const ROOT = path.resolve(import.meta.dirname, "..");
-const DATA_DIR = path.join(ROOT, "src", "data");
-const SNAPSHOT_FILE = path.join(DATA_DIR, "snapshots", "stars.json");
-const PERIOD_DAYS = 7;
+import { config } from "../src/lib/config.mjs";
+import { categorize } from "../src/lib/categorize.mjs";
+import { sanitizeSlug, sanitizeText, sanitizeUrl, sanitizeTopics } from "../src/lib/sanitize.mjs";
+import { buildPoolContext, scoreProject } from "../src/lib/scoring.mjs";
 
-const token =
-  process.env.GITHUB_TOKEN ||
-  (() => {
-    try {
-      return execSync("gh auth token", { encoding: "utf8" }).trim();
-    } catch {
-      return "";
-    }
-  })();
+import { createClient, resolveToken, withTimeout } from "./lib/github.mjs";
+import { discoverCandidates } from "./lib/candidates.mjs";
+import { resolveForkGrowth, resolveStarGrowth } from "./lib/growth.mjs";
+import { collectMetrics } from "./lib/metrics.mjs";
+import { llmInterpretation, normalizeInterpretation, ruleBasedInterpretation } from "./lib/interpret.mjs";
+import {
+  dataPaths,
+  listDailyDates,
+  readJson,
+  saveDaily,
+  saveIndex,
+  saveSnapshots,
+} from "./lib/persist.mjs";
+import { checkDailyFile } from "./lib/schema.mjs";
 
-let calls = 0;
-async function gh(url) {
-  calls++;
-  const headers = {
-    Accept: "application/vnd.github+json",
-    "User-Agent": "ai-agent-top10",
-  };
-  if (url.includes("stargazers"))
-    headers.Accept = "application/vnd.github.star+json";
-  if (token) headers.Authorization = `Bearer ${token}`;
-  const res = await fetch(`https://api.github.com${url}`, { headers });
-  if (!res.ok) throw new Error(`${res.status} ${url}: ${(await res.text()).slice(0, 200)}`);
-  return res.json();
-}
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const DAY = 864e5;
+const WINDOW = config.window?.weekly ?? 7;
 
-const search = (q) =>
-  gh(`/search/repositories?q=${encodeURIComponent(q)}&sort=stars&order=desc&per_page=60`)
-    .then((r) => r.items ?? [])
-    .catch((e) => {
-      console.warn("search failed:", e.message);
-      return [];
-    });
-
-/** 近 N 天新增 star 数（精确）：从 stargazers 最后几页统计 starred_at >= since。
- * GitHub 该接口最多可翻 400 页（4 万条），超大仓库返回 404。 */
-async function weeklyStars(fullName, stars, since) {
-  const pageSize = 100;
-  const lastPage = Math.min(400, Math.ceil(stars / pageSize) || 1);
-  let recent = 0;
-  for (let p = lastPage; p > Math.max(0, lastPage - 8); p--) {
-    const items = await gh(`/repos/${fullName}/stargazers?per_page=${pageSize}&page=${p}`);
-    if (!Array.isArray(items) || items.length === 0) break;
-    const inWindow = items.filter((s) => new Date(s.starred_at) >= since);
-    recent += inWindow.length;
-    if (inWindow.length < items.length) break; // 本页已含窗口外数据，窗口已完整覆盖
-  }
-  return { weekly: recent, exact: true };
-}
-
-/** 降级方案（超大仓库）：从事件流统计近期 StarEvent/WatchEvent */
-async function weeklyStarsViaEvents(fullName, since, today) {
-  let recent = 0;
-  let oldest = new Date(today);
-  for (let p = 1; p <= 3; p++) {
-    const items = await gh(`/repos/${fullName}/events?per_page=100&page=${p}`);
-    if (!Array.isArray(items) || items.length === 0) break;
-    const stars = items.filter(
-      (e) => (e.type === "WatchEvent" || e.type === "StarEvent") && new Date(e.created_at) >= since
-    );
-    recent += stars.length;
-    oldest = new Date(items[items.length - 1].created_at);
-    if (oldest <= since) break;
-  }
-  // 事件流只覆盖约最近几小时~几天；未覆盖满窗口时按覆盖率外推并标记估算
-  const covered = Math.max(0.05, Math.min(1, (today - oldest) / (today - since)));
-  return { weekly: Math.round(recent / covered), exact: covered >= 0.999 };
-}
-
-function clamp(v, lo = 0, hi = 100) {
-  return Math.max(lo, Math.min(hi, Math.round(v)));
-}
-const percentile = (arr, v) => {
-  if (!arr.length) return 50;
-  return (arr.filter((x) => x <= v).length / arr.length) * 100;
-};
-const log100 = (v) => Math.log10(Math.max(1, v)) / 2; // log10(v)/log10(100) → 0..~3
-
-function scoreProject(p, pool) {
-  const dailyGains = pool.map((x) => x.dailyGain);
-  const weeklyGains = pool.map((x) => x.weeklyGain);
-  const contribs = pool.map((x) => x.metrics.contributors);
-  const ages = pool.map((x) => x.metrics.ageDays);
-  const pushAges = pool.map((x) => x.metrics.pushDaysAgo);
-  const forks = pool.map((x) => x.metrics.forks);
-  const stars = pool.map((x) => x.metrics.stars);
-
-  const growthRate = p.weeklyGain / Math.max(1, p.metrics.stars); // 周相对增速
-  const heat = clamp(
-    0.6 * percentile(dailyGains, p.dailyGain) + 0.4 * percentile(weeklyGains, p.weeklyGain) + 10
-  );
-
-  const m = p.metrics;
-  const community = clamp(
-    30 * log100(m.contributors) +
-      20 * (1 - Math.min(1, m.pushDaysAgo / 14)) +
-      15 * (m.releases90d > 0 ? 1 : 0.3) +
-      15 * log100(m.openIssues || 1) * 0.8 +
-      10 * percentile(ages, m.ageDays) / 100
-  );
-  const practical = clamp(
-    35 * (m.licensePermissive ? 1 : 0.4) +
-      25 * (m.hasDocs ? 1 : 0.3) +
-      20 * Math.min(1, (m.topics||[]).length / 5) +
-      20 * (m.hasExamples || m.hasHomepage ? 1 : 0.4)
-  );
-  const ecosystem = clamp(
-    35 * percentile(stars, m.stars) +
-      25 * percentile(forks, m.forks) +
-      20 * (m.orgVerified || m.ownerType === "Organization" ? 1 : 0.4) +
-      20 * (m.downloadsSignal ? 1 : 0.4)
-  );
-  const health = clamp(
-    35 * (m.license ? 1 : 0.2) +
-      25 * (1 - Math.min(1, m.pushDaysAgo / 30)) +
-      20 * (1 - Math.min(1, m.openIssues / Math.max(1, m.stars * 0.02))) +
-      20 * percentile(ages, m.ageDays)
-  );
-  // 创新性：自动化阶段用可观测信号近似（首日由人工解读覆盖）
-  const innovation = clamp(
-    30 * percentile(weeklyGains, p.weeklyGain) +
-      25 * (1 - Math.min(1, m.ageDays / 730)) +
-      20 * log100(m.contributors) / 3 +
-      25 * ((m.topics||[]).some((t) => /mcp|rl|multi|autonomous|reasoning|memory/.test(t)) ? 1 : 0.4)
-  );
-
-  return {
-    heat,
-    community,
-    innovation,
-    practical,
-    ecosystem,
-    health,
-    overall: clamp(
-      heat * 0.2 + community * 0.15 + innovation * 0.2 + practical * 0.2 + ecosystem * 0.15 + health * 0.1
-    ),
-  };
-}
+const round1 = (n) => Math.round(n * 10) / 10;
 
 async function main() {
-  const today = new Date();
-  const date = process.argv[2] || today.toISOString().slice(0, 10);
-  const since = new Date(today.getTime() - PERIOD_DAYS * 864e5);
-  console.log(`# fetch-daily ${date} (window: ${PERIOD_DAYS}d, token: ${token ? "yes" : "no"})`);
+  const now = new Date();
+  const date = process.argv[2] || now.toISOString().slice(0, 10);
+  const token = resolveToken();
+  const paths = dataPaths(ROOT);
+  const since7d = new Date(now.getTime() - WINDOW * DAY);
 
-  // 1. 候选池：AI Agent 相关话题/关键词
-  const queries = [
-    "topic:ai-agents stars:>300 pushed:>2026-07-01",
-    "topic:ai-agent stars:>300 pushed:>2026-07-01",
-    "topic:agent-framework stars:>200 pushed:>2026-07-01",
-    "ai agent in:name,description stars:>800 pushed:>2026-08-01",
-  ];
-  const found = new Map();
-  for (const q of queries) {
-    for (const r of await search(q)) {
-      if (r.archived || r.fork) continue;
-      if (!found.has(r.full_name)) found.set(r.full_name, r);
-    }
-  }
-  let pool = [...found.values()].sort((a, b) => b.stargazers_count - a.stargazers_count).slice(0, 45);
-  console.log(`candidates: ${pool.length}`);
+  console.log(`# fetch-daily ${date} (window: ${WINDOW}d, token: ${token ? "yes" : "no"})`);
 
-  // 2. star 增速（快照优先；无快照时回填 stargazers 历史）
-  const snap = fs.existsSync(SNAPSHOT_FILE)
-    ? JSON.parse(fs.readFileSync(SNAPSHOT_FILE, "utf8"))
-    : {};
-  const lastSnapDate = Object.keys(snap).filter((d) => d < date).sort().pop();
-  let weeklyExact = true;
-  const results = [];
-  for (const r of pool) {
-    let weeklyGain;
-    if (lastSnapDate && today - new Date(lastSnapDate) < 3 * 864e5) {
-      const prev = snap[lastSnapDate][r.full_name];
-      weeklyGain = prev != null ? Math.max(0, r.stargazers_count - prev) : null;
-    } else {
-      weeklyGain = null;
-    }
-    if (weeklyGain == null) {
-      try {
-        const w =
-          r.stargazers_count > 39500
-            ? await weeklyStarsViaEvents(r.full_name, since, today)
-            : await weeklyStars(r.full_name, r.stargazers_count, since);
-        weeklyGain = w.weekly;
-        weeklyExact = w.exact;
-      } catch (e) {
-        console.warn(`  ! ${r.full_name}: ${e.message}`);
-        continue;
-      }
-    }
-    let contributors = 0;
-    try {
-      const c = await gh(`/repos/${r.full_name}/contributors?per_page=100&anon=false`);
-      contributors = Array.isArray(c) ? c.length : 0;
-    } catch {}
-    let releases90d = 0;
-    try {
-      const rel = await gh(`/repos/${r.full_name}/releases?per_page=30`);
-      releases90d = rel.filter(
-        (x) => x.published_at && today - new Date(x.published_at) < 90 * 864e5
-      ).length;
-    } catch {}
-    const permissive = ["MIT", "Apache-2.0", "BSD-3-Clause", "BSD-2-Clause", "ISC", "MPL-2.0"];
-    results.push({
-      slug: r.full_name.toLowerCase().replace(/[^a-z0-9._-]+/g, "-"),
-      full_name: r.full_name,
-      name: r.name,
-      owner: r.owner.login,
-      ownerType: r.owner.type,
-      orgVerified: r.owner?.type === "Organization",
-      url: r.html_url,
-      homepage: r.homepage || "",
-      description: r.description || "",
-      language: r.language || "Other",
-      topics: r.topics || [],
-      created_at: r.created_at,
-      pushed_at: r.pushed_at,
-      metrics: {
-        stars: r.stargazers_count,
-        forks: r.forks_count,
-        watchers: r.subscribers_count ?? r.watchers_count,
-        openIssues: r.open_issues_count,
-        license: r.license?.spdx_id || null,
-        licensePermissive: permissive.includes(r.license?.spdx_id),
-        hasDocs: r.has_wiki || !!(r.homepage || "").includes("docs"),
-        hasHomepage: !!r.homepage,
-        hasExamples: (r.topics || []).some((t) => /example|demo|template/.test(t)) || r.size > 2000,
-        ageDays: Math.round((today - new Date(r.created_at)) / 864e5),
-        pushDaysAgo: Math.round((today - new Date(r.pushed_at)) / 864e5),
-        contributors,
-        releases90d,
-        downloadsSignal: false,
-      },
-      weeklyGain,
-      dailyGain: weeklyGain / PERIOD_DAYS,
-      growthRate: 0,
+  const client = createClient({ token });
+
+  // ---- 1. 候选发现 ----
+  const { pool: candidates } = await discoverCandidates(client, { now });
+
+  // ---- 2. 快照（star 序列 + fork 序列）----
+  const starSnapshots = readJson(paths.starsFile, {});
+  const metricSnapshots = readJson(paths.metricsFile, {});
+  const snapshotDates = [...new Set(Object.keys(starSnapshots))].sort().reverse();
+  const forkSnapshots = Object.fromEntries(
+    Object.entries(metricSnapshots).map(([d, repos]) => [
+      d,
+      Object.fromEntries(Object.entries(repos).map(([name, m]) => [name, m.forks])),
+    ])
+  );
+
+  // ---- 3. 增速 + 指标 ----
+  /** 单个候选的完整处理：增速 → 指标 → 净化 → 分类 */
+  async function processCandidate(repo) {
+    const growth = await resolveStarGrowth(client, {
+      fullName: repo.full_name,
+      stars: repo.stargazers_count,
+      snapshots: starSnapshots,
+      snapshotDates,
+      now,
+      since7d,
+      log: console.log,
     });
-    results[results.length - 1].growthRate =
-      results[results.length - 1].weeklyGain / Math.max(1, r.stargazers_count);
+    if (!growth) return null;
+
+    const metrics = await collectMetrics(client, repo, { now, log: console.log });
+    const forkGrowth = resolveForkGrowth({
+      forkSnapshots,
+      forks: metrics.forks,
+      fullName: repo.full_name,
+      snapshotDates,
+      now,
+    });
+
+    const base = {
+      slug: sanitizeSlug(repo.full_name.replace("/", "-")),
+      full_name: repo.full_name,
+      name: sanitizeText(repo.name, 120),
+      owner: sanitizeText(repo.owner?.login ?? "", 120),
+      url: sanitizeUrl(repo.html_url),
+      homepage: sanitizeUrl(repo.homepage),
+      description: sanitizeText(repo.description, config.sanitize?.maxDescriptionLength),
+      language: sanitizeText(repo.language ?? "Other", 40) || "Other",
+      topics: sanitizeTopics(repo.topics),
+      created_at: repo.created_at,
+      metrics,
+      ...growth,
+      ...forkGrowth,
+      dailyGain: round1(growth.weeklyGain / WINDOW),
+      growthRate: round1((growth.weeklyGain / Math.max(1, metrics.stars)) * 100),
+      forksGrowthRate: round1(((forkGrowth.forksGain ?? 0) / Math.max(1, metrics.forks)) * 100),
+    };
+    base.category = categorize(base);
+    return base;
   }
 
-  // 3. 评分 + 排名（严格按 star 增速）
-  for (const p of results) p.scores = scoreProject(p, results);
-  const ranked = results
-    .sort((a, b) => b.dailyGain - a.dailyGain || b.growthRate - a.growthRate)
-    .slice(0, 10)
-    .map((p, i) => ({ rank: i + 1, ...p }));
+  const records = [];
+  let skipped = 0;
+  let timedOut = 0;
+  const repoBudgetMs = Number(process.env.REPO_TIMEOUT_MS ?? config.api?.repoTimeoutMs ?? 120000);
 
-  // 4. 合并解读（如有）
-  const interpFile = path.join(DATA_DIR, "interpretations", `${date}.json`);
-  let interpretations = {};
-  if (fs.existsSync(interpFile))
-    interpretations = JSON.parse(fs.readFileSync(interpFile, "utf8"));
+  for (const [index, repo] of candidates.entries()) {
+    // 逐个打印进度：CI 里卡在哪一步、有没有被限流，看日志就能定位
+    console.log(`  [${index + 1}/${candidates.length}] ${repo.full_name} …`);
+    try {
+      const record = await withTimeout(processCandidate(repo), repoBudgetMs, repo.full_name);
+      if (record) records.push(record);
+      else skipped++;
+    } catch (e) {
+      // 单个仓库出问题不该拖死整轮抓取
+      timedOut++;
+      console.warn(`  ! ${repo.full_name}: ${e.message}`);
+    }
+  }
 
-  const entries = ranked.map((p) => {
-    const it = interpretations[p.full_name] || interpretations[p.slug] || {};
-    const autoWhy = {
-      zh: `近 7 天新增 ${p.weeklyGain.toLocaleString()} star（日均 ${Math.round(p.dailyGain)}），${p.metrics.license ? `采用 ${p.metrics.license} 协议` : "协议待确认"}，社区近期保持活跃更新。`,
-      en: `Gained ${p.weeklyGain.toLocaleString()} stars in the last 7 days (~${Math.round(p.dailyGain)}/day), ${p.metrics.license ? `licensed under ${p.metrics.license}` : "license TBD"}, with active maintenance.`,
-    };
+  assert(records.length > 0, "no candidate produced a usable growth figure");
+  console.log(
+    `scored pool: ${records.length} (skipped ${skipped} without reliable growth, ${timedOut} failed/timed out)`
+  );
+
+  // ---- 4. 评分 + 排名 ----
+  const ctx = buildPoolContext(records);
+  for (const r of records) r.scores = scoreProject(r, records, ctx);
+
+  const topN = config.pool?.topN ?? 10;
+  const ranked = records
+    .sort((a, b) => b.weeklyGain - a.weeklyGain || b.growthRate - a.growthRate)
+    .slice(0, topN);
+
+  // ---- 4b. 排名变化（对比上一期日榜）----
+  const previousDates = listDailyDates(paths).filter((d) => d < date);
+  const previous = previousDates.length ? readJson(path.join(paths.dailyDir, `${previousDates[0]}.json`)) : null;
+  const prevRank = new Map((previous?.entries ?? []).map((e) => [e.full_name, e.rank]));
+
+  // ---- 5. 解读（人工 > LLM > 规则）----
+  const manual = readJson(path.join(paths.interpDir, `${date}.json`), {});
+  const manualCount = Object.keys(manual).length;
+  let llmMap = new Map();
+  if (!manualCount) llmMap = await llmInterpretation(ranked, { log: console.log });
+  else console.log(`interpretation: manual file found (${manualCount} entries), skipping LLM`);
+
+  const entries = ranked.map((p, i) => {
+    const manualRaw = manual[p.full_name] ?? manual[p.slug];
+    const fromManual = manualRaw ? normalizeInterpretation(manualRaw) : null;
+    const fromLlm = llmMap.get(p.full_name) ?? null;
+    const fallback = ruleBasedInterpretation({ ...p, windowDays: WINDOW });
+    const chosen = fromManual ?? fromLlm ?? fallback;
+    const source = fromManual ? "manual" : fromLlm ? "llm" : "rules";
+
+    const rank = i + 1;
+    const before = prevRank.get(p.full_name);
+
     return {
-      rank: p.rank,
+      rank,
       slug: p.slug,
       full_name: p.full_name,
       name: p.name,
@@ -286,44 +185,78 @@ async function main() {
       url: p.url,
       homepage: p.homepage,
       language: p.language,
+      category: p.category,
       topics: p.topics.slice(0, 8),
       stars: p.metrics.stars,
       forks: p.metrics.forks,
+      openIssues: p.metrics.openIssues,
+      contributors: p.metrics.contributors,
+      releases90d: p.metrics.releases90d,
+      prActivity: p.metrics.prActivity,
+      issueActivity: p.metrics.issueActivity,
       weeklyGain: p.weeklyGain,
-      dailyGain: Math.round(p.dailyGain * 10) / 10,
-      growthRate: Math.round(p.growthRate * 1000) / 10, // %
+      dailyGain: p.dailyGain,
+      growthRate: p.growthRate,
+      forksGain: p.forksGain,
+      forksGrowthRate: p.forksGrowthRate,
+      gainSource: p.source,
+      gainExact: p.exact,
+      rankChange: typeof before === "number" ? before - rank : null,
       scores: p.scores,
-      why: it.why || autoWhy,
-      highlights: it.highlights || [],
-      cons: it.cons || [],
-      fitFor: it.fitFor || [],
-      quickstart: it.quickstart || "",
-      firstSeen: it.firstSeen ?? date,
+      why: chosen.why,
+      highlights: chosen.highlights ?? [],
+      cons: chosen.cons ?? [],
+      fitFor: chosen.fitFor ?? [],
+      quickstart: chosen.quickstart ?? "",
+      interpretationSource: source,
+      firstSeen: chosen.firstSeen ?? date,
     };
   });
 
-  // 5. 写数据文件 + 快照
-  fs.mkdirSync(path.join(DATA_DIR, "daily"), { recursive: true });
-  fs.mkdirSync(path.dirname(SNAPSHOT_FILE), { recursive: true });
+  // ---- 6. 落盘 ----
   const doc = {
     date,
-    generatedAt: new Date().toISOString(),
-    windowDays: PERIOD_DAYS,
+    generatedAt: now.toISOString(),
+    windowDays: WINDOW,
+    poolSize: records.length,
     entries,
   };
-  fs.writeFileSync(path.join(DATA_DIR, "daily", `${date}.json`), JSON.stringify(doc, null, 2));
-  snap[date] = Object.fromEntries(results.map((r) => [r.full_name, r.metrics.stars]));
-  fs.writeFileSync(SNAPSHOT_FILE, JSON.stringify(snap, null, 2));
 
-  const indexFile = path.join(DATA_DIR, "index.json");
-  const idx = fs.existsSync(indexFile) ? JSON.parse(fs.readFileSync(indexFile, "utf8")) : { dates: [] };
-  idx.dates = [...new Set([date, ...idx.dates])].sort().reverse();
-  fs.writeFileSync(indexFile, JSON.stringify(idx, null, 2));
+  const { ok, errors } = checkDailyFile(doc, { expectedDate: date, topN });
+  if (!ok) {
+    console.error("data validation failed:");
+    for (const e of errors.slice(0, 20)) console.error(`  - ${e}`);
+    throw new Error(`produced dataset failed validation (${errors.length} issue(s))`);
+  }
 
-  console.log(`API calls: ${calls}`);
+  const dryRun = !!process.env.DRY_RUN;
+  if (dryRun) {
+    console.log("DRY_RUN=1 → skipping writes to src/data/");
+    console.log(
+      "TOP10 (dry):\n" +
+        entries.map((e) => `  ${e.rank}. ${e.full_name} (+${e.weeklyGain}/7d via ${e.gainSource})`).join("\n")
+    );
+    return;
+  }
+
+  saveDaily(paths, doc);
+  saveSnapshots(paths, {
+    date,
+    stars: Object.fromEntries(records.map((r) => [r.full_name, r.metrics.stars])),
+    metrics: Object.fromEntries(records.map((r) => [r.full_name, r.metrics])),
+    now,
+  });
+  const index = saveIndex(paths, { dates: [...new Set([date, ...previousDates])], now });
+
+  const stats = client.stats();
   console.log(
-    "TOP10:",
-    entries.map((e) => `${e.rank}. ${e.full_name} (+${e.weeklyGain}/7d)`).join("\n      ")
+    `API calls: ${stats.calls} (retries ${stats.retries}, timeouts ${stats.timeouts}, throttled ${stats.throttled}) ` +
+      `core remaining ${stats.coreRemaining ?? "?"}, search remaining ${stats.searchRemaining ?? "?"}`
+  );
+  console.log(`index: ${index.days.length} day(s), latest ${index.latest}`);
+  console.log(
+    "TOP10:\n" +
+      entries.map((e) => `  ${e.rank}. ${e.full_name} (+${e.weeklyGain}/7d via ${e.gainSource})`).join("\n")
   );
 }
 

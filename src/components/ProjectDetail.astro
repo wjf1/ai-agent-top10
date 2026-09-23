@@ -1,90 +1,149 @@
 ---
-/** 项目详情页（zh / en 复用） */
+/** 项目详情页（zh / en 共用），含 8 维评分、维度口径说明与 star 趋势图（P1-F2/P1-U3） */
 import Base from "../layouts/Base.astro";
 import Radar from "./Radar.astro";
-import { L } from "../lib/data.ts";
-import { days } from "../lib/load-days.ts";
+import TrendChart from "./TrendChart.astro";
+import { categoryLabel } from "../lib/categorize.mjs";
+import { dimensionLabels, strings, type Lang } from "../lib/data.ts";
+import { archivePath, categoryPath, comparePath, dayPath } from "../lib/routes.ts";
 
 interface Props {
   entry: any;
   date: string;
-  lang?: "zh" | "en";
+  lang?: Lang;
+  series: { date: string; stars?: number | null; forks?: number | null }[];
+  langHref: string;
 }
-const { entry, date, lang = "zh" } = Astro.props;
-const t = L[lang];
+
+const { entry, date, lang = "zh", series = [], langHref } = Astro.props;
+const t = strings(lang);
 const B = import.meta.env.BASE_URL.replace(/\/$/, "");
-const listPath = lang === "en" ? `${B}/en/` : `${B}/`;
-const archivePath = lang === "en" ? `${B}/en/archive/` : `${B}/archive/`;
-const fmt = (n: number) => n.toLocaleString("en-US");
-const dims = ["heat", "community", "innovation", "practical", "ecosystem", "health"];
-const dimName = (k: string) => {
-  const i = dims.indexOf(k);
-  return t.dims[i][lang === "zh" ? 0 : 1];
-};
+const fmt = (n: number) => Number(n ?? 0).toLocaleString("en-US");
+
+const allDims = dimensionLabels(lang);
+const dims = allDims.filter((d) => typeof entry.scores?.[d.key] === "number");
+const listHref = dayPath(B, lang, date);
+const archiveHref = archivePath(B, lang);
+
+const pills = [
+  { label: t.rank, value: `#${entry.rank}` },
+  { label: t.stars, value: fmt(entry.stars) },
+  { label: t.weekGain, value: `+${fmt(entry.weeklyGain)}` },
+  { label: t.growthRate, value: `${entry.growthRate}%` },
+  { label: t.language, value: entry.language },
+  { label: t.forks, value: fmt(entry.forks) },
+  ...(typeof entry.forksGain === "number" ? [{ label: t.forksGain, value: `+${fmt(entry.forksGain)}` }] : []),
+  ...(typeof entry.contributors === "number" ? [{ label: lang === "zh" ? "贡献者" : "Contributors", value: fmt(entry.contributors) }] : []),
+  ...(typeof entry.prActivity === "number" ? [{ label: "PR / 30d", value: fmt(entry.prActivity) }] : []),
+  ...(typeof entry.issueActivity === "number" ? [{ label: "Issue / 30d", value: fmt(entry.issueActivity) }] : []),
+];
+
+const change = typeof entry.rankChange === "number" ? entry.rankChange : null;
+const sourceLabel =
+  entry.gainSource === "events"
+    ? t.sourceEvents
+    : entry.gainSource === "stargazers"
+      ? t.sourceStargazers
+      : entry.gainSource === "snapshot-window"
+        ? t.sourceWindow
+        : t.sourceSnapshot;
 ---
-<Base lang={lang} langHref={lang === "en" ? `${B}/project/${entry.slug}/` : `${B}/en/project/${entry.slug}/`} title={entry.full_name} desc={entry.why[lang].slice(0, 150)}>
+
+<Base
+  lang={lang}
+  langHref={langHref}
+  title={entry.full_name}
+  desc={String(entry.why?.[lang] ?? "").slice(0, 150)}
+  active="day"
+  date={date}
+>
   <section class="detail-head">
     <div class="crumb">
-      <a href={listPath}>{lang === "zh" ? "今日榜单" : "Today's List"}</a> /
-      <a href={archivePath}>{t.archive}</a> /
-      {date} · #{entry.rank}
+      <a href={listHref}>{date} {t.periodDaily}</a> /
+      <a href={archiveHref}>{t.archive}</a> /
+      {entry.full_name}
     </div>
     <h1>{entry.full_name}</h1>
-    <p class="sub" style="color:var(--muted);margin:0">{entry.description || (lang === "zh" ? "（仓库未提供描述）" : "(no description)")}</p>
-    <div class="meta-row">
-      <div class="meta-pill"><b>#{entry.rank}</b><span>{lang === "zh" ? "当日排名" : "Rank"}</span></div>
-      <div class="meta-pill"><b>{fmt(entry.stars)}</b><span>{t.stars}</span></div>
-      <div class="meta-pill"><b>+{fmt(entry.weeklyGain)}</b><span>{t.weekGain}</span></div>
-      <div class="meta-pill"><b>{entry.growthRate}%</b><span>{t.growthRate}</span></div>
-      <div class="meta-pill"><b>{entry.language}</b><span>{lang === "zh" ? "主语言" : "Language"}</span></div>
-      <div class="meta-pill"><b>{fmt(entry.forks)}</b><span>{t.forks}</span></div>
+    {entry.description && (
+      <p class="sub desc">{entry.description}</p>
+    )}
+    <div class="tag-row">
+      {entry.category && <a class="cat-chip" href={categoryPath(B, lang, entry.category)}>{categoryLabel(entry.category, lang)}</a>}
+      {(entry.topics ?? []).slice(0, 6).map((topic: string) => (
+        <span class="topic-chip">#{topic}</span>
+      ))}
     </div>
     <div class="meta-row">
-      <a class="btn" href={entry.url} target="_blank" rel="noopener">GitHub →</a>
-      {entry.homepage && <a class="btn ghost" href={entry.homepage} target="_blank" rel="noopener">{t.homepage} →</a>}
+      {pills.map((p) => (
+        <div class="meta-pill"><b>{p.value}</b><span>{p.label}</span></div>
+      ))}
+    </div>
+    <div class="meta-row">
+      <a class="btn" href={entry.url} target="_blank" rel="noopener noreferrer">GitHub →</a>
+      {entry.homepage && (
+        <a class="btn ghost" href={entry.homepage} target="_blank" rel="noopener noreferrer">{t.homepage} →</a>
+      )}
+      <a class="btn ghost" href={`${comparePath(B, lang)}#${entry.full_name}`}>{t.compare}</a>
+      {change !== null && (
+        <span class:list={["change-chip", change > 0 ? "up" : change < 0 ? "down" : "same"]}>
+          {change > 0 ? `${t.rankUp} ${change}` : change < 0 ? `${t.rankDown} ${Math.abs(change)}` : t.rankSame}
+        </span>
+      )}
+      {entry.firstSeen && <span class="meta-line">{t.createdNote}：{entry.firstSeen}</span>}
     </div>
   </section>
 
   <div class="detail-grid">
     <div class="panel">
       <div class="overall-big"><div class="n">{entry.scores.overall}</div><div class="l">{t.overall} / 100</div></div>
-      <div style="display:flex;justify-content:center">
-        <Radar scores={entry.scores} size={230} labels={t.dims} lang={lang} />
+      <div class="radar-holder">
+        <Radar scores={entry.scores} dims={dims} size={244} />
       </div>
-      <div class="dim-rows" style="margin-top:16px">
-        {dims.map((k) => (
-          <div class="dim-row">
-            <span>{dimName(k)}</span>
-            <div class="dim-bar"><div class="dim-fill" style={`width:${entry.scores[k]}%`} /></div>
-            <b>{entry.scores[k]}</b>
+      <div class="dim-rows">
+        {dims.map((d) => (
+          <div class="dim-row" title={`${d.label} · ${t.weight} ${(d.weight * 100).toFixed(0)}%`}>
+            <span class="dim-name" title={d.desc}>{d.label}</span>
+            <div class="dim-bar"><div class="dim-fill" style={`width:${entry.scores[d.key]}%`} /></div>
+            <b>{entry.scores[d.key]}</b>
           </div>
         ))}
       </div>
+      <p class="hint">{t.scoreTooltipHint}</p>
+      <p class="hint">
+        {t.gainSource}：{sourceLabel}{entry.gainExact === false ? `（${t.estimated}）` : ""}
+      </p>
     </div>
 
-    <div style="display:grid;gap:18px">
+    <div class="detail-col">
       <div class="panel">
         <h2>💡 {t.why}</h2>
-        <p class="prose" style="margin:0">{entry.why[lang]}</p>
+        <p class="prose">{entry.why[lang]}</p>
       </div>
+
       {entry.highlights?.length > 0 && (
         <div class="panel">
           <h2>✨ {t.highlights}</h2>
-          <ul>{entry.highlights.map((h) => <li class="good">{h[lang]}</li>)}</ul>
+          <ul>{entry.highlights.map((h: any) => <li class="good">{h[lang]}</li>)}</ul>
         </div>
       )}
       {entry.cons?.length > 0 && (
         <div class="panel">
           <h2>⚠️ {t.cons}</h2>
-          <ul>{entry.cons.map((c) => <li class="bad">{c[lang]}</li>)}</ul>
+          <ul>{entry.cons.map((c: any) => <li class="bad">{c[lang]}</li>)}</ul>
         </div>
       )}
       {entry.fitFor?.length > 0 && (
         <div class="panel">
           <h2>🎯 {t.fitFor}</h2>
-          <div class="chips">{entry.fitFor.map((f) => <span class="chip">{f[lang]}</span>)}</div>
+          <div class="chips">{entry.fitFor.map((f: any) => <span class="chip">{f[lang]}</span>)}</div>
         </div>
       )}
+
+      <div class="panel">
+        <h2>📈 {t.trend}</h2>
+        <TrendChart points={series} metric="stars" {lang} emptyText={t.trendEmpty} />
+      </div>
+
       {entry.quickstart && (
         <div class="panel">
           <h2>⌨️ {t.quickstart}</h2>
@@ -94,3 +153,28 @@ const dimName = (k: string) => {
     </div>
   </div>
 </Base>
+
+<style>
+  .detail-head h1 { margin: 6px 0; font-size: clamp(22px, 3.4vw, 32px); word-break: break-all; }
+  .detail-head .crumb { font-size: 13px; color: var(--muted); }
+  .detail-head .crumb a:hover { color: var(--accent); }
+  .detail-head .desc { color: var(--muted); margin: 0; max-width: 760px; }
+  .tag-row { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 12px; }
+  .cat-chip {
+    font-size: 12px; padding: 2px 11px; border-radius: 999px;
+    border: 1px solid var(--accent); color: var(--accent); background: var(--accent-soft);
+    font-weight: 600;
+  }
+  .topic-chip { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: var(--card-2); color: var(--muted); border: 1px solid var(--line); }
+  .meta-pill b { font-size: 14.5px; }
+  .meta-pill span { color: var(--muted); font-size: 11.5px; display: block; }
+  .change-chip { align-self: center; font-size: 12px; font-weight: 700; padding: 3px 11px; border-radius: 999px; }
+  .change-chip.up { color: var(--good); background: var(--good-soft); }
+  .change-chip.down { color: var(--warn); background: var(--warn-soft); }
+  .change-chip.same { color: var(--muted); background: var(--card-2); }
+  .meta-line { align-self: center; color: var(--muted); font-size: 12px; }
+  .radar-holder { display: flex; justify-content: center; margin-bottom: 8px; overflow: visible; }
+  .dim-name { border-bottom: 1px dotted var(--line); cursor: help; }
+  .hint { margin: 12px 0 0; color: var(--muted); font-size: 11.5px; }
+  .detail-col { display: grid; gap: 18px; align-content: start; }
+</style>

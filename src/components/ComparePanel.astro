@@ -1,0 +1,281 @@
+---
+/**
+ * 多仓库 star 对比（W4-1）。
+ *
+ * 数据在构建期就以紧凑数组形式内联（[快照序号, star 数]），
+ * 客户端只做选择与绘制，不发起任何网络请求。
+ * 选择结果写进 URL hash，可直接分享。
+ */
+import { strings, type Lang } from "../lib/data.ts";
+import { projectPath } from "../lib/routes.ts";
+import type { AggregatedProject } from "../lib/aggregate";
+
+interface SeriesPoint {
+  dates: string[];
+  projects: { n: string; s: string; d: string; p: [number, number][]; f: [number, number][] }[];
+}
+
+interface Props {
+  lang?: Lang;
+  series: SeriesPoint;
+  projects: AggregatedProject[];
+}
+
+const { lang = "zh", series, projects } = Astro.props;
+const t = strings(lang);
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+// 转义 < 防止 JSON 里出现 </script> 提前结束标签
+const payload = JSON.stringify(series).replace(/</g, "\\u003c");
+---
+
+<section class="compare" data-compare data-base={B} data-lang={lang}>
+  <p class="hint">{t.compareHint}</p>
+
+  <div class="compare-controls">
+    <div class="mode-switch" role="group">
+      <button type="button" class="fchip active" data-mode="absolute">{lang === "zh" ? "绝对值" : "Absolute"}</button>
+      <button type="button" class="fchip" data-mode="relative">{lang === "zh" ? "相对起点（%）" : "Indexed (%)"}</button>
+    </div>
+    <span class="sel-count" data-count></span>
+    <button type="button" class="clear-btn" data-clear>{t.compareClear}</button>
+  </div>
+
+  <div class="compare-body">
+    <div class="pick-list" data-pick>
+      {projects.map((p) => (
+        <label class="pick">
+          <input type="checkbox" value={p.entry.full_name} />
+          <span class="pick-name">{p.entry.full_name}</span>
+          <span class="pick-meta">{p.entry.language} · ⭐{p.entry.stars.toLocaleString("en-US")}</span>
+        </label>
+      ))}
+    </div>
+    <div class="chart-holder">
+      <div class="chart-scroll"><svg data-chart role="img" aria-label={t.compareTitle}></svg></div>
+      <p class="legend" data-legend></p>
+      <p class="chart-links" data-links></p>
+    </div>
+  </div>
+
+  <script is:inline type="application/json" data-series set:html={payload} />
+</section>
+
+<script>
+  const PALETTE = ["#4f46e5", "#059669", "#d97706", "#db2777", "#0891b2", "#7c3aed", "#ca8a04", "#dc2626"];
+
+  function init(root: HTMLElement) {
+    const payloadEl = root.querySelector<HTMLScriptElement>("[data-series]");
+    const chart = root.querySelector<SVGSVGElement>("[data-chart]");
+    const legend = root.querySelector<HTMLElement>("[data-legend]");
+    const links = root.querySelector<HTMLElement>("[data-links]");
+    const countEl = root.querySelector<HTMLElement>("[data-count]");
+    if (!payloadEl || !chart) return;
+
+    const data = JSON.parse(payloadEl.textContent || "{}") as {
+      dates: string[];
+      projects: { n: string; s: string; d: string; p: [number, number][]; f: [number, number][] }[];
+    };
+    const byName = new Map(data.projects.map((p) => [p.n, p]));
+    const dates = data.dates ?? [];
+    const base = root.dataset.base ?? "";
+    const lang = root.dataset.lang === "en" ? "en" : "zh";
+    const boxes = Array.from(root.querySelectorAll<HTMLInputElement>("[data-pick] input[type=checkbox]"));
+
+    let mode: "absolute" | "relative" = "absolute";
+    const selected: string[] = [];
+
+    function readHash() {
+      const hash = decodeURIComponent(location.hash.replace(/^#/, ""));
+      if (!hash) return [];
+      return hash.split(",").map((s) => s.trim()).filter((s) => byName.has(s)).slice(0, 5);
+    }
+
+    function writeHash() {
+      const next = selected.length ? `#${selected.map(encodeURIComponent).join(",")}` : "";
+      history.replaceState(null, "", `${location.pathname}${location.search}${next}`);
+    }
+
+    function draw() {
+      chart.innerHTML = "";
+      chart.setAttribute("viewBox", "0 0 760 320");
+      const W = 760, H = 320, padL = 64, padR = 16, padT = 18, padB = 34;
+
+      if (selected.length < 2) {
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", String(W / 2));
+        text.setAttribute("y", String(H / 2));
+        text.setAttribute("text-anchor", "middle");
+        text.setAttribute("fill", "currentColor");
+        text.setAttribute("opacity", "0.55");
+        text.setAttribute("font-size", "14");
+        text.textContent = lang === "zh" ? "至少选择 2 个项目" : "Select at least 2 projects";
+        chart.append(text);
+        if (legend) legend.textContent = "";
+        if (links) links.textContent = "";
+        if (countEl) countEl.textContent = lang === "zh" ? `已选 ${selected.length} 个（最多 5 个）` : `${selected.length} selected (max 5)`;
+        return;
+      }
+
+      const valueOf = (series: [number, number][]) => {
+        if (!series.length) return [];
+        const startValue = series[0][1] || 1;
+        return series.map(([idx, value]) => [
+          idx,
+          mode === "relative" ? ((value - startValue) / startValue) * 100 : value,
+        ] as [number, number]);
+      };
+
+      const drawn = selected.map((name) => ({ name, points: valueOf(byName.get(name)!.p) }));
+      const allValues = drawn.flatMap((d) => d.points.map((p) => p[1]));
+      if (!allValues.length) return;
+      const rawMin = Math.min(...allValues);
+      const rawMax = Math.max(...allValues);
+      const span = Math.max(1e-6, rawMax - rawMin);
+      const min = rawMin - span * 0.12;
+      const max = rawMax + span * 0.12;
+
+      const x = (i: number) => padL + (dates.length <= 1 ? 0 : (i * (W - padL - padR)) / (dates.length - 1));
+      const y = (v: number) => padT + (1 - (v - min) / (max - min)) * (H - padT - padB);
+
+      const NS = "http://www.w3.org/2000/svg";
+      const mk = (tag: string, attrs: Record<string, string>) => {
+        const el = document.createElementNS(NS, tag);
+        for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+        return el;
+      };
+
+      for (const f of [0, 0.25, 0.5, 0.75, 1]) {
+        const value = max - (max - min) * f;
+        const gy = padT + f * (H - padT - padB);
+        chart.append(mk("line", { x1: String(padL), y1: String(gy), x2: String(W - padR), y2: String(gy), stroke: "#8884", "stroke-width": "1" }));
+        const label = mk("text", { x: String(padL - 8), y: String(gy + 4), "text-anchor": "end", "font-size": "10.5", fill: "currentColor", opacity: "0.6" });
+        label.textContent = mode === "relative" ? `${value.toFixed(1)}%` : Math.round(value).toLocaleString("en-US");
+        chart.append(label);
+      }
+
+      drawn.forEach((entry, i) => {
+        const color = PALETTE[i % PALETTE.length];
+        const path = entry.points.map(([idx, value]) => `${x(idx).toFixed(1)},${y(value).toFixed(1)}`).join(" ");
+        chart.append(mk("polyline", { points: path, fill: "none", stroke: color, "stroke-width": "2.4", "stroke-linecap": "round", "stroke-linejoin": "round" }));
+        for (const [idx, value] of entry.points) {
+          const dot = mk("circle", { cx: x(idx).toFixed(1), cy: y(value).toFixed(1), r: "3", fill: color });
+          const title = document.createElementNS(NS, "title");
+          title.textContent = `${entry.name} · ${dates[idx]}: ${mode === "relative" ? `${value.toFixed(2)}%` : Math.round(value).toLocaleString("en-US")}`;
+          dot.append(title);
+          chart.append(dot);
+        }
+      });
+
+      if (dates.length) {
+        for (const [idx, anchor] of [[0, "start"], [dates.length - 1, "end"]] as [number, string][]) {
+          const label = mk("text", { x: String(idx === 0 ? padL : W - padR), y: String(H - 8), "text-anchor": anchor, "font-size": "10.5", fill: "currentColor", opacity: "0.6" });
+          label.textContent = dates[idx];
+          chart.append(label);
+        }
+      }
+
+      if (legend) {
+        legend.textContent = "";
+        drawn.forEach((entry, i) => {
+          const item = document.createElement("span");
+          item.className = "legend-item";
+          const swatch = document.createElement("i");
+          swatch.style.background = PALETTE[i % PALETTE.length];
+          const name = document.createElement("span");
+          name.textContent = entry.name;
+          item.append(swatch, name);
+          legend.append(item);
+        });
+      }
+
+      if (links) {
+        links.textContent = "";
+        for (const name of selected) {
+          const project = byName.get(name)!;
+          const a = document.createElement("a");
+          const prefix = lang === "en" ? "/en" : "";
+          a.href = `${base}${prefix}/project/${project.d}/${project.s}/`;
+          a.textContent = `${name} →`;
+          links.append(a);
+        }
+      }
+
+      if (countEl) countEl.textContent = lang === "zh" ? `已选 ${selected.length} 个（最多 5 个）` : `${selected.length} selected (max 5)`;
+    }
+
+    function sync() {
+      for (const box of boxes) box.checked = selected.includes(box.value);
+      draw();
+    }
+
+    for (const box of boxes) {
+      box.addEventListener("change", () => {
+        const i = selected.indexOf(box.value);
+        if (i >= 0) selected.splice(i, 1);
+        else if (selected.length < 5) selected.push(box.value);
+        else box.checked = false;
+        writeHash();
+        sync();
+      });
+    }
+
+    for (const chip of Array.from(root.querySelectorAll<HTMLButtonElement>("[data-mode]"))) {
+      chip.addEventListener("click", () => {
+        root.querySelectorAll("[data-mode]").forEach((c) => c.classList.remove("active"));
+        chip.classList.add("active");
+        mode = chip.dataset.mode === "relative" ? "relative" : "absolute";
+        draw();
+      });
+    }
+
+    root.querySelector("[data-clear]")?.addEventListener("click", () => {
+      selected.length = 0;
+      writeHash();
+      sync();
+    });
+
+    window.addEventListener("hashchange", () => {
+      selected.length = 0;
+      selected.push(...readHash());
+      sync();
+    });
+
+    selected.push(...readHash());
+    sync();
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-compare]").forEach(init);
+</script>
+
+<style>
+  .compare { margin: 24px 0 50px; }
+  .hint { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
+  .compare-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  .mode-switch { display: inline-flex; gap: 4px; }
+  .fchip {
+    font-size: 12.5px; padding: 4px 13px; border-radius: 999px;
+    border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer;
+  }
+  .fchip.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+  .sel-count { font-size: 12.5px; color: var(--muted); }
+  .clear-btn { font-size: 12.5px; border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 999px; padding: 3px 12px; cursor: pointer; }
+  .clear-btn:hover { border-color: var(--warn); color: var(--warn); }
+  .compare-body { display: grid; grid-template-columns: 300px 1fr; gap: 18px; align-items: start; }
+  .pick-list { max-height: 420px; overflow-y: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); padding: 8px; display: grid; gap: 2px; }
+  .pick { display: grid; grid-template-columns: 18px 1fr; gap: 8px; align-items: center; padding: 6px 8px; border-radius: 8px; cursor: pointer; font-size: 12.5px; }
+  .pick:hover { background: var(--card-2); }
+  .pick-name { font-weight: 600; word-break: break-all; }
+  .pick-meta { grid-column: 2; font-size: 11px; color: var(--muted); }
+  .chart-holder { border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); padding: 16px; min-width: 0; }
+  .chart-scroll { overflow-x: auto; }
+  [data-chart] { width: 100%; height: auto; min-width: 420px; color: var(--ink); }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; margin: 10px 0 0; font-size: 12px; }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+  .legend-item i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  .chart-links { display: flex; gap: 12px; flex-wrap: wrap; margin: 10px 0 0; font-size: 12px; }
+  .chart-links a { color: var(--accent); }
+  @media (max-width: 860px) {
+    .compare-body { grid-template-columns: 1fr; }
+    .pick-list { max-height: 240px; }
+  }
+</style>

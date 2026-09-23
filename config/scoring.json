@@ -1,0 +1,262 @@
+{
+  "$comment": [
+    "ai-agent-top10 评分与流水线配置（单一事实来源）。",
+    "数据抓取流水线（scripts/）与站点构建期聚合（src/lib/）共用本文件，",
+    "调整权重 / 阈值 / 关键词无需改动任何代码。"
+  ],
+
+  "version": 2,
+
+  "window": {
+    "daily": 1,
+    "weekly": 7,
+    "monthly": 30,
+    "snapshotMaxAgeDays": 3
+  },
+
+  "pool": {
+    "maxCandidates": 45,
+    "topN": 10
+  },
+
+  "candidateQueries": [
+    { "topic": "ai-agents", "minStars": 300 },
+    { "topic": "ai-agent", "minStars": 300 },
+    { "topic": "agent-framework", "minStars": 200 },
+    { "keywords": "ai agent", "minStars": 800 }
+  ],
+  "candidateFilters": {
+    "pushedWithinDays": 75,
+    "excludeArchived": true,
+    "excludeForks": true
+  },
+
+  "licenses": {
+    "permissive": ["MIT", "Apache-2.0", "BSD-3-Clause", "BSD-2-Clause", "ISC", "MPL-2.0", "0BSD", "Unlicense"]
+  },
+
+  "growth": {
+    "$comment": [
+      "增速计算策略：优先用历史快照序列直接算真实 7 天增量（零 API 成本），",
+      "快照缺失时才回落到 stargazers / events 接口。",
+      "minCoverage 是事件流覆盖率下限：低于该值说明观测窗口远短于目标窗口，",
+      "此时拒绝外推并降级（此前下限写死 0.05，会把稀疏事件放大 20 倍）。"
+    ],
+    "baselineTargetDays": 7,
+    "baselineToleranceDays": 2,
+    "largeRepoStarThreshold": 39500,
+    "stargazerPageBudget": 4,
+    "eventPageBudget": 3,
+    "minCoverage": 0.3,
+    "maxExtrapolationFactor": 3,
+    "maxWeeklyGainRatio": 0.08
+  },
+
+  "metrics": {
+    "$comment": "activityPages 决定活跃度计数上限（每页 100 条）。只翻 1 页会让活跃仓库全部顶到 100、该维度失去区分度，因此默认 2 页（上限 200）。",
+    "activityPages": 2,
+    "activityWindowDays": 30,
+    "contributorPageSize": 100,
+    "releasePageSize": 30
+  },
+
+  "api": {
+    "$comment": [
+      "requestTimeoutMs 必须显式设置：Node 原生 fetch 默认永不超时，",
+      "经本地/CI 代理时一旦连接停滞，整个流水线会静默挂死——必须显式设置。"
+    ],
+    "maxCallsPerRun": 1400,
+    "maxRetries": 3,
+    "baseBackoffMs": 800,
+    "minRemainingBeforeWait": 200,
+    "requestTimeoutMs": 15000,
+    "maxTotalBackoffMs": 60000,
+    "repoTimeoutMs": 90000,
+    "repoTimeoutMs_comment": "单个候选的墙钟上限：任一环节永久挂住时跳过该仓库，而不是拖死整轮抓取；可用 REPO_TIMEOUT_MS 覆盖。"
+  },
+
+  "keywords": {
+    "innovation": "mcp|rl|multi-agent|autonomous|reasoning|memory|orchestrat|planner|workflow|rag",
+    "examples": "example|demo|template|starter|boilerplate|playground",
+    "docsHomepage": "docs|documentation|wiki|guide"
+  },
+
+  "categories": [
+    {
+      "key": "framework",
+      "zh": "框架 / SDK",
+      "en": "Framework / SDK",
+      "pattern": "framework|sdk|library|lib\\b|core|engine|runtime|orchestrat|agent-kit|toolkit|building|develop"
+    },
+    {
+      "key": "tool",
+      "zh": "工具 / 平台",
+      "en": "Tool / Platform",
+      "pattern": "cli|tool|plugin|extension|platform|dashboard|browser|scrap|crawl|proxy|gateway|monitor|observab|mcp-server|server"
+    },
+    {
+      "key": "app",
+      "zh": "应用 / 产品",
+      "en": "Application / Product",
+      "pattern": "app\\b|assistant|copilot|chatbot|agent-app|automation|productivity|workflow-app|desktop|web-app"
+    },
+    {
+      "key": "data",
+      "zh": "数据 / 评测",
+      "en": "Data / Benchmark",
+      "pattern": "benchmark|eval|dataset|corpus|awesome|list|collection|leaderboard|survey|paper"
+    }
+  ],
+
+  "dimensions": [
+    {
+      "key": "heat",
+      "weight": 0.16,
+      "shortZh": "热度",
+      "shortEn": "Heat",
+      "zh": "热度趋势",
+      "en": "Momentum",
+      "descZh": "近 7 天与当日的 star 增速在候选池中的相对分位。",
+      "descEn": "Relative percentile of 7-day and daily star growth across the candidate pool.",
+      "params": { "dailyGainWeight": 60, "weeklyGainWeight": 40, "base": 10 }
+    },
+    {
+      "key": "community",
+      "weight": 0.12,
+      "shortZh": "社区",
+      "shortEn": "Comm",
+      "zh": "社区活跃",
+      "en": "Community",
+      "descZh": "贡献者规模、最近提交时间、近 90 天发版数、开放 issue 量级与仓库年龄。",
+      "descEn": "Contributor base, most recent push, releases in 90 days, open-issue volume and repo age.",
+      "params": {
+        "contributors": 30,
+        "pushRecency": 20,
+        "pushRecencyDays": 14,
+        "releases": 15,
+        "releasesMissFactor": 0.3,
+        "openIssues": 15,
+        "issuesScale": 0.8,
+        "age": 20
+      }
+    },
+    {
+      "key": "innovation",
+      "weight": 0.15,
+      "shortZh": "创新",
+      "shortEn": "Innov",
+      "zh": "技术创新",
+      "en": "Innovation",
+      "descZh": "增速分位、仓库新颖度、贡献者规模，以及是否命中前沿主题关键词（MCP / 多智能体 / 推理 / 记忆等）。",
+      "descEn": "Growth percentile, repo freshness, contributor scale, and presence of frontier topic keywords (MCP, multi-agent, reasoning, memory...).",
+      "params": {
+        "weeklyGainWeight": 30,
+        "freshness": 25,
+        "freshnessDays": 730,
+        "contributors": 20,
+        "topicWeight": 25,
+        "topicMissFactor": 0.4
+      }
+    },
+    {
+      "key": "practical",
+      "weight": 0.15,
+      "shortZh": "实用",
+      "shortEn": "Pract",
+      "zh": "实用完成度",
+      "en": "Practicality",
+      "descZh": "宽松许可证、文档完备度、话题标签完整度、示例与官网可用性。",
+      "descEn": "Permissive license, documentation completeness, topic coverage, and availability of examples and a homepage.",
+      "params": {
+        "license": 35,
+        "licenseMissFactor": 0.4,
+        "docs": 25,
+        "docsMissFactor": 0.3,
+        "topics": 20,
+        "topicsTarget": 5,
+        "examples": 20,
+        "examplesMissFactor": 0.4
+      }
+    },
+    {
+      "key": "ecosystem",
+      "weight": 0.12,
+      "shortZh": "生态",
+      "shortEn": "Eco",
+      "zh": "生态潜力",
+      "en": "Ecosystem",
+      "descZh": "star 与 fork 绝对量级分位、是否组织账号维护、是否存在分发渠道信号。",
+      "descEn": "Percentile of absolute stars and forks, organization ownership, and distribution signals.",
+      "params": {
+        "stars": 35,
+        "forks": 25,
+        "org": 20,
+        "orgMissFactor": 0.4,
+        "downloads": 20,
+        "downloadsMissFactor": 0.4
+      }
+    },
+    {
+      "key": "health",
+      "weight": 0.08,
+      "shortZh": "健康",
+      "shortEn": "Health",
+      "zh": "健康可持续",
+      "en": "Health",
+      "descZh": "许可证存在性、30 天内是否推送、开放 issue 与 star 的比例、仓库存活时长。",
+      "descEn": "License presence, activity within 30 days, open-issue-to-star ratio, and longevity.",
+      "params": {
+        "license": 35,
+        "licenseMissFactor": 0.2,
+        "pushRecency": 25,
+        "pushRecencyDays": 30,
+        "issueRatio": 20,
+        "issueRatioTarget": 0.02,
+        "age": 20
+      }
+    },
+    {
+      "key": "forksGrowth",
+      "weight": 0.1,
+      "shortZh": "分叉",
+      "shortEn": "Fork",
+      "zh": "分叉增速",
+      "en": "Fork Growth",
+      "descZh": "窗口内 fork 增量及其相对增速——fork 通常代表真实动手复用的开发者。",
+      "descEn": "Fork gain within the window and its relative rate — forks usually mean developers actually building on it.",
+      "params": { "gainPercentile": 55, "relativeRate": 25, "relativeRateTarget": 0.01, "activityPercentile": 20 }
+    },
+    {
+      "key": "activity",
+      "weight": 0.12,
+      "shortZh": "迭代",
+      "shortEn": "Activ",
+      "zh": "迭代活跃度",
+      "en": "Iteration Activity",
+      "descZh": "近 30 天新建 PR 与 issue 的数量分位，反映需求与迭代的真实吞吐。",
+      "descEn": "Percentile of PRs and issues opened in the last 30 days, reflecting real iteration throughput.",
+      "params": { "prPercentile": 55, "issuePercentile": 45 }
+    }
+  ],
+
+  "sanitize": {
+    "maxDescriptionLength": 400,
+    "maxTopicCount": 20,
+    "maxTopicLength": 50,
+    "maxWhyLength": 600,
+    "maxQuickstartLength": 1200,
+    "maxListItemLength": 200,
+    "maxListItems": 6,
+    "allowedUrlSchemes": ["http:", "https:"]
+  },
+
+  "interpretation": {
+    "provider": "none",
+    "model": "gpt-4o-mini",
+    "baseUrl": "https://api.openai.com/v1",
+    "apiKeyEnv": "LLM_API_KEY",
+    "timeoutMs": 45000,
+    "maxEntries": 10,
+    "temperature": 0.4
+  }
+}

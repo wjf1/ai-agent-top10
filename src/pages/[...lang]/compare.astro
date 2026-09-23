@@ -1,0 +1,57 @@
+---
+/** 多仓库 star 对比工具（W4-1） */
+import Base from "../../layouts/Base.astro";
+import ComparePanel from "../../components/ComparePanel.astro";
+import { recentProjects } from "../../lib/aggregate";
+import { strings } from "../../lib/data.ts";
+import { snapshotDates, starSeries } from "../../lib/periods";
+import { comparePath } from "../../lib/routes.ts";
+
+const WINDOW = 60;
+
+export function getStaticPaths() {
+  return [{ params: { lang: undefined } }, { params: { lang: "en" } }];
+}
+
+const lang = (Astro.params.lang === "en" ? "en" : "zh") as "zh" | "en";
+const t = strings(lang);
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const projects = await recentProjects({ window: WINDOW });
+const dates = snapshotDates();
+const dateIndex = new Map(dates.map((d, i) => [d, i]));
+
+const series = {
+  dates,
+  projects: projects.map((p) => {
+    const points = starSeries(p.entry.full_name);
+    return {
+      n: p.entry.full_name,
+      s: p.entry.slug,
+      d: p.lastDate,
+      p: points
+        .filter((pt) => typeof pt.stars === "number" && dateIndex.has(pt.date))
+        .map((pt) => [dateIndex.get(pt.date)!, pt.stars as number] as [number, number]),
+      f: points
+        .filter((pt) => typeof pt.forks === "number" && dateIndex.has(pt.date))
+        .map((pt) => [dateIndex.get(pt.date)!, pt.forks as number] as [number, number]),
+    };
+  }),
+};
+---
+
+<Base
+  {lang}
+  langHref={comparePath(B, lang === "en" ? "zh" : "en")}
+  title={t.comparePage}
+  desc={t.compareTitle}
+  active="compare"
+>
+  <section class="hero" style="padding-bottom:0">
+    <h1>{t.compareTitle}</h1>
+    <p class="sub">{t.compare}
+      · {lang === "zh" ? `最近 ${WINDOW} 期共 ${projects.length} 个项目可选` : `${projects.length} projects from the last ${WINDOW} issues`}
+    </p>
+  </section>
+  <ComparePanel {lang} {series} {projects} />
+</Base>

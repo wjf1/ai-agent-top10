@@ -1,0 +1,35 @@
+---
+/** 聚合列表页外壳（子分类榜 / 话题页共用） */
+import Base from "../layouts/Base.astro";
+import ProjectTable from "./ProjectTable.astro";
+import { strings, type Lang } from "../lib/data.ts";
+import type { AggregatedProject } from "../lib/aggregate";
+
+interface Props {
+  lang?: Lang;
+  title: string;
+  subtitle: string;
+  projects: AggregatedProject[];
+  windowDays: number;
+  langHref: string;
+  active?: "search" | "archive";
+}
+
+const { lang = "zh", title, subtitle, projects, windowDays, langHref, active = "search" } = Astro.props;
+const t = strings(lang);
+const totalGain = projects.reduce((s, p) => s + p.gain, 0);
+const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
+---
+
+<Base {lang} {langHref} {title} desc={subtitle} {active}>
+  <section class="hero" style="padding-bottom:0">
+    <h1>{title}</h1>
+    <p class="sub">{subtitle}</p>
+    <div class="stats">
+      <div class="stat"><b>{projects.length}</b><span>{t.entries}</span></div>
+      <div class="stat"><b>+{fmt(totalGain)}</b><span>{t.totalGain}</span></div>
+      <div class="stat"><b>{windowDays}</b><span>{lang === "zh" ? "天窗口" : "day window"}</span></div>
+    </div>
+  </section>
+  <ProjectTable {projects} {lang} {windowDays} />
+</Base>

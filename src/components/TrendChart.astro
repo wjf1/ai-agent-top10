@@ -1,0 +1,119 @@
+---
+/**
+ * star / fork 历史趋势折线图（P1-F2）。
+ * 数据来自每日快照序列，纯 SVG，无图表库依赖（bundle 体积零增长）。
+ */
+interface Point {
+  date: string;
+  stars?: number | null;
+  forks?: number | null;
+}
+
+interface Props {
+  points: Point[];
+  metric?: "stars" | "forks";
+  height?: number;
+  lang?: "zh" | "en";
+  emptyText: string;
+}
+
+const { points, metric = "stars", height = 190, lang = "zh", emptyText } = Astro.props;
+
+const series = points
+  .map((p) => ({ date: p.date, value: metric === "stars" ? p.stars : p.forks }))
+  .filter((p): p is { date: string; value: number } => typeof p.value === "number" && Number.isFinite(p.value));
+
+const W = 720;
+const H = height;
+const padL = 58;
+const padR = 16;
+const padT = 18;
+const padB = 30;
+
+const fmt = (n: number) => n.toLocaleString("en-US");
+
+let body: string | null = null;
+let first = 0;
+let last = 0;
+let min = 0;
+let max = 0;
+let delta = 0;
+let deltaPct = 0;
+let ticks: { y: number; label: string }[] = [];
+let dots: { x: number; y: number; date: string; value: number }[] = [];
+
+if (series.length >= 2) {
+  const values = series.map((p) => p.value);
+  const rawMin = Math.min(...values);
+  const rawMax = Math.max(...values);
+  const span = Math.max(1, rawMax - rawMin);
+  min = Math.floor(rawMin - span * 0.15);
+  max = Math.ceil(rawMax + span * 0.15);
+  first = values[0];
+  last = values[values.length - 1];
+  delta = last - first;
+  deltaPct = first > 0 ? (delta / first) * 100 : 0;
+
+  const x = (i: number) =>
+    padL + (series.length === 1 ? 0 : (i * (W - padL - padR)) / (series.length - 1));
+  const y = (v: number) => padT + (1 - (v - min) / Math.max(1, max - min)) * (H - padT - padB);
+
+  dots = series.map((p, i) => ({ x: x(i), y: y(p.value), date: p.date, value: p.value }));
+  body = dots.map((d) => `${d.x.toFixed(1)},${d.y.toFixed(1)}`).join(" ");
+  ticks = [0, 0.5, 1].map((f) => {
+    const value = min + (max - min) * (1 - f);
+    return { y: padT + f * (H - padT - padB), label: fmt(Math.round(value)) };
+  });
+}
+---
+
+<div class="trend panel">
+  {body === null ? (
+    <p class="trend-empty">{emptyText}</p>
+  ) : (
+    <>
+      <div class="trend-head">
+        <span class="trend-delta" class:list={[delta >= 0 ? "up" : "down"]}>
+          {delta >= 0 ? "+" : ""}{fmt(delta)} {metric === "stars" ? "stars" : "forks"}
+          <small>({deltaPct >= 0 ? "+" : ""}{deltaPct.toFixed(1)}%)</small>
+        </span>
+        <span class="trend-range">{series[0].date} → {series[series.length - 1].date} · {series.length} {lang === "zh" ? "个快照点" : "points"}</span>
+      </div>
+      <svg viewBox={`0 0 ${W} ${H}`} class="trend-svg" role="img" aria-label={`${metric} trend`}>
+        {ticks.map((t) => (
+          <>
+            <line x1={padL} y1={t.y.toFixed(1)} x2={W - padR} y2={t.y.toFixed(1)} stroke="var(--line)" stroke-width="1" />
+            <text x={padL - 8} y={(t.y + 4).toFixed(1)} text-anchor="end" font-size="10.5" fill="var(--muted)">{t.label}</text>
+          </>
+        ))}
+        <polygon
+          points={`${padL},${H - padB} ${body} ${W - padR},${H - padB}`}
+          fill="var(--trend-fill)"
+          stroke="none"
+        />
+        <polyline points={body} fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" />
+        {dots.map((d) => (
+          <circle cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r="3.2" fill="var(--card)" stroke="var(--accent)" stroke-width="2">
+            <title>{`${d.date}: ${fmt(d.value)}`}</title>
+          </circle>
+        ))}
+        <text x={padL} y={H - 8} font-size="10.5" fill="var(--muted)">{series[0].date}</text>
+        <text x={W - padR} y={H - 8} text-anchor="end" font-size="10.5" fill="var(--muted)">
+          {series[series.length - 1].date}
+        </text>
+      </svg>
+    </>
+  )}
+</div>
+
+<style>
+  .trend { overflow: hidden; }
+  .trend-empty { margin: 0; color: var(--muted); font-size: 13.5px; }
+  .trend-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+  .trend-delta { font-size: 15px; font-weight: 700; }
+  .trend-delta.up { color: var(--good); }
+  .trend-delta.down { color: var(--warn); }
+  .trend-delta small { font-weight: 500; color: var(--muted); margin-left: 4px; }
+  .trend-range { font-size: 12px; color: var(--muted); }
+  .trend-svg { width: 100%; height: auto; display: block; }
+</style>

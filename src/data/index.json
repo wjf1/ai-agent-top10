@@ -1,4 +1,6 @@
 {
+  "generatedAt": "2026-09-23T16:16:47.973Z",
+  "latest": "2026-09-23",
   "dates": [
     "2026-09-23",
     "2026-09-22",
@@ -11,5 +13,291 @@
     "2026-09-15",
     "2026-09-14",
     "2026-09-13"
+  ],
+  "days": [
+    {
+      "date": "2026-09-23",
+      "count": 10,
+      "totalGain": 29418,
+      "top": {
+        "full_name": "deepseek-ai/deepseek-harness",
+        "slug": "deepseek-ai-deepseek-harness",
+        "weeklyGain": 7045
+      },
+      "categories": [
+        "tool",
+        "framework",
+        "other",
+        "data"
+      ],
+      "slugs": [
+        "deepseek-ai-deepseek-harness",
+        "affaan-m-ecc",
+        "dietrichgebert-ponytail",
+        "earendil-works-pi",
+        "firecrawl-firecrawl",
+        "graphify-labs-graphify",
+        "nousresearch-hermes-agent",
+        "msitarzewski-agency-agents",
+        "browser-use-browser-use",
+        "shubhamsaboo-awesome-llm-apps"
+      ]
+    },
+    {
+      "date": "2026-09-22",
+      "count": 10,
+      "totalGain": 5460,
+      "top": {
+        "full_name": "deepseek-ai/deepseek-harness",
+        "slug": "deepseek-ai-deepseek-harness",
+        "weeklyGain": 1024
+      },
+      "categories": [
+        "other"
+      ],
+      "slugs": [
+        "deepseek-ai-deepseek-harness",
+        "stablyai-orca",
+        "affaan-m-ecc",
+        "dietrichgebert-ponytail",
+        "panniantong-agent-reach",
+        "earendil-works-pi",
+        "firecrawl-firecrawl",
+        "diegosouzapw-omniroute",
+        "addyosmani-agent-skills",
+        "graphify-labs-graphify"
+      ]
+    },
+    {
+      "date": "2026-09-21",
+      "count": 10,
+      "totalGain": 6678,
+      "top": {
+        "full_name": "deepseek-ai/deepseek-harness",
+        "slug": "deepseek-ai-deepseek-harness",
+        "weeklyGain": 1205
+      },
+      "categories": [
+        "other"
+      ],
+      "slugs": [
+        "deepseek-ai-deepseek-harness",
+        "affaan-m-ecc",
+        "stablyai-orca",
+        "dietrichgebert-ponytail",
+        "addyosmani-agent-skills",
+        "panniantong-agent-reach",
+        "earendil-works-pi",
+        "diegosouzapw-omniroute",
+        "firecrawl-firecrawl",
+        "nousresearch-hermes-agent"
+      ]
+    },
+    {
+      "date": "2026-09-20",
+      "count": 10,
+      "totalGain": 5812,
+      "top": {
+        "full_name": "deepseek-ai/deepseek-harness",
+        "slug": "deepseek-ai-deepseek-harness",
+        "weeklyGain": 1158
+      },
+      "categories": [
+        "other"
+      ],
+      "slugs": [
+        "deepseek-ai-deepseek-harness",
+        "stablyai-orca",
+        "affaan-m-ecc",
+        "addyosmani-agent-skills",
+        "dietrichgebert-ponytail",
+        "earendil-works-pi",
+        "panniantong-agent-reach",
+        "diegosouzapw-omniroute",
+        "firecrawl-firecrawl",
+        "nousresearch-hermes-agent"
+      ]
+    },
+    {
+      "date": "2026-09-19",
+      "count": 10,
+      "totalGain": 5215,
+      "top": {
+        "full_name": "affaan-m/ECC",
+        "slug": "affaan-m-ecc",
+        "weeklyGain": 928
+      },
+      "categories": [
+        "other"
+      ],
+      "slugs": [
+        "affaan-m-ecc",
+        "deepseek-ai-deepseek-harness",
+        "stablyai-orca",
+        "dietrichgebert-ponytail",
+        "addyosmani-agent-skills",
+        "diegosouzapw-omniroute",
+        "earendil-works-pi",
+        "graphify-labs-graphify",
+        "nousresearch-hermes-agent",
+        "firecrawl-firecrawl"
+      ]
+    },
+    {
+      "date": "2026-09-18",
+      "count": 10,
+      "totalGain": 5865,
+      "top": {
+        "full_name": "deepseek-ai/deepseek-harness",
+        "slug": "deepseek-ai-deepseek-harness",
+        "weeklyGain": 1269
+      },
+      "categories": [
+        "other"
+      ],
+      "slugs": [
+        "deepseek-ai-deepseek-harness",
+        "stablyai-orca",
+        "dietrichgebert-ponytail",
+        "affaan-m-ecc",
+        "diegosouzapw-omniroute",
+        "graphify-labs-graphify",
+        "addyosmani-agent-skills",
+        "nousresearch-hermes-agent",
+        "firecrawl-firecrawl",
+        "earendil-works-pi"
+      ]
+    },
+    {
+      "date": "2026-09-17",
+      "count": 10,
+      "totalGain": 7645,
+      "top": {
+        "full_name": "deepseek-ai/deepseek-harness",
+        "slug": "deepseek-ai-deepseek-harness",
+        "weeklyGain": 1256
+      },
+      "categories": [
+        "other"
+      ],
+      "slugs": [
+        "deepseek-ai-deepseek-harness",
+        "affaan-m-ecc",
+        "dietrichgebert-ponytail",
+        "coreyhaines31-marketingskills",
+        "stablyai-orca",
+        "addyosmani-agent-skills",
+        "graphify-labs-graphify",
+        "panniantong-agent-reach",
+        "diegosouzapw-omniroute",
+        "earendil-works-pi"
+      ]
+    },
+    {
+      "date": "2026-09-16",
+      "count": 10,
+      "totalGain": 7954,
+      "top": {
+        "full_name": "deepseek-ai/deepseek-harness",
+        "slug": "deepseek-ai-deepseek-harness",
+        "weeklyGain": 1315
+      },
+      "categories": [
+        "other"
+      ],
+      "slugs": [
+        "deepseek-ai-deepseek-harness",
+        "graphify-labs-graphify",
+        "affaan-m-ecc",
+        "dietrichgebert-ponytail",
+        "stablyai-orca",
+        "earendil-works-pi",
+        "addyosmani-agent-skills",
+        "firecrawl-firecrawl",
+        "panniantong-agent-reach",
+        "diegosouzapw-omniroute"
+      ]
+    },
+    {
+      "date": "2026-09-15",
+      "count": 10,
+      "totalGain": 7411,
+      "top": {
+        "full_name": "deepseek-ai/deepseek-harness",
+        "slug": "deepseek-ai-deepseek-harness",
+        "weeklyGain": 1425
+      },
+      "categories": [
+        "other"
+      ],
+      "slugs": [
+        "deepseek-ai-deepseek-harness",
+        "panniantong-agent-reach",
+        "dietrichgebert-ponytail",
+        "stablyai-orca",
+        "asgeirtj-system_prompts_leaks",
+        "affaan-m-ecc",
+        "diegosouzapw-omniroute",
+        "earendil-works-pi",
+        "firecrawl-firecrawl",
+        "nousresearch-hermes-agent"
+      ]
+    },
+    {
+      "date": "2026-09-14",
+      "count": 10,
+      "totalGain": 7324,
+      "top": {
+        "full_name": "deepseek-ai/deepseek-harness",
+        "slug": "deepseek-ai-deepseek-harness",
+        "weeklyGain": 1345
+      },
+      "categories": [
+        "other"
+      ],
+      "slugs": [
+        "deepseek-ai-deepseek-harness",
+        "dietrichgebert-ponytail",
+        "calesthio-openmontage",
+        "stablyai-orca",
+        "asgeirtj-system_prompts_leaks",
+        "affaan-m-ecc",
+        "panniantong-agent-reach",
+        "firecrawl-firecrawl",
+        "diegosouzapw-omniroute",
+        "earendil-works-pi"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "count": 10,
+      "totalGain": 35042,
+      "top": {
+        "full_name": "DietrichGebert/ponytail",
+        "slug": "dietrichgebert-ponytail",
+        "weeklyGain": 5250
+      },
+      "categories": [
+        "other"
+      ],
+      "slugs": [
+        "dietrichgebert-ponytail",
+        "panniantong-agent-reach",
+        "asgeirtj-system_prompts_leaks",
+        "deepseek-ai-deepseek-harness",
+        "affaan-m-ecc",
+        "shubhamsaboo-awesome-llm-apps",
+        "diegosouzapw-omniroute",
+        "firecrawl-firecrawl",
+        "calesthio-openmontage",
+        "msitarzewski-agency-agents"
+      ]
+    }
+  ],
+  "categories": [
+    "data",
+    "framework",
+    "other",
+    "tool"
   ]
 }

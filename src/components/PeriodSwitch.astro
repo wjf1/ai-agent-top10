@@ -1,0 +1,55 @@
+---
+/** 日 / 周 / 月周期切换器 + 期间导航（P1-F1） */
+import { strings, type Lang } from "../lib/data.ts";
+import { dayPath, homePath, monthPath, weekPath } from "../lib/routes.ts";
+
+interface Props {
+  lang?: Lang;
+  current: "daily" | "weekly" | "monthly";
+  date: string;
+  prevHref?: string | null;
+  nextHref?: string | null;
+}
+
+const { lang = "zh", current, date, prevHref = null, nextHref = null } = Astro.props;
+const t = strings(lang);
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const tabs = [
+  { key: "daily", label: t.periodDaily, href: homePath(B, lang) },
+  { key: "weekly", label: t.periodWeekly, href: weekPath(B, lang) },
+  { key: "monthly", label: t.periodMonthly, href: monthPath(B, lang) },
+];
+---
+
+<div class="period-bar">
+  <div class="segmented" role="tablist" aria-label={t.periodSwitcher}>
+    {tabs.map((tab) => (
+      <a
+        role="tab"
+        aria-selected={tab.key === current}
+        class:list={["seg", tab.key === current && "active"]}
+        href={tab.key === current && current === "daily" && date ? dayPath(B, lang, date) : tab.href}
+      >
+        {tab.label}
+      </a>
+    ))}
+  </div>
+  {(prevHref || nextHref) && (
+    <div class="period-nav">
+      {prevHref && <a href={prevHref}>← {t.prevPeriod}</a>}
+      {nextHref && <a href={nextHref}>{t.nextPeriod} →</a>}
+    </div>
+  )}
+</div>
+
+<style>
+  .period-bar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 22px 0 0; }
+  .segmented { display: inline-flex; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 3px; gap: 2px; }
+  .seg { font-size: 13px; padding: 6px 16px; border-radius: 9px; color: var(--muted); }
+  .seg:hover { color: var(--accent); }
+  .seg.active { background: var(--accent); color: #fff; font-weight: 600; }
+  .period-nav { display: flex; gap: 14px; font-size: 12.5px; }
+  .period-nav a { color: var(--muted); }
+  .period-nav a:hover { color: var(--accent); }
+</style>

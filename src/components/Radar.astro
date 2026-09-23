@@ -1,39 +1,208 @@
 ---
-/** 六边形雷达图（纯 SVG，无运行时依赖） */
+/**
+ * 雷达图（P1-U3）。
+ *
+ * 与旧版的区别：
+ *   - 维度数量由传入的 dims 决定（历史数据 6 维、新数据 8 维共用同一组件）
+ *   - 每个顶点可 hover，显示维度名 + 分值 + 口径说明（原生 <title> 兜底，
+ *     大尺寸图额外挂一层自定义 tooltip，见文末脚本）
+ *   - 大尺寸图直接标注数值，不用再靠肉眼估长度
+ */
+export interface RadarDim {
+  key: string;
+  label: string;
+  /** 小尺寸图用的短名（8 维时全名会互相压住） */
+  short?: string;
+  desc?: string;
+}
+
 interface Props {
   scores: Record<string, number>;
+  dims: RadarDim[];
   size?: number;
-  labels?: [string, string][]; // 6 个维度 [zh, en]
-  lang?: "zh" | "en";
+  showValues?: boolean;
+  interactive?: boolean;
 }
-const { scores, size = 150, lang = "zh" } = Astro.props;
-const labels = Astro.props.labels ?? [
-  ["热度", "Heat"], ["社区", "Comm"], ["创新", "Innov"], ["实用", "Pract"], ["生态", "Eco"], ["健康", "Health"],
-];
-const keys = ["heat", "community", "innovation", "practical", "ecosystem", "health"];
-const vals = keys.map((k) => Math.max(4, scores[k] ?? 0));
-const cx = size / 2, cy = size / 2, R = size / 2 - (lang === "zh" ? 18 : 24);
-const pt = (i: number, r: number) => {
-  const a = (Math.PI * 2 * i) / 6 - Math.PI / 2;
-  return `${(cx + r * Math.cos(a)).toFixed(1)},${(cy + r * Math.sin(a)).toFixed(1)}`;
-};
-const ring = (r: number) => keys.map((_, i) => pt(i, r)).join(" ");
-const shape = vals.map((v, i) => pt(i, (v / 100) * R)).join(" ");
-const labPos = keys.map((_, i) => {
-  const a = (Math.PI * 2 * i) / 6 - Math.PI / 2;
-  return { x: cx + (R + 13) * Math.cos(a), y: cy + (R + 13) * Math.sin(a) + 4 };
+
+const { scores, dims, size = 150, showValues = size >= 200, interactive = size >= 200 } = Astro.props;
+// 小尺寸图用短名（热度 / 社区 / …），大尺寸图用全名
+const useShortLabels = size < 180;
+const labelOf = (d: RadarDim) => (useShortLabels && d.short ? d.short : d.label);
+
+const n = Math.max(3, dims.length);
+const cx = size / 2;
+const cy = size / 2;
+const pad = size >= 200 ? 40 : 22;
+const R = size / 2 - pad;
+
+const values = dims.map((d) => {
+  const raw = Number(scores?.[d.key]);
+  return Number.isFinite(raw) ? Math.max(0, Math.min(100, raw)) : 0;
 });
-const lbl = (i: number) => (lang === "zh" ? labels[i][0] : labels[i][1]);
+
+const point = (i: number, r: number) => {
+  const a = (Math.PI * 2 * i) / n - Math.PI / 2;
+  return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
+};
+const ring = (r: number) =>
+  Array.from({ length: n }, (_, i) => {
+    const p = point(i, r);
+    return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+  }).join(" ");
+
+const shape = values
+  .map((v, i) => {
+    const p = point(i, (v / 100) * R);
+    return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+  })
+  .join(" ");
+
+const vertices = dims.map((d, i) => {
+  const outer = point(i, R);
+  const inner = point(i, (values[i] / 100) * R);
+  const labelPos = point(i, R + (size >= 200 ? 20 : 13));
+  const dx = outer.x - cx;
+  const anchor = Math.abs(dx) < 3 ? "middle" : dx > 0 ? "start" : "end";
+  const dy = labelPos.y - cy;
+  return { dim: d, value: values[i], inner, labelPos, anchor, dy };
+});
+
+const ariaLabel = `${dims.map((d, i) => `${d.label} ${values[i]}`).join(", ")}`;
+const ringFractions = [0.25, 0.5, 0.75, 1];
+const fontMain = size >= 200 ? 12 : 9.5;
 ---
-<svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label="radar">
-  {[0.33, 0.66, 1].map((f) => <polygon points={ring(R * f)} fill="none" stroke="#e6e8ef" stroke-width="1" />)}
-  {keys.map((_, i) => <line x1={cx} y1={cy} x2={pt(i, R).split(",")[0]} y2={pt(i, R).split(",")[1]} stroke="#e6e8ef" stroke-width="1" />)}
-  <polygon points={shape} fill="rgba(79,70,229,.18)" stroke="#4f46e5" stroke-width="2" stroke-linejoin="round" />
-  {vals.map((v, i) => {
-    const [x, y] = pt(i, (v / 100) * R).split(",");
-    return <circle cx={x} cy={y} r="2.6" fill="#4f46e5" />;
+
+<svg
+  class:list={["radar", interactive && "radar-interactive"]}
+  width={size}
+  height={size}
+  viewBox={`0 0 ${size} ${size}`}
+  role="img"
+  aria-label={ariaLabel}
+  data-radar
+>
+  {ringFractions.map((f) => (
+    <polygon points={ring(R * f)} fill="none" stroke="var(--line)" stroke-width="1" />
+  ))}
+  {dims.map((_, i) => {
+    const p = point(i, R);
+    return <line x1={cx} y1={cy} x2={p.x.toFixed(1)} y2={p.y.toFixed(1)} stroke="var(--line)" stroke-width="1" />;
   })}
-  {labPos.map((p, i) => (
-    <text x={p.x} y={p.y} text-anchor="middle" font-size={size > 200 ? 12 : 9.5} fill="#6b7280">{lbl(i)}</text>
+  <polygon
+    points={shape}
+    fill="var(--radar-fill)"
+    stroke="var(--accent)"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+  {vertices.map((v) => (
+    <g class="radar-vertex" data-label={v.dim.label} data-value={v.value} data-desc={v.dim.desc ?? ""}>
+      <circle cx={v.inner.x.toFixed(1)} cy={v.inner.y.toFixed(1)} r={size >= 200 ? 4 : 2.6} fill="var(--accent)" />
+      <circle
+        cx={v.inner.x.toFixed(1)}
+        cy={v.inner.y.toFixed(1)}
+        r={size >= 200 ? 13 : 9}
+        fill="transparent"
+        class="radar-hit"
+      />
+      <text
+        x={v.labelPos.x.toFixed(1)}
+        y={v.labelPos.y.toFixed(1)}
+        text-anchor={v.anchor}
+        font-size={fontMain}
+        fill="var(--muted)"
+        class="radar-label"
+      >
+        {labelOf(v.dim)}{showValues ? ` ${v.value}` : ""}
+      </text>
+    </g>
   ))}
 </svg>
+{interactive && <div class="radar-tip" data-radar-tip hidden />}
+
+<style>
+  .radar { overflow: visible; }
+  .radar-interactive .radar-vertex { cursor: help; }
+  .radar-interactive .radar-vertex:hover .radar-label { fill: var(--accent); font-weight: 700; }
+  /* 多维度小图不画标签时，用命中圆盘本身做 hover 反馈（CSS 覆盖 fill 表现属性） */
+  .radar-interactive .radar-vertex:hover .radar-hit { fill: var(--accent); opacity: 0.18; }
+  .radar-tip {
+    position: fixed;
+    z-index: 50;
+    max-width: 260px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--tip-bg);
+    color: var(--tip-ink);
+    font-size: 12.5px;
+    line-height: 1.5;
+    box-shadow: 0 10px 30px rgba(15, 18, 45, 0.28);
+    pointer-events: none;
+    transform: translate(-50%, -120%);
+  }
+  .radar-tip b { color: #fff; }
+  .radar-tip .v { color: #a5b4fc; font-weight: 700; }
+</style>
+
+<script>
+  // 单一监听器服务页面上所有交互式雷达图；hover 顶点时展示维度口径说明。
+  const tips = new WeakMap<Element, HTMLElement>();
+
+  function tipFor(svg: Element): HTMLElement | null {
+    const cached = tips.get(svg);
+    if (cached) return cached;
+    const next = svg.nextElementSibling;
+    if (!(next instanceof HTMLElement) || !next.hasAttribute("data-radar-tip")) return null;
+    tips.set(svg, next);
+    return next;
+  }
+
+  function bind() {
+    document.querySelectorAll<SVGElement>("svg[data-radar].radar-interactive").forEach((svg) => {
+      if (svg.dataset.bound === "1") return;
+      svg.dataset.bound = "1";
+      const tip = tipFor(svg);
+      if (!tip) return;
+
+      svg.querySelectorAll<SVGGElement>(".radar-vertex").forEach((group) => {
+        const label = group.dataset.label ?? "";
+        const value = group.dataset.value ?? "0";
+        const desc = group.dataset.desc ?? "";
+
+        group.addEventListener("pointerenter", (event) => {
+          tip.innerHTML = "";
+          const title = document.createElement("div");
+          const strong = document.createElement("b");
+          strong.textContent = `${label} `;
+          const span = document.createElement("span");
+          span.className = "v";
+          span.textContent = value;
+          title.append(strong, span);
+          tip.append(title);
+          if (desc) {
+            const p = document.createElement("div");
+            p.textContent = desc;
+            tip.append(p);
+          }
+          tip.hidden = false;
+          move(event as PointerEvent);
+        });
+
+        group.addEventListener("pointermove", (event) => move(event as PointerEvent));
+        group.addEventListener("pointerleave", () => {
+          tip.hidden = true;
+        });
+      });
+
+      function move(event: PointerEvent) {
+        const tip = tipFor(svg);
+        if (!tip || tip.hidden) return;
+        tip.style.left = `${event.clientX}px`;
+        tip.style.top = `${event.clientY - 12}px`;
+      }
+    });
+  }
+
+  bind();
+  document.addEventListener("astro:page-load", bind);
+</script>

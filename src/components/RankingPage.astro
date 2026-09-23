@@ -1,32 +1,186 @@
 ---
-/** 榜单首页（zh / en 复用） */
+/** 榜单主体（日榜 / 周榜 / 月榜、zh / en 共用） */
 import Base from "../layouts/Base.astro";
-import EntryCard from "../components/EntryCard.astro";
-import { L } from "../lib/data.ts";
-import { days } from "../lib/load-days.ts";
+import EntryCard from "./EntryCard.astro";
+import PeriodSwitch from "./PeriodSwitch.astro";
+import { categories } from "../lib/categorize.mjs";
+import { strings, type Lang } from "../lib/data.ts";
+import { categoryPath, dayPath, homePath } from "../lib/routes.ts";
 
-interface Props { lang?: "zh" | "en"; }
-const { lang = "zh" } = Astro.props;
-const t = L[lang];
+interface Props {
+  lang?: Lang;
+  period: "daily" | "weekly" | "monthly";
+  date: string;
+  entries: any[];
+  /** 实际覆盖天数（周/月榜可能小于请求窗口） */
+  coverageDays?: number;
+  requestedDays?: number;
+  baselineDate?: string | null;
+  poolSize?: number;
+  archiveHref: string;
+  prevHref?: string | null;
+  nextHref?: string | null;
+  langHref: string;
+  /** 周期榜不可用时的说明（例如历史快照还凑不满一个窗口） */
+  unavailableReason?: string | null;
+  /** 窗口内指标快照不完整时提示维度被剔除 */
+  partialMetrics?: boolean;
+}
+
+const {
+  lang = "zh",
+  period,
+  date,
+  entries,
+  coverageDays,
+  requestedDays,
+  baselineDate = null,
+  poolSize,
+  archiveHref,
+  prevHref = null,
+  nextHref = null,
+  langHref,
+  unavailableReason = null,
+  partialMetrics = false,
+} = Astro.props;
+
+const t = strings(lang);
 const B = import.meta.env.BASE_URL.replace(/\/$/, "");
-const day = days[0];
-if (!day) throw new Error("no daily data");
-const otherLang = lang === "en" ? `${B}/` : `${B}/en/`;
-const totalGain = day.entries.reduce((s, e) => s + e.weeklyGain, 0);
-const heroTitle = lang === "zh" ? t.todayTop : t.todayTop;
+const fmt = (n: number) => Number(n ?? 0).toLocaleString("en-US");
+const totalGain = entries.reduce((s, e) => s + (e.weeklyGain ?? 0), 0);
+const top = entries[0];
+const cats = categories();
+const catKeys = [...new Set(entries.map((e) => e.category ?? "other"))];
+const visibleCats = cats.filter((c) => catKeys.includes(c.key as string));
+
+const periodLabel = period === "daily" ? t.periodDaily : period === "weekly" ? t.periodWeekly : t.periodMonthly;
+const title = period === "daily" ? t.todayTop : `${t.todayTop} · ${periodLabel}`;
+const windowDays = requestedDays ?? (period === "monthly" ? 30 : period === "weekly" ? 7 : 1);
+const rankDesc = period === "daily" ? t.rankBy : t.rankByWindow(coverageDays ?? windowDays);
+const showCoverage = !!coverageDays && !!requestedDays && coverageDays < requestedDays;
+
+const activeNav = period === "daily" ? "home" : period === "weekly" ? "week" : "month";
 ---
-<Base lang={lang} langHref={otherLang} title={day.date} desc={t.heroSub}>
+
+<Base lang={lang} langHref={langHref} title={`${date} ${periodLabel}`} desc={t.heroSub} active={activeNav} date={period === "daily" ? date : null}>
   <section class="hero">
-    <span class="date-chip">📅 {day.date} · {t.rankBy}</span>
-    <h1>{t.todayTop}</h1>
+    <span class="date-chip">📅 {date} · {periodLabel} · {rankDesc}</span>
+    <h1>{title}</h1>
     <p class="sub">{t.heroSub}</p>
     <div class="stats">
-      <div class="stat"><b>{day.entries.length}</b><span>{t.entries}</span></div>
-      <div class="stat"><b>+{totalGain.toLocaleString("en-US")}</b><span>{t.totalGain}</span></div>
-      <div class="stat"><b>{day.entries[0].full_name.split("/")[1]}</b><span>{t.top1of}{day.entries[0].weeklyGain.toLocaleString("en-US")} stars/7d</span></div>
+      <div class="stat"><b>{entries.length}</b><span>{t.entries}</span></div>
+      <div class="stat"><b>+{fmt(totalGain)}</b><span>{t.totalGain}</span></div>
+      {top && (
+        <div class="stat">
+          <b>{top.name}</b>
+          <span>{t.top1of}{fmt(top.weeklyGain)} stars</span>
+        </div>
+      )}
+      {poolSize ? (
+        <div class="stat"><b>{poolSize}</b><span>{t.candidates}</span></div>
+      ) : null}
     </div>
   </section>
-  <section class="entry-list">
-    {day.entries.map((e) => <EntryCard entry={e} date={day.date} lang={lang} />)}
-  </section>
+
+  <PeriodSwitch
+    {lang}
+    current={period}
+    date={date}
+    dailyHref={homePath(B, lang)}
+    archiveHref={archiveHref}
+    {prevHref}
+    {nextHref}
+  />
+
+  {showCoverage && (
+    <p class="notice" role="note">⚠️ {t.coverageNote(coverageDays!, requestedDays!)}</p>
+  )}
+  {partialMetrics && entries.length > 0 && (
+    <p class="notice" role="note">⚠️ {t.partialMetricsNote}</p>
+  )}
+  {baselineDate && period !== "daily" && <p class="meta-line">{t.baselineNote(baselineDate)}</p>}
+
+  {visibleCats.length > 1 && (
+    <nav class="cat-tabs" aria-label={t.categories}>
+      <span class="cat-label">{t.categories}：</span>
+      {visibleCats.map((c) => (
+        <a class="cat-chip" href={categoryPath(B, lang, c.key as string)}>{lang === "zh" ? c.zh : c.en}</a>
+      ))}
+    </nav>
+  )}
+
+  {entries.length === 0 ? (
+    <section class="empty-board">
+      <h2>{period === "monthly" ? t.periodMonthly : t.periodWeekly} · {lang === "zh" ? "暂不可用" : "not available yet"}</h2>
+      <p>
+        {lang === "zh"
+          ? "该周期需要至少一个完整窗口的历史快照才能计算，目前快照序列还不够长。每日抓取的快照会在积累到 7 / 30 天后自动补齐本页。"
+          : "This period needs a full window of historical snapshots, and the snapshot series is still too short. It fills in automatically once enough daily snapshots accumulate."}
+      </p>
+      {unavailableReason && <p class="reason"><code>{unavailableReason}</code></p>}
+      <p><a class="btn ghost" href={homePath(B, lang)}>{t.backToList}</a></p>
+    </section>
+  ) : (
+    <section class="entry-list">
+      {entries.map((e) => (
+        <EntryCard entry={e} date={date} {lang} windowDays={period === "daily" ? 7 : coverageDays || windowDays} />
+      ))}
+    </section>
+  )}
+
+  <details class="data-note">
+    <summary>{t.dataQuality}</summary>
+    <p>{t.dataQualityBody}</p>
+  </details>
+
+  {period !== "daily" && (
+    <p class="meta-line">
+      <a href={dayPath(B, lang, date)}>{lang === "zh" ? "查看当天的日榜详情" : "Open the daily board for this date"} →</a>
+    </p>
+  )}
 </Base>
+
+<style>
+  .notice {
+    margin: 16px 0 0;
+    padding: 11px 14px;
+    border-radius: 10px;
+    background: var(--warn-soft);
+    color: var(--warn-ink);
+    font-size: 13px;
+  }
+  .meta-line { color: var(--muted); font-size: 12.5px; margin: 10px 0 0; }
+  .meta-line a:hover { color: var(--accent); }
+  .cat-tabs { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 18px 0 0; }
+  .cat-label { font-size: 12.5px; color: var(--muted); }
+  .cat-chip {
+    font-size: 12.5px;
+    padding: 3px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+  }
+  .cat-chip:hover { border-color: var(--accent); color: var(--accent); }
+  .empty-board {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 26px 24px;
+    margin: 22px 0 44px;
+  }
+  .empty-board h2 { margin: 0 0 10px; font-size: 17px; }
+  .empty-board p { margin: 0 0 12px; color: var(--muted); font-size: 13.5px; max-width: 640px; }
+  .empty-board .reason code { font-size: 12px; color: var(--muted); }
+  .data-note {
+    margin: 0 0 44px;
+    padding: 14px 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--card);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .data-note summary { cursor: pointer; color: var(--ink); font-weight: 600; }
+  .data-note p { margin: 10px 0 0; }
+</style>

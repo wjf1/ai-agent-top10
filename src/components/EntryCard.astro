@@ -1,25 +1,56 @@
 ---
 import Radar from "./Radar.astro";
-import { L } from "../lib/data.ts";
+import { categoryLabel } from "../lib/categorize.mjs";
+import { dimensionLabels, strings, type Lang } from "../lib/data.ts";
+import { projectPath } from "../lib/routes.ts";
 
 interface Props {
   entry: any;
   date: string;
-  lang?: "zh" | "en";
+  lang?: Lang;
+  compact?: boolean;
+  /** 该条目的增量覆盖多少天：日榜是归一化后的 7 天，周/月榜是窗口实际覆盖天数 */
+  windowDays?: number;
 }
-const { entry, date, lang = "zh" } = Astro.props;
-const t = L[lang];
+
+const { entry, date, lang = "zh", compact = false, windowDays = 7 } = Astro.props;
+const t = strings(lang);
 const B = import.meta.env.BASE_URL.replace(/\/$/, "");
-const detailPath = lang === "en" ? `/en/project/${entry.slug}/` : `/project/${entry.slug}/`;
-const fmt = (n: number) => n.toLocaleString("en-US");
+// 周期榜的条目可能不在窗口结束日当天的日榜里，链接要落到它真实出现过的日期
+const detailPath = projectPath(B, lang, entry.lastSeenDate ?? date, entry.slug);
+const fmt = (n: number) => Number(n ?? 0).toLocaleString("en-US");
+
+// 只渲染数据里真实存在的维度：历史条目是 6 维，新条目是 8 维
+const allDims = dimensionLabels(lang);
+const dims = allDims.filter((d) => typeof entry.scores?.[d.key] === "number");
+
+const change = typeof entry.rankChange === "number" ? entry.rankChange : null;
+const changeLabel =
+  change === null ? "" : change > 0 ? `${t.rankUp} ${change}` : change < 0 ? `${t.rankDown} ${Math.abs(change)}` : t.rankSame;
+
+const sourceLabel =
+  entry.gainSource === "events"
+    ? t.sourceEvents
+    : entry.gainSource === "stargazers"
+      ? t.sourceStargazers
+      : entry.gainSource === "snapshot-window"
+        ? t.sourceWindow
+        : t.sourceSnapshot;
 ---
-<article class="entry-card">
-  <div class={`rank ${entry.rank <= 3 ? "top" : ""}`}>{entry.rank}</div>
+
+<article class:list={["entry-card", compact && "compact"]}>
+  <div class="rank-col">
+    <div class={`rank ${entry.rank <= 3 ? "top" : ""}`}>{entry.rank}</div>
+    {changeLabel && (
+      <span class:list={["rank-change", change > 0 ? "up" : change < 0 ? "down" : "same"]}>{changeLabel}</span>
+    )}
+  </div>
   <div class="entry-main">
     <div class="entry-title">
       <h3><a href={detailPath}>{entry.full_name}</a></h3>
       <span class="lang-tag">{entry.language}</span>
-      <span class="gain-chip">+{fmt(entry.weeklyGain)} / 7d</span>
+      {entry.category && <span class="cat-tag">{categoryLabel(entry.category, lang)}</span>}
+      <span class="gain-chip">+{fmt(entry.weeklyGain)} / {windowDays}d</span>
     </div>
     <p class="entry-desc">{entry.why[lang]}</p>
     <div class="entry-meta">
@@ -27,14 +58,27 @@ const fmt = (n: number) => n.toLocaleString("en-US");
       <span>🍴 {fmt(entry.forks)} {t.forks}</span>
       <span>📈 {t.dailyGain} {entry.dailyGain}</span>
       <span>🚀 {t.growthRate} {entry.growthRate}%</span>
+      <span class="src" title={t.gainSource}>{sourceLabel}</span>
     </div>
   </div>
   <div class="entry-side">
-    <Radar scores={entry.scores} size={132} lang={lang} />
+    <Radar scores={entry.scores} dims={dims} size={compact ? 104 : 132} />
     <div class="score-block">
       <div class="score-num">{entry.scores.overall}</div>
       <div class="score-label">{t.overall}</div>
-      <a class="btn ghost" style="margin-top:8px" href={detailPath}>{t.viewDetail}</a>
+      <a class="btn ghost" href={detailPath}>{t.viewDetail}</a>
     </div>
   </div>
 </article>
+
+<style>
+  .rank-col { text-align: center; }
+  .rank-change { display: inline-block; font-size: 10.5px; font-weight: 700; border-radius: 999px; padding: 1px 7px; margin-top: 4px; white-space: nowrap; }
+  .rank-change.up { color: var(--good); background: var(--good-soft); }
+  .rank-change.down { color: var(--warn); background: var(--warn-soft); }
+  .rank-change.same { color: var(--muted); background: var(--accent-soft); }
+  .cat-tag { font-size: 11.5px; background: var(--card-2); color: var(--muted); padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); }
+  .entry-meta .src { font-size: 11px; color: var(--muted); border: 1px dashed var(--line); border-radius: 999px; padding: 0 7px; }
+  .entry-card.compact { padding: 14px 16px; }
+  .entry-card.compact .entry-desc { -webkit-line-clamp: 1; }
+</style>

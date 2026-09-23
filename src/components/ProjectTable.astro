@@ -1,0 +1,88 @@
+---
+/**
+ * 聚合项目表格：子分类榜 / 话题页共用。
+ * 用表格而不是卡片，是为把首屏信息密度拉到竞品同一量级（P2-U1）。
+ */
+import { categoryLabel } from "../lib/categorize.mjs";
+import { strings, type Lang } from "../lib/data.ts";
+import { projectPath, topicPath } from "../lib/routes.ts";
+import type { AggregatedProject } from "../lib/aggregate";
+
+interface Props {
+  projects: AggregatedProject[];
+  lang?: Lang;
+  windowDays: number;
+}
+
+const { projects, lang = "zh", windowDays } = Astro.props;
+const t = strings(lang);
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+const fmt = (n: number) => Number(n ?? 0).toLocaleString("en-US");
+---
+
+<div class="table-wrap">
+  <table class="ptable">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>{lang === "zh" ? "项目" : "Project"}</th>
+        <th>{t.category}</th>
+        <th>{t.language}</th>
+        <th>{t.stars}</th>
+        <th>{lang === "zh" ? `${windowDays} 天增量` : `${windowDays}-day gain`}</th>
+        <th>{lang === "zh" ? "上榜次数" : "Appearances"}</th>
+        <th>{lang === "zh" ? "最好名次" : "Best rank"}</th>
+        <th>{t.topics}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {projects.map((p, i) => (
+        <tr
+          data-category={p.entry.category ?? "other"}
+          data-language={p.entry.language}
+          data-search={[p.entry.full_name, p.entry.owner, p.entry.language, p.entry.category ?? "", ...(p.entry.topics ?? [])]
+            .join(" ")
+            .toLowerCase()}
+        >
+          <td class="idx">{i + 1}</td>
+          <td class="proj">
+            <a href={projectPath(B, lang, p.lastDate, p.entry.slug)}>{p.entry.full_name}</a>
+            <small>{p.entry.description?.slice(0, 70) ?? ""}</small>
+          </td>
+          <td>{categoryLabel(p.entry.category ?? "other", lang)}</td>
+          <td>{p.entry.language}</td>
+          <td class="num">{fmt(p.entry.stars)}</td>
+          <td class="num gain">+{fmt(Math.round(p.gain))}</td>
+          <td class="num">{p.appearances}</td>
+          <td class="num">#{p.bestRank}</td>
+          <td class="topics">
+            {(p.entry.topics ?? []).slice(0, 3).map((topic) => (
+              <a href={topicPath(B, lang, topic)}>#{topic}</a>
+            ))}
+          </td>
+        </tr>
+      ))}
+      {projects.length === 0 && (
+        <tr><td colspan="9" class="empty">{lang === "zh" ? "没有匹配的项目" : "No matching project"}</td></tr>
+      )}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .table-wrap { overflow-x: auto; margin: 20px 0 50px; }
+  .ptable { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .ptable th, .ptable td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .ptable th { font-size: 11.5px; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); font-weight: 600; white-space: nowrap; }
+  .ptable tbody tr:hover { background: var(--card-2); }
+  .ptable td.idx { color: var(--muted); font-style: italic; }
+  .ptable td.proj a { font-weight: 600; display: block; }
+  .ptable td.proj a:hover { color: var(--accent); }
+  .ptable td.proj small { color: var(--muted); display: block; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ptable td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .ptable td.gain { color: var(--good); font-weight: 700; }
+  .ptable td.topics { max-width: 220px; }
+  .ptable td.topics a { color: var(--muted); font-size: 11.5px; margin-right: 6px; }
+  .ptable td.topics a:hover { color: var(--accent); }
+  .ptable td.empty { text-align: center; color: var(--muted); padding: 26px; }
+</style>

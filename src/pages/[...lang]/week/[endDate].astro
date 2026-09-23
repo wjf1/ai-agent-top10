@@ -1,0 +1,44 @@
+---
+/** 指定窗口（以窗口结束日标识）的周榜 */
+import RankingPage from "../../../components/RankingPage.astro";
+import { config } from "../../../lib/config.mjs";
+import { buildPeriodBoard, periodNeighbours, periodWindows } from "../../../lib/periods";
+import { archivePath, weekPath } from "../../../lib/routes.ts";
+
+export function getStaticPaths() {
+  const windows = periodWindows("weekly");
+  const langs = [
+    { lang: undefined as string | undefined },
+    { lang: "en" },
+  ];
+  return langs.flatMap(({ lang }) =>
+    windows.map((w) => ({
+      params: { lang, endDate: w.endDate },
+      props: { endDate: w.endDate, kind: lang ? "en" : "zh" },
+    }))
+  );
+}
+
+const { endDate, kind } = Astro.props as { endDate: string; kind: "zh" | "en" };
+const lang = kind;
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+const board = await buildPeriodBoard("weekly", { endDate });
+const nav = periodNeighbours("weekly", endDate);
+---
+
+<RankingPage
+  {lang}
+  period="weekly"
+  date={endDate}
+  entries={board.entries}
+  coverageDays={board.coverageDays}
+  requestedDays={board.requestedDays || (config.window?.weekly ?? 7)}
+  baselineDate={board.baselineDate}
+  poolSize={board.poolSize}
+  unavailableReason={board.reason ?? null}
+  partialMetrics={!board.metricsComplete}
+  archiveHref={archivePath(B, lang)}
+  langHref={weekPath(B, lang === "en" ? "zh" : "en", endDate)}
+  prevHref={nav.prev ? weekPath(B, lang, nav.prev) : null}
+  nextHref={nav.next ? weekPath(B, lang, nav.next) : null}
+/>

@@ -1,0 +1,34 @@
+---
+/** 最新一期月榜（P1-F1） */
+import RankingPage from "../../components/RankingPage.astro";
+import { config } from "../../lib/config.mjs";
+import { index } from "../../lib/load-days";
+import { buildPeriodBoard, periodNeighbours } from "../../lib/periods";
+import { archivePath, monthPath } from "../../lib/routes.ts";
+
+export function getStaticPaths() {
+  return [{ params: { lang: undefined } }, { params: { lang: "en" } }];
+}
+
+const lang = (Astro.params.lang === "en" ? "en" : "zh") as "zh" | "en";
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+const board = await buildPeriodBoard("monthly", { endDate: index.dates[0] });
+const nav = periodNeighbours("monthly", board.endDate);
+---
+
+<RankingPage
+  {lang}
+  period="monthly"
+  date={board.endDate}
+  entries={board.entries}
+  coverageDays={board.coverageDays}
+  requestedDays={board.requestedDays || (config.window?.monthly ?? 30)}
+  baselineDate={board.baselineDate}
+  poolSize={board.poolSize}
+  unavailableReason={board.reason ?? null}
+  partialMetrics={!board.metricsComplete}
+  archiveHref={archivePath(B, lang)}
+  langHref={monthPath(B, lang === "en" ? "zh" : "en")}
+  prevHref={nav.prev ? monthPath(B, lang, nav.prev) : null}
+  nextHref={nav.next ? monthPath(B, lang, nav.next) : null}
+/>

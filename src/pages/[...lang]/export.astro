@@ -1,0 +1,89 @@
+---
+/** 数据导出说明页（W4-2）。文件本身由 /data/* 静态端点生成。 */
+import Base from "../../layouts/Base.astro";
+import { strings } from "../../lib/data.ts";
+import { index } from "../../lib/load-days";
+import { exportPath, rssPath } from "../../lib/routes.ts";
+
+export function getStaticPaths() {
+  return [{ params: { lang: undefined } }, { params: { lang: "en" } }];
+}
+
+const lang = (Astro.params.lang === "en" ? "en" : "zh") as "zh" | "en";
+const t = strings(lang);
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+const data = (file: string) => `${B}/data/${file}`;
+
+const files = [
+  {
+    href: data("latest.json"),
+    name: "latest.json",
+    desc: lang === "zh" ? `最新一期（${index.latest}）完整榜单，含评分、解读与全部指标字段。` : `Full latest issue (${index.latest}) including scores, commentary and metrics.`,
+  },
+  {
+    href: data("latest.csv"),
+    name: "latest.csv",
+    desc: lang === "zh" ? "最新一期的表格版本，适合直接粘进 Excel / 表格工具。" : "The latest issue as a flat table, ready for spreadsheets.",
+  },
+  {
+    href: data("history.csv"),
+    name: "history.csv",
+    desc: lang === "zh" ? `全部 ${index.dates.length} 期榜单的长表（每行 = 某期某项目）。` : `Long-format table of all ${index.dates.length} issues (one row per project per issue).`,
+  },
+  {
+    href: data("projects.json"),
+    name: "projects.json",
+    desc: lang === "zh" ? "最近 90 期出现过的项目汇总，含上榜次数、最好名次与逐期名次序列。" : "Projects seen in the last 90 issues with appearance counts, best rank and rank series.",
+  },
+  {
+    href: rssPath(B, lang),
+    name: "rss.xml",
+    desc: lang === "zh" ? "RSS 订阅源，每日更新最近 30 期。" : "RSS feed with the 30 most recent issues.",
+  },
+];
+---
+
+<Base
+  {lang}
+  langHref={exportPath(B, lang === "en" ? "zh" : "en")}
+  title={t.exportPage}
+  desc={t.exportData}
+  active="export"
+>
+  <section class="hero" style="padding-bottom:0">
+    <h1>{t.exportData}</h1>
+    <p class="sub">
+      {lang === "zh"
+        ? "所有文件都在构建期静态生成，可直接下载或程序化抓取；无需鉴权，也没有速率限制。"
+        : "Every file is generated statically at build time — no auth, no rate limits, safe to fetch programmatically."}
+    </p>
+  </section>
+
+  <ul class="file-list">
+    {files.map((f) => (
+      <li>
+        <a href={f.href}><code>{f.name}</code></a>
+        <p>{f.desc}</p>
+      </li>
+    ))}
+  </ul>
+
+  <section class="panel license-note">
+    <h2>{lang === "zh" ? "字段口径" : "Field notes"}</h2>
+    <ul>
+      <li>{lang === "zh" ? "weekly_gain：窗口内新增 star；优先取历史快照真实差值，快照缺失时回落到 stargazers 接口。" : "weekly_gain: stars gained in the window, from real snapshot deltas where possible, else the stargazers endpoint."}</li>
+      <li>{lang === "zh" ? "score_*：各维度 0-100 分，权重定义见仓库 config/scoring.json。" : "score_*: per-dimension 0-100 scores; weights live in config/scoring.json."}</li>
+      <li>{lang === "zh" ? "早期数据为 6 维，新增的 forksGrowth / activity 两维从启用后开始记录。" : "Older issues carry 6 dimensions; forksGrowth and activity were added later."}</li>
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .file-list { list-style: none; padding: 0; margin: 24px 0 30px; display: grid; gap: 12px; }
+  .file-list li { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 20px; }
+  .file-list a code { color: var(--accent); font-weight: 700; font-size: 14px; }
+  .file-list a:hover code { text-decoration: underline; }
+  .file-list p { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+  .license-note { margin-bottom: 50px; }
+  .license-note ul { margin: 0; padding-left: 18px; font-size: 13.5px; color: var(--muted); }
+</style>

@@ -1,28 +1,132 @@
 ---
-/** 历史归档（zh / en 复用） */
+/**
+ * 历史归档（P0-C2 修复点）。
+ *
+ * 旧版每一行的链接都指向首页，用户点任何日期都只能看到今天。
+ * 现在每行链接到该日期自己的榜单页，并提供卡片 / 表格两种密度视图
+ * （纯 CSS 切换，不需要 JS，P2-U1）。
+ */
 import Base from "../layouts/Base.astro";
-import { L } from "../lib/data.ts";
-import { days } from "../lib/load-days.ts";
+import { strings, type Lang } from "../lib/data.ts";
+import { index, type IndexDay } from "../lib/load-days";
+import { periodWindows } from "../lib/periods";
+import { archivePath, dayPath, monthPath, weekPath } from "../lib/routes.ts";
 
-interface Props { lang?: "zh" | "en"; }
+interface Props {
+  lang?: Lang;
+}
+
 const { lang = "zh" } = Astro.props;
-const t = L[lang];
+const t = strings(lang);
 const B = import.meta.env.BASE_URL.replace(/\/$/, "");
-const listPath = lang === "en" ? `${B}/en/` : `${B}/`;
+const fmt = (n: number) => Number(n ?? 0).toLocaleString("en-US");
+
+const days: IndexDay[] = index.days;
+const weeks = periodWindows("weekly").slice(0, 12);
+const months = periodWindows("monthly").slice(0, 6);
+
+/** 让每一行都带上自己的链接集合，避免任何一处再退回首页 */
+const rows = days.map((d) => ({
+  ...d,
+  dayHref: dayPath(B, lang, d.date),
+  weekHref: weeks.find((w) => w.endDate === d.date) ? weekPath(B, lang, d.date) : null,
+  monthHref: months.find((m) => m.endDate === d.date) ? monthPath(B, lang, d.date) : null,
+}));
 ---
-<Base lang={lang} langHref={lang === "en" ? `${B}/archive/` : `${B}/en/archive/`} title={t.archive}>
+
+<Base
+  lang={lang}
+  langHref={lang === "en" ? `${B}/archive/` : `${B}/en/archive/`}
+  title={t.archive}
+  active="archive"
+>
   <section class="hero" style="padding-bottom:0">
     <h1>{t.archive}</h1>
-    <p class="sub">{t.rankBy} · {days.length} {lang === "zh" ? "期" : "issue(s)"}</p>
+    <p class="sub">{t.rankBy} · {days.length} {lang === "zh" ? "期" : t.archiveIssues}</p>
+    <div class="archive-shortcuts">
+      <a class="cat-chip" href={weekPath(B, lang)}>{t.periodWeekly}</a>
+      <a class="cat-chip" href={monthPath(B, lang)}>{t.periodMonthly}</a>
+      {weeks.length > 0 && <a class="cat-chip" href={weekPath(B, lang, weeks[0].endDate)}>{t.periodWeekly} · {weeks[0].endDate}</a>}
+    </div>
   </section>
-  <section class="archive-list">
-    {days.map((d) => (
-      <a class="archive-item" href={listPath}>
-        <span class="d">📅 {d.date}</span>
-        <span style="color:var(--muted);font-size:13px">{d.entries.length} {t.entries}</span>
-        <span class="top1">{t.top1of}{d.entries[0].full_name} (+{d.entries[0].weeklyGain.toLocaleString("en-US")}/7d)</span>
+
+  <input type="checkbox" id="archive-table-view" class="view-toggle-input" />
+  <label for="archive-table-view" class="view-toggle">{lang === "zh" ? "切换表格视图" : "Toggle table view"}</label>
+
+  <section class="archive-cards">
+    {rows.map((row) => (
+      <a class="archive-item" href={row.dayHref}>
+        <span class="d">📅 {row.date}</span>
+        <span class="cnt">{row.count} {t.entries}</span>
+        <span class="top1">{t.top1of}{row.top.full_name} (+{fmt(row.top.weeklyGain)})</span>
+        <span class="go">→</span>
       </a>
     ))}
     {days.length === 0 && <p>{t.archiveEmpty}</p>}
   </section>
+
+  <section class="archive-table-wrap">
+    <table class="archive-table">
+      <thead>
+        <tr>
+          <th>{lang === "zh" ? "日期" : "Date"}</th>
+          <th>{t.entries}</th>
+          <th>{t.totalGain}</th>
+          <th>No.1</th>
+          <th>{lang === "zh" ? "链接" : "Links"}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr>
+            <td><a href={row.dayHref}>{row.date}</a></td>
+            <td>{row.count}</td>
+            <td>+{fmt(row.totalGain)}</td>
+            <td><a href={row.dayHref}>{row.top.full_name}</a></td>
+            <td class="links">
+              <a href={row.dayHref}>{t.periodDaily}</a>
+              {row.weekHref && <a href={row.weekHref}>{t.periodWeekly}</a>}
+              {row.monthHref && <a href={row.monthHref}>{t.periodMonthly}</a>}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </section>
 </Base>
+
+<style>
+  .archive-shortcuts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .cat-chip {
+    font-size: 12.5px;
+    padding: 3px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--card);
+  }
+  .cat-chip:hover { border-color: var(--accent); color: var(--accent); }
+  .view-toggle-input { position: absolute; opacity: 0; pointer-events: none; }
+  .view-toggle {
+    display: inline-block;
+    margin: 18px 0 0;
+    font-size: 12.5px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px 14px;
+    cursor: pointer;
+    background: var(--card);
+    color: var(--muted);
+  }
+  .view-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .archive-table-wrap { display: none; }
+  .view-toggle-input:checked ~ .archive-cards { display: none; }
+  .view-toggle-input:checked ~ .archive-table-wrap { display: block; }
+  .archive-table-wrap { padding: 26px 0 50px; overflow-x: auto; }
+  .archive-table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--card); border-radius: var(--radius); overflow: hidden; }
+  .archive-table th, .archive-table td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .archive-table th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .03em; }
+  .archive-table tbody tr:hover { background: var(--card-2); }
+  .archive-table td.links { display: flex; gap: 10px; }
+  .archive-table td.links a { color: var(--accent); }
+  .archive-item .go { color: var(--muted); margin-left: 6px; }
+</style>

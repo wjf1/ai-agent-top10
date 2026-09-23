@@ -1,0 +1,40 @@
+---
+/** 话题标签页：所有带该 topic 的项目（P2-F3） */
+import ListPage from "../../../components/ListPage.astro";
+import { allTopics, filterByTopic, recentProjects } from "../../../lib/aggregate";
+import { topicPath } from "../../../lib/routes.ts";
+
+const WINDOW = 30;
+
+export async function getStaticPaths() {
+  // 注意：getStaticPaths 会被提升到模块顶部，不能引用下面的模块级变量，
+  // 所以窗口常量在这里就地声明。
+  const topics = await allTopics({ window: 30 });
+  const langs = [{ lang: undefined as string | undefined }, { lang: "en" }];
+  return langs.flatMap(({ lang }) =>
+    topics.map((t) => ({ params: { lang, tag: t.tag }, props: { tag: t.tag, kind: lang ? "en" : "zh" } }))
+  );
+}
+
+const { tag, kind } = Astro.props as { tag: string; kind: "zh" | "en" };
+const lang = kind;
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const all = await recentProjects({ window: WINDOW });
+const projects = filterByTopic(all, tag);
+const title = `#${tag}`;
+const subtitle =
+  lang === "zh"
+    ? `最近 ${WINDOW} 期榜单中带 #${tag} 标签的 ${projects.length} 个项目。`
+    : `${projects.length} project(s) tagged #${tag} across the last ${WINDOW} issues.`;
+---
+
+<ListPage
+  {lang}
+  {title}
+  {subtitle}
+  {projects}
+  windowDays={WINDOW}
+  langHref={topicPath(B, lang === "en" ? "zh" : "en", tag)}
+  active="search"
+/>

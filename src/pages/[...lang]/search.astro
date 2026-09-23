@@ -1,0 +1,136 @@
+---
+/**
+ * 项目检索（P2-F3）。
+ *
+ * 渐进增强：完整表格在构建期就渲染好（无 JS 也能用、SEO 友好），
+ * 客户端的输入框只是过滤已经存在的表格行，不做数据请求也不重建 DOM。
+ */
+import Base from "../../layouts/Base.astro";
+import ProjectTable from "../../components/ProjectTable.astro";
+import { recentProjects } from "../../lib/aggregate";
+import { categories } from "../../lib/categorize.mjs";
+import { strings } from "../../lib/data.ts";
+import { searchPath } from "../../lib/routes.ts";
+
+const WINDOW = 30;
+
+export function getStaticPaths() {
+  return [{ params: { lang: undefined } }, { params: { lang: "en" } }];
+}
+
+const lang = (Astro.params.lang === "en" ? "en" : "zh") as "zh" | "en";
+const t = strings(lang);
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+const projects = await recentProjects({ window: WINDOW });
+const cats = categories().filter((c) => projects.some((p) => (p.entry.category ?? "other") === c.key));
+const languages = [...new Set(projects.map((p) => p.entry.language))].sort();
+---
+
+<Base
+  {lang}
+  langHref={searchPath(B, lang === "en" ? "zh" : "en")}
+  title={t.searchPage}
+  desc={t.search}
+  active="search"
+>
+  <section class="hero" style="padding-bottom:0">
+    <h1>{t.searchPage}</h1>
+    <p class="sub">{t.searchScope(WINDOW)}</p>
+  </section>
+
+  <div class="filters" data-search-root>
+    <input
+      type="search"
+      class="search-input"
+      data-search-input
+      placeholder={t.searchPlaceholder}
+      aria-label={t.search}
+      autocomplete="off"
+    />
+    <div class="chips-row" role="group" aria-label={t.categories}>
+      <button type="button" class="fchip active" data-filter-category="all">{t.allCategories}</button>
+      {cats.map((c) => (
+        <button type="button" class="fchip" data-filter-category={c.key}>{lang === "zh" ? c.zh : c.en}</button>
+      ))}
+    </div>
+    <div class="chips-row" role="group" aria-label={t.language}>
+      <button type="button" class="fchip active" data-filter-language="all">{t.allCategories}</button>
+      {languages.map((l) => (
+        <button type="button" class="fchip" data-filter-language={l}>{l}</button>
+      ))}
+    </div>
+    <p class="count" data-search-count></p>
+  </div>
+
+  <ProjectTable {projects} {lang} windowDays={WINDOW} />
+</Base>
+
+<script>
+  // 过滤的是构建期已经渲染好的行，不重建 DOM、不发请求，无 JS 时表格仍然完整可用。
+  const root = document.querySelector("[data-search-root]");
+  if (root) {
+    const input = root.querySelector<HTMLInputElement>("[data-search-input]");
+    const count = root.querySelector<HTMLElement>("[data-search-count]");
+    const rows = Array.from(document.querySelectorAll<HTMLTableRowElement>("table.ptable tbody tr[data-search]"));
+
+    const state: Record<"category" | "language", string> = { category: "all", language: "all" };
+    const chipsOf = (attr: string) => Array.from(root.querySelectorAll<HTMLButtonElement>(`[data-filter-${attr}]`));
+
+    function apply() {
+      const text = input?.value.trim().toLowerCase() ?? "";
+      let visible = 0;
+      for (const row of rows) {
+        const show =
+          (!text || (row.dataset.search ?? "").includes(text)) &&
+          (state.category === "all" || row.dataset.category === state.category) &&
+          (state.language === "all" || row.dataset.language === state.language);
+        row.hidden = !show;
+        if (show) visible++;
+      }
+      if (count) count.textContent = `${visible} / ${rows.length}`;
+    }
+
+    input?.addEventListener("input", apply);
+
+    for (const attr of ["category", "language"] as const) {
+      const key = attr === "category" ? "filterCategory" : "filterLanguage";
+      for (const chip of chipsOf(attr)) {
+        chip.addEventListener("click", () => {
+          chipsOf(attr).forEach((c) => c.classList.remove("active"));
+          chip.classList.add("active");
+          state[attr] = (chip.dataset as Record<string, string | undefined>)[key] ?? "all";
+          apply();
+        });
+      }
+    }
+
+    apply();
+  }
+</script>
+
+<style>
+  .filters { display: grid; gap: 12px; margin: 22px 0 6px; }
+  .search-input {
+    width: 100%;
+    padding: 11px 15px;
+    font-size: 14px;
+    border-radius: 11px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+  }
+  .search-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .chips-row { display: flex; gap: 7px; flex-wrap: wrap; }
+  .fchip {
+    font-size: 12.5px;
+    padding: 4px 13px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .fchip:hover { border-color: var(--accent); color: var(--accent); }
+  .fchip.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+  .count { margin: 0; font-size: 12px; color: var(--muted); }
+</style>

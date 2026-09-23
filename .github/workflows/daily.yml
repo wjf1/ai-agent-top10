@@ -1,10 +1,13 @@
 name: daily-update
 
-# 每天 UTC 06:00（北京时间 14:00）自动抓取数据、重建并部署；支持手动触发
+# 每天 UTC 06:00（北京时间 14:00）抓取数据；代码 push 时只重建站点。
+# 手动触发会同时执行抓取与部署。
 on:
   schedule:
     - cron: "0 6 * * *"
   workflow_dispatch:
+  push:
+    branches: [main]
 
 permissions:
   contents: write
@@ -16,8 +19,15 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  fetch-and-build:
+  # ------------------------------------------------------------------
+  # job 1：抓数据 → 校验 → 只有校验通过才 commit & push
+  # 旧版把 commit 放在 build 之前且没有校验，build 失败时脏数据已经推上去了（P1-A3）。
+  # ------------------------------------------------------------------
+  fetch:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    outputs:
+      committed: ${{ steps.commit.outputs.committed }}
     steps:
       - uses: actions/checkout@v4
 
@@ -28,21 +38,59 @@ jobs:
 
       - run: npm ci || npm install
 
-      # 抓取今日数据 + 评分（内置 token 复用 GITHUB_TOKEN 调用 GitHub API）
-      - run: node scripts/fetch-daily.mjs
+      - name: Fetch daily data
+        run: node scripts/fetch-daily.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 可选：配置了密钥就让 LLM 生成解读，否则自动回落到规则化文案
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
 
-      # 提交新数据到仓库（无变化则跳过）
+      - name: Backfill snapshot history
+        run: node scripts/backfill-metrics.mjs
+
+      - name: Validate data
+        run: node scripts/validate-data.mjs
+
       - name: Commit data
+        id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add src/data
-          git diff --cached --quiet || git commit -m "daily update $(date -u +%F)"
-          git push
+          if git diff --cached --quiet; then
+            echo "no data change"
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "daily update $(date -u +%F)"
+            git push
+            echo "committed=true" >> "$GITHUB_OUTPUT"
+          fi
 
-      - run: npm run build
+  # ------------------------------------------------------------------
+  # job 2：只有数据校验通过（或本次不抓取）才构建部署
+  # ------------------------------------------------------------------
+  build:
+    needs: [fetch]
+    if: always() && (needs.fetch.result == 'success' || needs.fetch.result == 'skipped')
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci || npm install
+
+      - name: Validate data before build
+        run: node scripts/validate-data.mjs
+
+      - name: Build site
+        run: npm run build
         env:
           BASE: /${{ github.event.repository.name }}
 
@@ -52,4 +100,5 @@ jobs:
         with:
           path: dist
 
-      - uses: actions/deploy-pages@v4
+      - id: deploy
+        uses: actions/deploy-pages@v4

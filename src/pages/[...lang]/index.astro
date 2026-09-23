@@ -1,0 +1,32 @@
+---
+/**
+ * 榜单首页（zh 在 /，en 在 /en/）—— 显示最新一期日榜。
+ * 通过可选 rest 参数 [...lang] 让中英共用同一份页面文件（P2-A1），
+ * 不再维护 src/pages/en/ 下的整份复制。
+ */
+import RankingPage from "../../components/RankingPage.astro";
+import { index, loadDay, neighbours } from "../../lib/load-days";
+import { archivePath, dayPath, homePath } from "../../lib/routes.ts";
+
+export function getStaticPaths() {
+  return [{ params: { lang: undefined } }, { params: { lang: "en" } }];
+}
+
+const lang = (Astro.params.lang === "en" ? "en" : "zh") as "zh" | "en";
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+const date = index.dates[0];
+const day = date ? await loadDay(date) : null;
+const nav = date ? neighbours(date) : { prev: null, next: null };
+---
+
+<RankingPage
+  {lang}
+  period="daily"
+  date={date ?? ""}
+  entries={day?.entries ?? []}
+  poolSize={day?.poolSize}
+  archiveHref={archivePath(B, lang)}
+  langHref={homePath(B, lang === "en" ? "zh" : "en")}
+  prevHref={nav.prev ? dayPath(B, lang, nav.prev) : null}
+  nextHref={nav.next ? dayPath(B, lang, nav.next) : null}
+/>

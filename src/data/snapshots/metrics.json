@@ -1,0 +1,1940 @@
+{
+  "2026-09-13": {
+    "DietrichGebert/ponytail": {
+      "stars": 136914,
+      "forks": 7348,
+      "openIssues": null,
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "cursor-rules",
+        "developer-tools",
+        "llm"
+      ],
+      "partial": true
+    },
+    "Panniantong/Agent-Reach": {
+      "stars": 80082,
+      "forks": 6945,
+      "openIssues": null,
+      "topics": [
+        "agent-infrastructure",
+        "ai-agent",
+        "ai-search",
+        "automation",
+        "bilibili",
+        "claude-code",
+        "cli",
+        "cursor"
+      ],
+      "partial": true
+    },
+    "asgeirtj/system_prompts_leaks": {
+      "stars": 65693,
+      "forks": 10774,
+      "openIssues": null,
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-prompts",
+        "anthropic",
+        "chatbot",
+        "chatgpt",
+        "claude",
+        "claude-code"
+      ],
+      "partial": true
+    },
+    "deepseek-ai/deepseek-harness": {
+      "stars": 222035,
+      "forks": 26352,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "cordis",
+        "dsh",
+        "dsh-plugin"
+      ],
+      "partial": true
+    },
+    "affaan-m/ECC": {
+      "stars": 257372,
+      "forks": 38504,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "developer-tools",
+        "llm",
+        "mcp",
+        "productivity"
+      ],
+      "partial": true
+    },
+    "Shubhamsaboo/awesome-llm-apps": {
+      "stars": 137813,
+      "forks": 20252,
+      "openIssues": null,
+      "topics": [
+        "agents",
+        "llms",
+        "python",
+        "rag"
+      ],
+      "partial": true
+    },
+    "diegosouzapw/OmniRoute": {
+      "stars": 65475,
+      "forks": 9163,
+      "openIssues": null,
+      "topics": [
+        "a2a",
+        "ai-agents",
+        "ai-gateway",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "cline",
+        "codex"
+      ],
+      "partial": true
+    },
+    "firecrawl/firecrawl": {
+      "stars": 179696,
+      "forks": 9770,
+      "openIssues": null,
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-crawler",
+        "ai-scraping",
+        "ai-search",
+        "crawler",
+        "data-extraction",
+        "html-to-markdown"
+      ],
+      "partial": true
+    },
+    "calesthio/OpenMontage": {
+      "stars": 58036,
+      "forks": 7316,
+      "openIssues": null,
+      "topics": [
+        "agent",
+        "agentic-ai",
+        "ai",
+        "claude",
+        "copilot",
+        "cursor",
+        "elevenlabs",
+        "ffmpeg"
+      ],
+      "partial": true
+    },
+    "msitarzewski/agency-agents": {
+      "stars": 152012,
+      "forks": 24490,
+      "openIssues": null,
+      "topics": [],
+      "partial": true
+    }
+  },
+  "2026-09-14": {
+    "deepseek-ai/deepseek-harness": {
+      "stars": 223380,
+      "forks": 26547,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "cordis",
+        "dsh",
+        "dsh-plugin"
+      ],
+      "partial": true
+    },
+    "DietrichGebert/ponytail": {
+      "stars": 137843,
+      "forks": 7397,
+      "openIssues": null,
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "cursor-rules",
+        "developer-tools",
+        "llm"
+      ],
+      "partial": true
+    },
+    "calesthio/OpenMontage": {
+      "stars": 58924,
+      "forks": 7393,
+      "openIssues": null,
+      "topics": [
+        "agent",
+        "agentic-ai",
+        "ai",
+        "claude",
+        "copilot",
+        "cursor",
+        "elevenlabs",
+        "ffmpeg"
+      ],
+      "partial": true
+    },
+    "stablyai/orca": {
+      "stars": 68269,
+      "forks": 4461,
+      "openIssues": null,
+      "topics": [
+        "ade",
+        "agent-ide",
+        "ai-agents",
+        "claude-code",
+        "cli",
+        "codex",
+        "cursor-agent",
+        "devtools"
+      ],
+      "partial": true
+    },
+    "asgeirtj/system_prompts_leaks": {
+      "stars": 66424,
+      "forks": 10841,
+      "openIssues": null,
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-prompts",
+        "anthropic",
+        "chatbot",
+        "chatgpt",
+        "claude",
+        "claude-code"
+      ],
+      "partial": true
+    },
+    "affaan-m/ECC": {
+      "stars": 258029,
+      "forks": 38589,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "developer-tools",
+        "llm",
+        "mcp",
+        "productivity"
+      ],
+      "partial": true
+    },
+    "Panniantong/Agent-Reach": {
+      "stars": 80712,
+      "forks": 7031,
+      "openIssues": null,
+      "topics": [
+        "agent-infrastructure",
+        "ai-agent",
+        "ai-search",
+        "automation",
+        "bilibili",
+        "claude-code",
+        "cli",
+        "cursor"
+      ],
+      "partial": true
+    },
+    "firecrawl/firecrawl": {
+      "stars": 180194,
+      "forks": 9787,
+      "openIssues": null,
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-crawler",
+        "ai-scraping",
+        "ai-search",
+        "crawler",
+        "data-extraction",
+        "html-to-markdown"
+      ],
+      "partial": true
+    },
+    "diegosouzapw/OmniRoute": {
+      "stars": 65910,
+      "forks": 9232,
+      "openIssues": null,
+      "topics": [
+        "a2a",
+        "ai-agents",
+        "ai-gateway",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "cline",
+        "codex"
+      ],
+      "partial": true
+    },
+    "earendil-works/pi": {
+      "stars": 104952,
+      "forks": 13174,
+      "openIssues": null,
+      "topics": [],
+      "partial": true
+    }
+  },
+  "2026-09-15": {
+    "deepseek-ai/deepseek-harness": {
+      "stars": 224805,
+      "forks": 26727,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "cordis",
+        "dsh",
+        "dsh-plugin"
+      ],
+      "partial": true
+    },
+    "Panniantong/Agent-Reach": {
+      "stars": 81804,
+      "forks": 7113,
+      "openIssues": null,
+      "topics": [
+        "agent-infrastructure",
+        "ai-agent",
+        "ai-search",
+        "automation",
+        "bilibili",
+        "claude-code",
+        "cli",
+        "cursor"
+      ],
+      "partial": true
+    },
+    "DietrichGebert/ponytail": {
+      "stars": 138928,
+      "forks": 7461,
+      "openIssues": null,
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "cursor-rules",
+        "developer-tools",
+        "llm"
+      ],
+      "partial": true
+    },
+    "stablyai/orca": {
+      "stars": 69101,
+      "forks": 4511,
+      "openIssues": null,
+      "topics": [
+        "ade",
+        "agent-ide",
+        "ai-agents",
+        "claude-code",
+        "cli",
+        "codex",
+        "cursor-agent",
+        "devtools"
+      ],
+      "partial": true
+    },
+    "asgeirtj/system_prompts_leaks": {
+      "stars": 67082,
+      "forks": 10893,
+      "openIssues": null,
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-prompts",
+        "anthropic",
+        "chatbot",
+        "chatgpt",
+        "claude",
+        "claude-code"
+      ],
+      "partial": true
+    },
+    "affaan-m/ECC": {
+      "stars": 258682,
+      "forks": 38685,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "developer-tools",
+        "llm",
+        "mcp",
+        "productivity"
+      ],
+      "partial": true
+    },
+    "diegosouzapw/OmniRoute": {
+      "stars": 66375,
+      "forks": 9305,
+      "openIssues": null,
+      "topics": [
+        "a2a",
+        "ai-agents",
+        "ai-gateway",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "cline",
+        "codex"
+      ],
+      "partial": true
+    },
+    "earendil-works/pi": {
+      "stars": 105374,
+      "forks": 13251,
+      "openIssues": null,
+      "topics": [],
+      "partial": true
+    },
+    "firecrawl/firecrawl": {
+      "stars": 180608,
+      "forks": 9798,
+      "openIssues": null,
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-crawler",
+        "ai-scraping",
+        "ai-search",
+        "crawler",
+        "data-extraction",
+        "html-to-markdown"
+      ],
+      "partial": true
+    },
+    "NousResearch/hermes-agent": {
+      "stars": 245682,
+      "forks": 51221,
+      "openIssues": null,
+      "topics": [
+        "ai",
+        "ai-agent",
+        "ai-agents",
+        "anthropic",
+        "chatgpt",
+        "claude",
+        "claude-code",
+        "codex"
+      ],
+      "partial": true
+    }
+  },
+  "2026-09-16": {
+    "deepseek-ai/deepseek-harness": {
+      "stars": 226120,
+      "forks": 26957,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "cordis",
+        "dsh",
+        "dsh-plugin"
+      ],
+      "partial": true
+    },
+    "Graphify-Labs/graphify": {
+      "stars": 118172,
+      "forks": 11421,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "antigravity",
+        "ast",
+        "claude-code",
+        "code-analysis",
+        "code-search",
+        "codex",
+        "cursor"
+      ],
+      "partial": true
+    },
+    "affaan-m/ECC": {
+      "stars": 259650,
+      "forks": 38840,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "developer-tools",
+        "llm",
+        "mcp",
+        "productivity"
+      ],
+      "partial": true
+    },
+    "DietrichGebert/ponytail": {
+      "stars": 139838,
+      "forks": 7514,
+      "openIssues": null,
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "cursor-rules",
+        "developer-tools",
+        "llm"
+      ],
+      "partial": true
+    },
+    "stablyai/orca": {
+      "stars": 69861,
+      "forks": 4561,
+      "openIssues": null,
+      "topics": [
+        "ade",
+        "agent-ide",
+        "ai-agents",
+        "claude-code",
+        "cli",
+        "codex",
+        "cursor-agent",
+        "devtools"
+      ],
+      "partial": true
+    },
+    "earendil-works/pi": {
+      "stars": 106106,
+      "forks": 13343,
+      "openIssues": null,
+      "topics": [],
+      "partial": true
+    },
+    "addyosmani/agent-skills": {
+      "stars": 95093,
+      "forks": 10084,
+      "openIssues": null,
+      "topics": [
+        "agent-skills",
+        "antigravity",
+        "claude-code",
+        "codex",
+        "cursor",
+        "skills"
+      ],
+      "partial": true
+    },
+    "firecrawl/firecrawl": {
+      "stars": 181076,
+      "forks": 9819,
+      "openIssues": null,
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-crawler",
+        "ai-scraping",
+        "ai-search",
+        "crawler",
+        "data-extraction",
+        "html-to-markdown"
+      ],
+      "partial": true
+    },
+    "Panniantong/Agent-Reach": {
+      "stars": 82258,
+      "forks": 7169,
+      "openIssues": null,
+      "topics": [
+        "agent-infrastructure",
+        "ai-agent",
+        "ai-search",
+        "automation",
+        "bilibili",
+        "claude-code",
+        "cli",
+        "cursor"
+      ],
+      "partial": true
+    },
+    "diegosouzapw/OmniRoute": {
+      "stars": 66788,
+      "forks": 9377,
+      "openIssues": null,
+      "topics": [
+        "a2a",
+        "ai-agents",
+        "ai-gateway",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "cline",
+        "codex"
+      ],
+      "partial": true
+    }
+  },
+  "2026-09-17": {
+    "deepseek-ai/deepseek-harness": {
+      "stars": 227376,
+      "forks": 27103,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "cordis",
+        "dsh",
+        "dsh-plugin"
+      ],
+      "partial": true
+    },
+    "affaan-m/ECC": {
+      "stars": 260745,
+      "forks": 39030,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "developer-tools",
+        "llm",
+        "mcp",
+        "productivity"
+      ],
+      "partial": true
+    },
+    "DietrichGebert/ponytail": {
+      "stars": 140878,
+      "forks": 7558,
+      "openIssues": null,
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "cursor-rules",
+        "developer-tools",
+        "llm"
+      ],
+      "partial": true
+    },
+    "coreyhaines31/marketingskills": {
+      "stars": 50666,
+      "forks": 7679,
+      "openIssues": null,
+      "topics": [
+        "claude",
+        "codex",
+        "marketing"
+      ],
+      "partial": true
+    },
+    "stablyai/orca": {
+      "stars": 70649,
+      "forks": 4625,
+      "openIssues": null,
+      "topics": [
+        "ade",
+        "agent-ide",
+        "ai-agents",
+        "claude-code",
+        "cli",
+        "codex",
+        "cursor-agent",
+        "devtools"
+      ],
+      "partial": true
+    },
+    "addyosmani/agent-skills": {
+      "stars": 95742,
+      "forks": 10127,
+      "openIssues": null,
+      "topics": [
+        "agent-skills",
+        "antigravity",
+        "claude-code",
+        "codex",
+        "cursor",
+        "skills"
+      ],
+      "partial": true
+    },
+    "Graphify-Labs/graphify": {
+      "stars": 118776,
+      "forks": 11491,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "antigravity",
+        "ast",
+        "claude-code",
+        "code-analysis",
+        "code-search",
+        "codex",
+        "cursor"
+      ],
+      "partial": true
+    },
+    "Panniantong/Agent-Reach": {
+      "stars": 82688,
+      "forks": 7228,
+      "openIssues": null,
+      "topics": [
+        "agent-infrastructure",
+        "ai-agent",
+        "ai-search",
+        "automation",
+        "bilibili",
+        "claude-code",
+        "cli",
+        "cursor"
+      ],
+      "partial": true
+    },
+    "diegosouzapw/OmniRoute": {
+      "stars": 67204,
+      "forks": 9459,
+      "openIssues": null,
+      "topics": [
+        "a2a",
+        "ai-agents",
+        "ai-gateway",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "cline",
+        "codex"
+      ],
+      "partial": true
+    },
+    "earendil-works/pi": {
+      "stars": 106522,
+      "forks": 13413,
+      "openIssues": null,
+      "topics": [],
+      "partial": true
+    }
+  },
+  "2026-09-23": {
+    "deepseek-ai/deepseek-harness": {
+      "stars": 234171,
+      "forks": 28132,
+      "watchers": 234171,
+      "openIssues": 0,
+      "license": "MIT",
+      "licensePermissive": true,
+      "hasDocs": false,
+      "hasHomepage": true,
+      "hasExamples": true,
+      "ageDays": 41,
+      "pushDaysAgo": 0,
+      "contributors": 41,
+      "releases90d": 21,
+      "prActivity": 0,
+      "issueActivity": 0,
+      "activityWindowDays": 30,
+      "orgVerified": true,
+      "ownerType": "Organization",
+      "downloadsSignal": false,
+      "topics": [
+        "ai-agents",
+        "cordis",
+        "dsh",
+        "dsh-plugin"
+      ]
+    },
+    "affaan-m/ECC": {
+      "stars": 265957,
+      "forks": 39738,
+      "watchers": 265957,
+      "openIssues": 221,
+      "license": "MIT",
+      "licensePermissive": true,
+      "hasDocs": true,
+      "hasHomepage": true,
+      "hasExamples": true,
+      "ageDays": 249,
+      "pushDaysAgo": 1,
+      "contributors": 100,
+      "releases90d": 3,
+      "prActivity": 100,
+      "issueActivity": 100,
+      "activityWindowDays": 30,
+      "orgVerified": false,
+      "ownerType": "User",
+      "downloadsSignal": false,
+      "topics": [
+        "ai-agents",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "developer-tools",
+        "llm",
+        "mcp",
+        "productivity"
+      ]
+    },
+    "DietrichGebert/ponytail": {
+      "stars": 144857,
+      "forks": 7756,
+      "watchers": 144857,
+      "openIssues": 299,
+      "license": "MIT",
+      "licensePermissive": true,
+      "hasDocs": true,
+      "hasHomepage": true,
+      "hasExamples": true,
+      "ageDays": 104,
+      "pushDaysAgo": 9,
+      "contributors": 64,
+      "releases90d": 3,
+      "prActivity": 100,
+      "issueActivity": 100,
+      "activityWindowDays": 30,
+      "orgVerified": false,
+      "ownerType": "User",
+      "downloadsSignal": false,
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "cursor-rules",
+        "developer-tools",
+        "llm",
+        "prompt-engineering",
+        "yagni"
+      ]
+    },
+    "earendil-works/pi": {
+      "stars": 108849,
+      "forks": 13821,
+      "watchers": 108849,
+      "openIssues": 220,
+      "license": "MIT",
+      "licensePermissive": true,
+      "hasDocs": true,
+      "hasHomepage": false,
+      "hasExamples": true,
+      "ageDays": 410,
+      "pushDaysAgo": 0,
+      "contributors": 100,
+      "releases90d": 23,
+      "prActivity": 100,
+      "issueActivity": 100,
+      "activityWindowDays": 30,
+      "orgVerified": true,
+      "ownerType": "Organization",
+      "downloadsSignal": false,
+      "topics": []
+    },
+    "firecrawl/firecrawl": {
+      "stars": 183699,
+      "forks": 9901,
+      "watchers": 183699,
+      "openIssues": 643,
+      "license": "AGPL-3.0",
+      "licensePermissive": false,
+      "hasDocs": false,
+      "hasHomepage": true,
+      "hasExamples": true,
+      "ageDays": 891,
+      "pushDaysAgo": 0,
+      "contributors": 100,
+      "releases90d": 0,
+      "prActivity": 100,
+      "issueActivity": 100,
+      "activityWindowDays": 30,
+      "orgVerified": true,
+      "ownerType": "Organization",
+      "downloadsSignal": false,
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-crawler",
+        "ai-scraping",
+        "ai-search",
+        "crawler",
+        "data-extraction",
+        "html-to-markdown",
+        "llm",
+        "markdown",
+        "scraper",
+        "scraping",
+        "web-crawler",
+        "web-data",
+        "web-data-extraction",
+        "web-scraper",
+        "web-scraping",
+        "web-search",
+        "webscraping"
+      ]
+    },
+    "Graphify-Labs/graphify": {
+      "stars": 120790,
+      "forks": 11654,
+      "watchers": 120790,
+      "openIssues": 1446,
+      "license": "Apache-2.0",
+      "licensePermissive": true,
+      "hasDocs": true,
+      "hasHomepage": true,
+      "hasExamples": true,
+      "ageDays": 173,
+      "pushDaysAgo": 1,
+      "contributors": 100,
+      "releases90d": 30,
+      "prActivity": 100,
+      "issueActivity": 100,
+      "activityWindowDays": 30,
+      "orgVerified": true,
+      "ownerType": "Organization",
+      "downloadsSignal": false,
+      "topics": [
+        "ai-agents",
+        "antigravity",
+        "ast",
+        "claude-code",
+        "code-analysis",
+        "code-search",
+        "codex",
+        "cursor",
+        "developer-tools",
+        "gemini",
+        "graphrag",
+        "knowledge-graph",
+        "leiden",
+        "llm",
+        "mcp",
+        "openclaw",
+        "rag",
+        "skills",
+        "tree-sitter"
+      ]
+    },
+    "NousResearch/hermes-agent": {
+      "stars": 248302,
+      "forks": 52451,
+      "watchers": 248302,
+      "openIssues": 44083,
+      "license": "MIT",
+      "licensePermissive": true,
+      "hasDocs": true,
+      "hasHomepage": true,
+      "hasExamples": true,
+      "ageDays": 428,
+      "pushDaysAgo": 0,
+      "contributors": 100,
+      "releases90d": 17,
+      "prActivity": 100,
+      "issueActivity": 100,
+      "activityWindowDays": 30,
+      "orgVerified": true,
+      "ownerType": "Organization",
+      "downloadsSignal": false,
+      "topics": [
+        "ai",
+        "ai-agent",
+        "ai-agents",
+        "anthropic",
+        "chatgpt",
+        "claude",
+        "claude-code",
+        "codex",
+        "hermes",
+        "hermes-agent",
+        "llm",
+        "nous-research",
+        "openai"
+      ]
+    },
+    "msitarzewski/agency-agents": {
+      "stars": 154319,
+      "forks": 24898,
+      "watchers": 154319,
+      "openIssues": 144,
+      "license": "MIT",
+      "licensePermissive": true,
+      "hasDocs": true,
+      "hasHomepage": false,
+      "hasExamples": true,
+      "ageDays": 345,
+      "pushDaysAgo": 2,
+      "contributors": 95,
+      "releases90d": 0,
+      "prActivity": 58,
+      "issueActivity": 70,
+      "activityWindowDays": 30,
+      "orgVerified": false,
+      "ownerType": "User",
+      "downloadsSignal": false,
+      "topics": []
+    },
+    "browser-use/browser-use": {
+      "stars": 116049,
+      "forks": 12774,
+      "watchers": 116049,
+      "openIssues": 489,
+      "license": "MIT",
+      "licensePermissive": true,
+      "hasDocs": false,
+      "hasHomepage": true,
+      "hasExamples": true,
+      "ageDays": 692,
+      "pushDaysAgo": 5,
+      "contributors": 100,
+      "releases90d": 8,
+      "prActivity": 100,
+      "issueActivity": 100,
+      "activityWindowDays": 30,
+      "orgVerified": true,
+      "ownerType": "Organization",
+      "downloadsSignal": false,
+      "topics": [
+        "ai-agents",
+        "ai-tools",
+        "browser-automation",
+        "browser-use",
+        "llm",
+        "playwright",
+        "python"
+      ]
+    },
+    "Shubhamsaboo/awesome-llm-apps": {
+      "stars": 139540,
+      "forks": 20500,
+      "watchers": 139540,
+      "openIssues": 18,
+      "license": "Apache-2.0",
+      "licensePermissive": true,
+      "hasDocs": true,
+      "hasHomepage": true,
+      "hasExamples": true,
+      "ageDays": 877,
+      "pushDaysAgo": 0,
+      "contributors": 100,
+      "releases90d": 0,
+      "prActivity": 67,
+      "issueActivity": 82,
+      "activityWindowDays": 30,
+      "orgVerified": false,
+      "ownerType": "User",
+      "downloadsSignal": false,
+      "topics": [
+        "agents",
+        "llms",
+        "python",
+        "rag"
+      ]
+    },
+    "langgenius/dify": {
+      "stars": 156972,
+      "forks": 24740,
+      "watchers": 156972,
+      "openIssues": 1082,
+      "license": null,
+      "licensePermissive": false,
+      "hasDocs": false,
+      "hasHomepage": true,
+      "hasExamples": true,
+      "ageDays": 1260,
+      "pushDaysAgo": 0,
+      "contributors": 100,
+      "releases90d": 0,
+      "prActivity": 100,
+      "issueActivity": 0,
+      "activityWindowDays": 30,
+      "orgVerified": true,
+      "ownerType": "Organization",
+      "downloadsSignal": false,
+      "topics": [
+        "agent",
+        "agentic-ai",
+        "agentic-framework",
+        "agentic-workflow",
+        "ai",
+        "automation",
+        "claude",
+        "deepseek",
+        "genai",
+        "gpt",
+        "llm",
+        "low-code",
+        "mcp",
+        "nextjs",
+        "no-code",
+        "openai",
+        "python",
+        "skills",
+        "workflow"
+      ]
+    },
+    "langchain-ai/langchain": {
+      "stars": 146927,
+      "forks": 24579,
+      "watchers": 146927,
+      "openIssues": 558,
+      "license": "MIT",
+      "licensePermissive": true,
+      "hasDocs": true,
+      "hasHomepage": true,
+      "hasExamples": true,
+      "ageDays": 1438,
+      "pushDaysAgo": 0,
+      "contributors": 100,
+      "releases90d": 30,
+      "prActivity": 100,
+      "issueActivity": 100,
+      "activityWindowDays": 30,
+      "orgVerified": true,
+      "ownerType": "Organization",
+      "downloadsSignal": false,
+      "topics": [
+        "agents",
+        "ai",
+        "ai-agents",
+        "anthropic",
+        "chatgpt",
+        "deepagents",
+        "enterprise",
+        "framework",
+        "gemini",
+        "generative-ai",
+        "langchain",
+        "langgraph",
+        "llm",
+        "multiagent",
+        "open-source",
+        "openai",
+        "pydantic",
+        "python",
+        "rag",
+        "typescript"
+      ]
+    },
+    "langflow-ai/langflow": {
+      "stars": 155174,
+      "forks": 10128,
+      "watchers": 155174,
+      "openIssues": 1121,
+      "license": "MIT",
+      "licensePermissive": true,
+      "hasDocs": true,
+      "hasHomepage": true,
+      "hasExamples": true,
+      "ageDays": 1323,
+      "pushDaysAgo": 0,
+      "contributors": 100,
+      "releases90d": 13,
+      "prActivity": 100,
+      "issueActivity": 100,
+      "activityWindowDays": 30,
+      "orgVerified": true,
+      "ownerType": "Organization",
+      "downloadsSignal": false,
+      "topics": [
+        "agents",
+        "chatgpt",
+        "generative-ai",
+        "large-language-models",
+        "multiagent",
+        "react-flow"
+      ]
+    },
+    "x1xhlol/system-prompts-and-models-of-ai-tools": {
+      "stars": 143831,
+      "forks": 34812,
+      "watchers": 143831,
+      "openIssues": 163,
+      "license": "GPL-3.0",
+      "licensePermissive": false,
+      "hasDocs": true,
+      "hasHomepage": false,
+      "hasExamples": false,
+      "ageDays": 567,
+      "pushDaysAgo": 43,
+      "contributors": 30,
+      "releases90d": 0,
+      "prActivity": 5,
+      "issueActivity": 5,
+      "activityWindowDays": 30,
+      "orgVerified": false,
+      "ownerType": "User",
+      "downloadsSignal": false,
+      "topics": [
+        "ai",
+        "bolt",
+        "cluely",
+        "copilot",
+        "cursor",
+        "cursorai",
+        "devin",
+        "github-copilot",
+        "lovable",
+        "open-source",
+        "perplexity",
+        "replit",
+        "system-prompts",
+        "trae",
+        "trae-ai",
+        "trae-ide",
+        "v0",
+        "vscode",
+        "windsurf",
+        "windsurf-ai"
+      ]
+    }
+  },
+  "2026-09-22": {
+    "deepseek-ai/deepseek-harness": {
+      "stars": 232947,
+      "forks": 27965,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "cordis",
+        "dsh",
+        "dsh-plugin"
+      ],
+      "partial": true
+    },
+    "stablyai/orca": {
+      "stars": 75102,
+      "forks": 4910,
+      "openIssues": null,
+      "topics": [
+        "ade",
+        "agent-ide",
+        "ai-agents",
+        "claude-code",
+        "cli",
+        "codex",
+        "cursor-agent",
+        "devtools"
+      ],
+      "partial": true
+    },
+    "affaan-m/ECC": {
+      "stars": 265002,
+      "forks": 39591,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "developer-tools",
+        "llm",
+        "mcp",
+        "productivity"
+      ],
+      "partial": true
+    },
+    "DietrichGebert/ponytail": {
+      "stars": 144036,
+      "forks": 7713,
+      "openIssues": null,
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "cursor-rules",
+        "developer-tools",
+        "llm"
+      ],
+      "partial": true
+    },
+    "Panniantong/Agent-Reach": {
+      "stars": 84604,
+      "forks": 7429,
+      "openIssues": null,
+      "topics": [
+        "agent-infrastructure",
+        "ai-agent",
+        "ai-search",
+        "automation",
+        "bilibili",
+        "claude-code",
+        "cli",
+        "cursor"
+      ],
+      "partial": true
+    },
+    "earendil-works/pi": {
+      "stars": 108373,
+      "forks": 13727,
+      "openIssues": null,
+      "topics": [],
+      "partial": true
+    },
+    "firecrawl/firecrawl": {
+      "stars": 183133,
+      "forks": 9880,
+      "openIssues": null,
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-crawler",
+        "ai-scraping",
+        "ai-search",
+        "crawler",
+        "data-extraction",
+        "html-to-markdown"
+      ],
+      "partial": true
+    },
+    "diegosouzapw/OmniRoute": {
+      "stars": 69095,
+      "forks": 9782,
+      "openIssues": null,
+      "topics": [
+        "a2a",
+        "ai-agents",
+        "ai-gateway",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "cline",
+        "codex"
+      ],
+      "partial": true
+    },
+    "addyosmani/agent-skills": {
+      "stars": 98286,
+      "forks": 10326,
+      "openIssues": null,
+      "topics": [
+        "agent-skills",
+        "antigravity",
+        "claude-code",
+        "codex",
+        "cursor",
+        "skills"
+      ],
+      "partial": true
+    },
+    "Graphify-Labs/graphify": {
+      "stars": 120353,
+      "forks": 11619,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "antigravity",
+        "ast",
+        "claude-code",
+        "code-analysis",
+        "code-search",
+        "codex",
+        "cursor"
+      ],
+      "partial": true
+    }
+  },
+  "2026-09-21": {
+    "deepseek-ai/deepseek-harness": {
+      "stars": 231923,
+      "forks": 27816,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "cordis",
+        "dsh",
+        "dsh-plugin"
+      ],
+      "partial": true
+    },
+    "affaan-m/ECC": {
+      "stars": 264295,
+      "forks": 39506,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "developer-tools",
+        "llm",
+        "mcp",
+        "productivity"
+      ],
+      "partial": true
+    },
+    "stablyai/orca": {
+      "stars": 74171,
+      "forks": 4859,
+      "openIssues": null,
+      "topics": [
+        "ade",
+        "agent-ide",
+        "ai-agents",
+        "claude-code",
+        "cli",
+        "codex",
+        "cursor-agent",
+        "devtools"
+      ],
+      "partial": true
+    },
+    "DietrichGebert/ponytail": {
+      "stars": 143427,
+      "forks": 7683,
+      "openIssues": null,
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "cursor-rules",
+        "developer-tools",
+        "llm"
+      ],
+      "partial": true
+    },
+    "addyosmani/agent-skills": {
+      "stars": 97967,
+      "forks": 10308,
+      "openIssues": null,
+      "topics": [
+        "agent-skills",
+        "antigravity",
+        "claude-code",
+        "codex",
+        "cursor",
+        "skills"
+      ],
+      "partial": true
+    },
+    "Panniantong/Agent-Reach": {
+      "stars": 84145,
+      "forks": 7379,
+      "openIssues": null,
+      "topics": [
+        "agent-infrastructure",
+        "ai-agent",
+        "ai-search",
+        "automation",
+        "bilibili",
+        "claude-code",
+        "cli",
+        "cursor"
+      ],
+      "partial": true
+    },
+    "earendil-works/pi": {
+      "stars": 107996,
+      "forks": 13653,
+      "openIssues": null,
+      "topics": [],
+      "partial": true
+    },
+    "diegosouzapw/OmniRoute": {
+      "stars": 68747,
+      "forks": 9726,
+      "openIssues": null,
+      "topics": [
+        "a2a",
+        "ai-agents",
+        "ai-gateway",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "cline",
+        "codex"
+      ],
+      "partial": true
+    },
+    "firecrawl/firecrawl": {
+      "stars": 182758,
+      "forks": 9873,
+      "openIssues": null,
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-crawler",
+        "ai-scraping",
+        "ai-search",
+        "crawler",
+        "data-extraction",
+        "html-to-markdown"
+      ],
+      "partial": true
+    },
+    "NousResearch/hermes-agent": {
+      "stars": 247631,
+      "forks": 52102,
+      "openIssues": null,
+      "topics": [
+        "ai",
+        "ai-agent",
+        "ai-agents",
+        "anthropic",
+        "chatgpt",
+        "claude",
+        "claude-code",
+        "codex"
+      ],
+      "partial": true
+    }
+  },
+  "2026-09-20": {
+    "deepseek-ai/deepseek-harness": {
+      "stars": 230718,
+      "forks": 27643,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "cordis",
+        "dsh",
+        "dsh-plugin"
+      ],
+      "partial": true
+    },
+    "stablyai/orca": {
+      "stars": 73073,
+      "forks": 4777,
+      "openIssues": null,
+      "topics": [
+        "ade",
+        "agent-ide",
+        "ai-agents",
+        "claude-code",
+        "cli",
+        "codex",
+        "cursor-agent",
+        "devtools"
+      ],
+      "partial": true
+    },
+    "affaan-m/ECC": {
+      "stars": 263188,
+      "forks": 39381,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "developer-tools",
+        "llm",
+        "mcp",
+        "productivity"
+      ],
+      "partial": true
+    },
+    "addyosmani/agent-skills": {
+      "stars": 97344,
+      "forks": 10269,
+      "openIssues": null,
+      "topics": [
+        "agent-skills",
+        "antigravity",
+        "claude-code",
+        "codex",
+        "cursor",
+        "skills"
+      ],
+      "partial": true
+    },
+    "DietrichGebert/ponytail": {
+      "stars": 142765,
+      "forks": 7658,
+      "openIssues": null,
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "cursor-rules",
+        "developer-tools",
+        "llm"
+      ],
+      "partial": true
+    },
+    "earendil-works/pi": {
+      "stars": 107563,
+      "forks": 13578,
+      "openIssues": null,
+      "topics": [],
+      "partial": true
+    },
+    "Panniantong/Agent-Reach": {
+      "stars": 83628,
+      "forks": 7332,
+      "openIssues": null,
+      "topics": [
+        "agent-infrastructure",
+        "ai-agent",
+        "ai-search",
+        "automation",
+        "bilibili",
+        "claude-code",
+        "cli",
+        "cursor"
+      ],
+      "partial": true
+    },
+    "diegosouzapw/OmniRoute": {
+      "stars": 68394,
+      "forks": 9676,
+      "openIssues": null,
+      "topics": [
+        "a2a",
+        "ai-agents",
+        "ai-gateway",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "cline",
+        "codex"
+      ],
+      "partial": true
+    },
+    "firecrawl/firecrawl": {
+      "stars": 182407,
+      "forks": 9857,
+      "openIssues": null,
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-crawler",
+        "ai-scraping",
+        "ai-search",
+        "crawler",
+        "data-extraction",
+        "html-to-markdown"
+      ],
+      "partial": true
+    },
+    "NousResearch/hermes-agent": {
+      "stars": 247302,
+      "forks": 51987,
+      "openIssues": null,
+      "topics": [
+        "ai",
+        "ai-agent",
+        "ai-agents",
+        "anthropic",
+        "chatgpt",
+        "claude",
+        "claude-code",
+        "codex"
+      ],
+      "partial": true
+    }
+  },
+  "2026-09-19": {
+    "affaan-m/ECC": {
+      "stars": 262409,
+      "forks": 39257,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "developer-tools",
+        "llm",
+        "mcp",
+        "productivity"
+      ],
+      "partial": true
+    },
+    "deepseek-ai/deepseek-harness": {
+      "stars": 229560,
+      "forks": 27466,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "cordis",
+        "dsh",
+        "dsh-plugin"
+      ],
+      "partial": true
+    },
+    "stablyai/orca": {
+      "stars": 72211,
+      "forks": 4725,
+      "openIssues": null,
+      "topics": [
+        "ade",
+        "agent-ide",
+        "ai-agents",
+        "claude-code",
+        "cli",
+        "codex",
+        "cursor-agent",
+        "devtools"
+      ],
+      "partial": true
+    },
+    "DietrichGebert/ponytail": {
+      "stars": 142240,
+      "forks": 7626,
+      "openIssues": null,
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "cursor-rules",
+        "developer-tools",
+        "llm"
+      ],
+      "partial": true
+    },
+    "addyosmani/agent-skills": {
+      "stars": 96611,
+      "forks": 10208,
+      "openIssues": null,
+      "topics": [
+        "agent-skills",
+        "antigravity",
+        "claude-code",
+        "codex",
+        "cursor",
+        "skills"
+      ],
+      "partial": true
+    },
+    "diegosouzapw/OmniRoute": {
+      "stars": 68033,
+      "forks": 9599,
+      "openIssues": null,
+      "topics": [
+        "a2a",
+        "ai-agents",
+        "ai-gateway",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "cline",
+        "codex"
+      ],
+      "partial": true
+    },
+    "earendil-works/pi": {
+      "stars": 107149,
+      "forks": 13528,
+      "openIssues": null,
+      "topics": [],
+      "partial": true
+    },
+    "Graphify-Labs/graphify": {
+      "stars": 119477,
+      "forks": 11553,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "antigravity",
+        "ast",
+        "claude-code",
+        "code-analysis",
+        "code-search",
+        "codex",
+        "cursor"
+      ],
+      "partial": true
+    },
+    "NousResearch/hermes-agent": {
+      "stars": 247011,
+      "forks": 51841,
+      "openIssues": null,
+      "topics": [
+        "ai",
+        "ai-agent",
+        "ai-agents",
+        "anthropic",
+        "chatgpt",
+        "claude",
+        "claude-code",
+        "codex"
+      ],
+      "partial": true
+    },
+    "firecrawl/firecrawl": {
+      "stars": 182103,
+      "forks": 9846,
+      "openIssues": null,
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-crawler",
+        "ai-scraping",
+        "ai-search",
+        "crawler",
+        "data-extraction",
+        "html-to-markdown"
+      ],
+      "partial": true
+    }
+  },
+  "2026-09-18": {
+    "deepseek-ai/deepseek-harness": {
+      "stars": 228645,
+      "forks": 27332,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "cordis",
+        "dsh",
+        "dsh-plugin"
+      ],
+      "partial": true
+    },
+    "stablyai/orca": {
+      "stars": 71472,
+      "forks": 4680,
+      "openIssues": null,
+      "topics": [
+        "ade",
+        "agent-ide",
+        "ai-agents",
+        "claude-code",
+        "cli",
+        "codex",
+        "cursor-agent",
+        "devtools"
+      ],
+      "partial": true
+    },
+    "DietrichGebert/ponytail": {
+      "stars": 141684,
+      "forks": 7594,
+      "openIssues": null,
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "cursor-rules",
+        "developer-tools",
+        "llm"
+      ],
+      "partial": true
+    },
+    "affaan-m/ECC": {
+      "stars": 261481,
+      "forks": 39136,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "developer-tools",
+        "llm",
+        "mcp",
+        "productivity"
+      ],
+      "partial": true
+    },
+    "diegosouzapw/OmniRoute": {
+      "stars": 67623,
+      "forks": 9521,
+      "openIssues": null,
+      "topics": [
+        "a2a",
+        "ai-agents",
+        "ai-gateway",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "cline",
+        "codex"
+      ],
+      "partial": true
+    },
+    "Graphify-Labs/graphify": {
+      "stars": 119186,
+      "forks": 11524,
+      "openIssues": null,
+      "topics": [
+        "ai-agents",
+        "antigravity",
+        "ast",
+        "claude-code",
+        "code-analysis",
+        "code-search",
+        "codex",
+        "cursor"
+      ],
+      "partial": true
+    },
+    "addyosmani/agent-skills": {
+      "stars": 96111,
+      "forks": 10166,
+      "openIssues": null,
+      "topics": [
+        "agent-skills",
+        "antigravity",
+        "claude-code",
+        "codex",
+        "cursor",
+        "skills"
+      ],
+      "partial": true
+    },
+    "NousResearch/hermes-agent": {
+      "stars": 246721,
+      "forks": 51694,
+      "openIssues": null,
+      "topics": [
+        "ai",
+        "ai-agent",
+        "ai-agents",
+        "anthropic",
+        "chatgpt",
+        "claude",
+        "claude-code",
+        "codex"
+      ],
+      "partial": true
+    },
+    "firecrawl/firecrawl": {
+      "stars": 181824,
+      "forks": 9843,
+      "openIssues": null,
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-crawler",
+        "ai-scraping",
+        "ai-search",
+        "crawler",
+        "data-extraction",
+        "html-to-markdown"
+      ],
+      "partial": true
+    },
+    "earendil-works/pi": {
+      "stars": 106842,
+      "forks": 13473,
+      "openIssues": null,
+      "topics": [],
+      "partial": true
+    }
+  }
+}
