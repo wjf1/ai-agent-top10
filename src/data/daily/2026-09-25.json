@@ -1,0 +1,844 @@
+{
+  "date": "2026-09-25",
+  "generatedAt": "2026-09-25T10:42:46.991Z",
+  "windowDays": 7,
+  "poolSize": 44,
+  "entries": [
+    {
+      "rank": 1,
+      "slug": "stablyai-orca",
+      "full_name": "stablyai/orca",
+      "name": "orca",
+      "owner": "stablyai",
+      "url": "https://github.com/stablyai/orca",
+      "homepage": "https://onorca.dev/",
+      "language": "TypeScript",
+      "category": "framework",
+      "topics": [
+        "ade",
+        "agent-ide",
+        "ai-agents",
+        "claude-code",
+        "cli",
+        "codex",
+        "cursor-agent",
+        "devtools"
+      ],
+      "stars": 77859,
+      "forks": 5095,
+      "openIssues": 6804,
+      "contributors": 100,
+      "releases90d": 30,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 6229,
+      "dailyGain": 889.9,
+      "growthRate": 8,
+      "forksGain": 415,
+      "forksGrowthRate": 8.1,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": 0,
+      "scores": {
+        "heat": 100,
+        "community": 64,
+        "innovation": 83,
+        "practical": 100,
+        "ecosystem": 47,
+        "health": 63,
+        "forksGrowth": 69,
+        "activity": 100,
+        "overall": 81
+      },
+      "why": {
+        "zh": "近 7 天新增 6,229 star（日均约 890），累计 77,859 star、5,095 fork。采用 MIT 协议，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个。",
+        "en": "Gained 6,229 stars over the last 7 days (~890/day), now at 77,859 stars and 5,095 forks. Licensed under MIT; last push 0 day(s) ago, with 200 PRs and 200 issues opened in the last 30 days."
+      },
+      "highlights": [
+        {
+          "zh": "100 位公开贡献者",
+          "en": "100 public contributors"
+        },
+        {
+          "zh": "近 90 天发布 30 个版本",
+          "en": "30 release(s) in the last 90 days"
+        },
+        {
+          "zh": "宽松许可证（MIT），商用门槛低",
+          "en": "Permissive license (MIT) — easy commercial use"
+        },
+        {
+          "zh": "7 天内新增 415 次 fork",
+          "en": "415 new forks in the window"
+        },
+        {
+          "zh": "新仓库，创建至今仅 192 天",
+          "en": "Young project — only 192 days old"
+        }
+      ],
+      "cons": [
+        {
+          "zh": "开放 issue 6,804 个，相对 star 规模偏高",
+          "en": "6,804 open issues — high relative to its star count"
+        }
+      ],
+      "fitFor": [
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        },
+        {
+          "zh": "需要可扩展抽象层而非端到端方案的团队",
+          "en": "Teams wanting an extensible abstraction layer rather than a turnkey app"
+        }
+      ],
+      "quickstart": "# stablyai/orca\n$ git clone https://github.com/stablyai/orca.git\n$ cd orca\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-25"
+    },
+    {
+      "rank": 2,
+      "slug": "affaan-m-ecc",
+      "full_name": "affaan-m/ECC",
+      "name": "ECC",
+      "owner": "affaan-m",
+      "url": "https://github.com/affaan-m/ECC",
+      "homepage": "https://ecc.tools/",
+      "language": "JavaScript",
+      "category": "framework",
+      "topics": [
+        "ai-agents",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "developer-tools",
+        "llm",
+        "mcp",
+        "productivity"
+      ],
+      "stars": 267168,
+      "forks": 39920,
+      "openIssues": 233,
+      "contributors": 100,
+      "releases90d": 3,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 5687,
+      "dailyGain": 812.4,
+      "growthRate": 2.1,
+      "forksGain": 784,
+      "forksGrowthRate": 2,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": 0,
+      "scores": {
+        "heat": 98,
+        "community": 61,
+        "innovation": 81,
+        "practical": 100,
+        "ecosystem": 75,
+        "health": 83,
+        "forksGrowth": 93,
+        "activity": 100,
+        "overall": 87
+      },
+      "why": {
+        "zh": "近 7 天新增 5,687 star（日均约 812），累计 267,168 star、39,920 fork。采用 MIT 协议，最近一次提交在 1 天前，近 30 天新建 PR 200 个、issue 200 个。",
+        "en": "Gained 5,687 stars over the last 7 days (~812/day), now at 267,168 stars and 39,920 forks. Licensed under MIT; last push 1 day(s) ago, with 200 PRs and 200 issues opened in the last 30 days."
+      },
+      "highlights": [
+        {
+          "zh": "100 位公开贡献者",
+          "en": "100 public contributors"
+        },
+        {
+          "zh": "近 90 天发布 3 个版本",
+          "en": "3 release(s) in the last 90 days"
+        },
+        {
+          "zh": "宽松许可证（MIT），商用门槛低",
+          "en": "Permissive license (MIT) — easy commercial use"
+        },
+        {
+          "zh": "7 天内新增 784 次 fork",
+          "en": "784 new forks in the window"
+        },
+        {
+          "zh": "新仓库，创建至今仅 250 天",
+          "en": "Young project — only 250 days old"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        },
+        {
+          "zh": "需要可扩展抽象层而非端到端方案的团队",
+          "en": "Teams wanting an extensible abstraction layer rather than a turnkey app"
+        }
+      ],
+      "quickstart": "# affaan-m/ECC\n$ git clone https://github.com/affaan-m/ECC.git\n$ cd ECC\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-25"
+    },
+    {
+      "rank": 3,
+      "slug": "dietrichgebert-ponytail",
+      "full_name": "DietrichGebert/ponytail",
+      "name": "ponytail",
+      "owner": "DietrichGebert",
+      "url": "https://github.com/DietrichGebert/ponytail",
+      "homepage": "https://ponytail.dev/",
+      "language": "JavaScript",
+      "category": "framework",
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "cursor-rules",
+        "developer-tools",
+        "llm"
+      ],
+      "stars": 145709,
+      "forks": 7812,
+      "openIssues": 305,
+      "contributors": 64,
+      "releases90d": 3,
+      "prActivity": 131,
+      "issueActivity": 177,
+      "weeklyGain": 4025,
+      "dailyGain": 575,
+      "growthRate": 2.8,
+      "forksGain": 218,
+      "forksGrowthRate": 2.8,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": 0,
+      "scores": {
+        "heat": 95,
+        "community": 41,
+        "innovation": 69,
+        "practical": 100,
+        "ecosystem": 54,
+        "health": 69,
+        "forksGrowth": 50,
+        "activity": 43,
+        "overall": 68
+      },
+      "why": {
+        "zh": "近 7 天新增 4,025 star（日均约 575），累计 145,709 star、7,812 fork。采用 MIT 协议，最近一次提交在 11 天前，近 30 天新建 PR 131 个、issue 177 个。",
+        "en": "Gained 4,025 stars over the last 7 days (~575/day), now at 145,709 stars and 7,812 forks. Licensed under MIT; last push 11 day(s) ago, with 131 PRs and 177 issues opened in the last 30 days."
+      },
+      "highlights": [
+        {
+          "zh": "64 位公开贡献者",
+          "en": "64 public contributors"
+        },
+        {
+          "zh": "近 90 天发布 3 个版本",
+          "en": "3 release(s) in the last 90 days"
+        },
+        {
+          "zh": "宽松许可证（MIT），商用门槛低",
+          "en": "Permissive license (MIT) — easy commercial use"
+        },
+        {
+          "zh": "7 天内新增 218 次 fork",
+          "en": "218 new forks in the window"
+        },
+        {
+          "zh": "新仓库，创建至今仅 105 天",
+          "en": "Young project — only 105 days old"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        },
+        {
+          "zh": "需要可扩展抽象层而非端到端方案的团队",
+          "en": "Teams wanting an extensible abstraction layer rather than a turnkey app"
+        }
+      ],
+      "quickstart": "# DietrichGebert/ponytail\n$ git clone https://github.com/DietrichGebert/ponytail.git\n$ cd ponytail\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-25"
+    },
+    {
+      "rank": 4,
+      "slug": "addyosmani-agent-skills",
+      "full_name": "addyosmani/agent-skills",
+      "name": "agent-skills",
+      "owner": "addyosmani",
+      "url": "https://github.com/addyosmani/agent-skills",
+      "homepage": "https://skills.addy.ie/",
+      "language": "JavaScript",
+      "category": "framework",
+      "topics": [
+        "agent-skills",
+        "antigravity",
+        "claude-code",
+        "codex",
+        "cursor",
+        "skills"
+      ],
+      "stars": 98958,
+      "forks": 10387,
+      "openIssues": 120,
+      "contributors": 74,
+      "releases90d": 8,
+      "prActivity": 67,
+      "issueActivity": 90,
+      "weeklyGain": 2847,
+      "dailyGain": 406.7,
+      "growthRate": 2.9,
+      "forksGain": 221,
+      "forksGrowthRate": 2.1,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": 0,
+      "scores": {
+        "heat": 93,
+        "community": 56,
+        "innovation": 65,
+        "practical": 100,
+        "ecosystem": 54,
+        "health": 81,
+        "forksGrowth": 61,
+        "activity": 36,
+        "overall": 70
+      },
+      "why": {
+        "zh": "近 7 天新增 2,847 star（日均约 407），累计 98,958 star、10,387 fork。采用 MIT 协议，最近一次提交在 2 天前，近 30 天新建 PR 67 个、issue 90 个。",
+        "en": "Gained 2,847 stars over the last 7 days (~407/day), now at 98,958 stars and 10,387 forks. Licensed under MIT; last push 2 day(s) ago, with 67 PRs and 90 issues opened in the last 30 days."
+      },
+      "highlights": [
+        {
+          "zh": "74 位公开贡献者",
+          "en": "74 public contributors"
+        },
+        {
+          "zh": "近 90 天发布 8 个版本",
+          "en": "8 release(s) in the last 90 days"
+        },
+        {
+          "zh": "宽松许可证（MIT），商用门槛低",
+          "en": "Permissive license (MIT) — easy commercial use"
+        },
+        {
+          "zh": "7 天内新增 221 次 fork",
+          "en": "221 new forks in the window"
+        },
+        {
+          "zh": "新仓库，创建至今仅 222 天",
+          "en": "Young project — only 222 days old"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        },
+        {
+          "zh": "需要可扩展抽象层而非端到端方案的团队",
+          "en": "Teams wanting an extensible abstraction layer rather than a turnkey app"
+        }
+      ],
+      "quickstart": "# addyosmani/agent-skills\n$ git clone https://github.com/addyosmani/agent-skills.git\n$ cd agent-skills\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-25"
+    },
+    {
+      "rank": 5,
+      "slug": "firecrawl-firecrawl",
+      "full_name": "firecrawl/firecrawl",
+      "name": "firecrawl",
+      "owner": "firecrawl",
+      "url": "https://github.com/firecrawl/firecrawl",
+      "homepage": "https://firecrawl.dev/",
+      "language": "TypeScript",
+      "category": "tool",
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-crawler",
+        "ai-scraping",
+        "ai-search",
+        "crawler",
+        "data-extraction",
+        "html-to-markdown"
+      ],
+      "stars": 184488,
+      "forks": 9918,
+      "openIssues": 649,
+      "contributors": 100,
+      "releases90d": 0,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 2664,
+      "dailyGain": 380.6,
+      "growthRate": 1.4,
+      "forksGain": 75,
+      "forksGrowthRate": 0.8,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": 0,
+      "scores": {
+        "heat": 91,
+        "community": 63,
+        "innovation": 47,
+        "practical": 62,
+        "ecosystem": 73,
+        "health": 91,
+        "forksGrowth": 35,
+        "activity": 100,
+        "overall": 70
+      },
+      "why": {
+        "zh": "近 7 天新增 2,664 star（日均约 381），累计 184,488 star、9,918 fork。采用 AGPL-3.0 协议，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个。",
+        "en": "Gained 2,664 stars over the last 7 days (~381/day), now at 184,488 stars and 9,918 forks. Licensed under AGPL-3.0; last push 0 day(s) ago, with 200 PRs and 200 issues opened in the last 30 days."
+      },
+      "highlights": [
+        {
+          "zh": "100 位公开贡献者",
+          "en": "100 public contributors"
+        },
+        {
+          "zh": "7 天内新增 75 次 fork",
+          "en": "75 new forks in the window"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "想给现有工作流加一层 Agent 自动化的团队",
+          "en": "Teams adding an agent-automation layer to an existing workflow"
+        },
+        {
+          "zh": "偏工具链方向、重视可观测性的工程师",
+          "en": "Engineers on the tooling side who value observability"
+        }
+      ],
+      "quickstart": "# firecrawl/firecrawl\n$ git clone https://github.com/firecrawl/firecrawl.git\n$ cd firecrawl\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-25"
+    },
+    {
+      "rank": 6,
+      "slug": "earendil-works-pi",
+      "full_name": "earendil-works/pi",
+      "name": "pi",
+      "owner": "earendil-works",
+      "url": "https://github.com/earendil-works/pi",
+      "homepage": "",
+      "language": "TypeScript",
+      "category": "framework",
+      "topics": [],
+      "stars": 109262,
+      "forks": 13883,
+      "openIssues": 231,
+      "contributors": 100,
+      "releases90d": 23,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 2420,
+      "dailyGain": 345.7,
+      "growthRate": 2.2,
+      "forksGain": 410,
+      "forksGrowthRate": 3,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": 0,
+      "scores": {
+        "heat": 89,
+        "community": 66,
+        "innovation": 57,
+        "practical": 80,
+        "ecosystem": 72,
+        "health": 87,
+        "forksGrowth": 71,
+        "activity": 100,
+        "overall": 77
+      },
+      "why": {
+        "zh": "近 7 天新增 2,420 star（日均约 346），累计 109,262 star、13,883 fork。采用 MIT 协议，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个。",
+        "en": "Gained 2,420 stars over the last 7 days (~346/day), now at 109,262 stars and 13,883 forks. Licensed under MIT; last push 0 day(s) ago, with 200 PRs and 200 issues opened in the last 30 days."
+      },
+      "highlights": [
+        {
+          "zh": "100 位公开贡献者",
+          "en": "100 public contributors"
+        },
+        {
+          "zh": "近 90 天发布 23 个版本",
+          "en": "23 release(s) in the last 90 days"
+        },
+        {
+          "zh": "宽松许可证（MIT），商用门槛低",
+          "en": "Permissive license (MIT) — easy commercial use"
+        },
+        {
+          "zh": "7 天内新增 410 次 fork",
+          "en": "410 new forks in the window"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        },
+        {
+          "zh": "需要可扩展抽象层而非端到端方案的团队",
+          "en": "Teams wanting an extensible abstraction layer rather than a turnkey app"
+        }
+      ],
+      "quickstart": "# earendil-works/pi\n$ git clone https://github.com/earendil-works/pi.git\n$ cd pi\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-25"
+    },
+    {
+      "rank": 7,
+      "slug": "diegosouzapw-omniroute",
+      "full_name": "diegosouzapw/OmniRoute",
+      "name": "OmniRoute",
+      "owner": "diegosouzapw",
+      "url": "https://github.com/diegosouzapw/OmniRoute",
+      "homepage": "https://omniroute.online/",
+      "language": "TypeScript",
+      "category": "tool",
+      "topics": [
+        "a2a",
+        "ai-agents",
+        "ai-gateway",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "cline",
+        "codex"
+      ],
+      "stars": 70040,
+      "forks": 9935,
+      "openIssues": 568,
+      "contributors": 100,
+      "releases90d": 14,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 2417,
+      "dailyGain": 345.3,
+      "growthRate": 3.5,
+      "forksGain": 414,
+      "forksGrowthRate": 4.2,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": 0,
+      "scores": {
+        "heat": 86,
+        "community": 62,
+        "innovation": 78,
+        "practical": 100,
+        "ecosystem": 39,
+        "health": 76,
+        "forksGrowth": 72,
+        "activity": 100,
+        "overall": 78
+      },
+      "why": {
+        "zh": "近 7 天新增 2,417 star（日均约 345），累计 70,040 star、9,935 fork。采用 MIT 协议，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个。",
+        "en": "Gained 2,417 stars over the last 7 days (~345/day), now at 70,040 stars and 9,935 forks. Licensed under MIT; last push 0 day(s) ago, with 200 PRs and 200 issues opened in the last 30 days."
+      },
+      "highlights": [
+        {
+          "zh": "100 位公开贡献者",
+          "en": "100 public contributors"
+        },
+        {
+          "zh": "近 90 天发布 14 个版本",
+          "en": "14 release(s) in the last 90 days"
+        },
+        {
+          "zh": "宽松许可证（MIT），商用门槛低",
+          "en": "Permissive license (MIT) — easy commercial use"
+        },
+        {
+          "zh": "7 天内新增 414 次 fork",
+          "en": "414 new forks in the window"
+        },
+        {
+          "zh": "新仓库，创建至今仅 224 天",
+          "en": "Young project — only 224 days old"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "想给现有工作流加一层 Agent 自动化的团队",
+          "en": "Teams adding an agent-automation layer to an existing workflow"
+        },
+        {
+          "zh": "偏工具链方向、重视可观测性的工程师",
+          "en": "Engineers on the tooling side who value observability"
+        }
+      ],
+      "quickstart": "# diegosouzapw/OmniRoute\n$ git clone https://github.com/diegosouzapw/OmniRoute.git\n$ cd OmniRoute\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-25"
+    },
+    {
+      "rank": 8,
+      "slug": "panniantong-agent-reach",
+      "full_name": "Panniantong/Agent-Reach",
+      "name": "Agent-Reach",
+      "owner": "Panniantong",
+      "url": "https://github.com/Panniantong/Agent-Reach",
+      "homepage": "",
+      "language": "Python",
+      "category": "tool",
+      "topics": [
+        "agent-infrastructure",
+        "ai-agent",
+        "ai-search",
+        "automation",
+        "bilibili",
+        "claude-code",
+        "cli",
+        "cursor"
+      ],
+      "stars": 85354,
+      "forks": 7489,
+      "openIssues": 158,
+      "contributors": 36,
+      "releases90d": 0,
+      "prActivity": 46,
+      "issueActivity": 64,
+      "weeklyGain": 2384,
+      "dailyGain": 340.6,
+      "growthRate": 2.8,
+      "forksGain": null,
+      "forksGrowthRate": 0,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": 0,
+      "scores": {
+        "heat": 84,
+        "community": 32,
+        "innovation": 76,
+        "practical": 100,
+        "ecosystem": 44,
+        "health": 73,
+        "forksGrowth": 13,
+        "activity": 25,
+        "overall": 64
+      },
+      "why": {
+        "zh": "近 7 天新增 2,384 star（日均约 341），累计 85,354 star、7,489 fork。采用 MIT 协议，最近一次提交在 10 天前，近 30 天新建 PR 46 个、issue 64 个。",
+        "en": "Gained 2,384 stars over the last 7 days (~341/day), now at 85,354 stars and 7,489 forks. Licensed under MIT; last push 10 day(s) ago, with 46 PRs and 64 issues opened in the last 30 days."
+      },
+      "highlights": [
+        {
+          "zh": "36 位公开贡献者",
+          "en": "36 public contributors"
+        },
+        {
+          "zh": "宽松许可证（MIT），商用门槛低",
+          "en": "Permissive license (MIT) — easy commercial use"
+        },
+        {
+          "zh": "新仓库，创建至今仅 213 天",
+          "en": "Young project — only 213 days old"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "想给现有工作流加一层 Agent 自动化的团队",
+          "en": "Teams adding an agent-automation layer to an existing workflow"
+        },
+        {
+          "zh": "偏工具链方向、重视可观测性的工程师",
+          "en": "Engineers on the tooling side who value observability"
+        }
+      ],
+      "quickstart": "# Panniantong/Agent-Reach\n$ git clone https://github.com/Panniantong/Agent-Reach.git\n$ cd Agent-Reach\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-25"
+    },
+    {
+      "rank": 9,
+      "slug": "graphify-labs-graphify",
+      "full_name": "Graphify-Labs/graphify",
+      "name": "graphify",
+      "owner": "Graphify-Labs",
+      "url": "https://github.com/Graphify-Labs/graphify",
+      "homepage": "https://www.graphify.com/",
+      "language": "Python",
+      "category": "framework",
+      "topics": [
+        "ai-agents",
+        "antigravity",
+        "ast",
+        "claude-code",
+        "code-analysis",
+        "code-search",
+        "codex",
+        "cursor"
+      ],
+      "stars": 121293,
+      "forks": 11693,
+      "openIssues": 1474,
+      "contributors": 100,
+      "releases90d": 30,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 2107,
+      "dailyGain": 301,
+      "growthRate": 1.7,
+      "forksGain": 169,
+      "forksGrowthRate": 1.4,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": 0,
+      "scores": {
+        "heat": 82,
+        "community": 58,
+        "innovation": 79,
+        "practical": 100,
+        "ecosystem": 72,
+        "health": 68,
+        "forksGrowth": 50,
+        "activity": 100,
+        "overall": 78
+      },
+      "why": {
+        "zh": "近 7 天新增 2,107 star（日均约 301），累计 121,293 star、11,693 fork。采用 Apache-2.0 协议，最近一次提交在 2 天前，近 30 天新建 PR 200 个、issue 200 个。",
+        "en": "Gained 2,107 stars over the last 7 days (~301/day), now at 121,293 stars and 11,693 forks. Licensed under Apache-2.0; last push 2 day(s) ago, with 200 PRs and 200 issues opened in the last 30 days."
+      },
+      "highlights": [
+        {
+          "zh": "100 位公开贡献者",
+          "en": "100 public contributors"
+        },
+        {
+          "zh": "近 90 天发布 30 个版本",
+          "en": "30 release(s) in the last 90 days"
+        },
+        {
+          "zh": "宽松许可证（Apache-2.0），商用门槛低",
+          "en": "Permissive license (Apache-2.0) — easy commercial use"
+        },
+        {
+          "zh": "7 天内新增 169 次 fork",
+          "en": "169 new forks in the window"
+        },
+        {
+          "zh": "新仓库，创建至今仅 175 天",
+          "en": "Young project — only 175 days old"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        },
+        {
+          "zh": "需要可扩展抽象层而非端到端方案的团队",
+          "en": "Teams wanting an extensible abstraction layer rather than a turnkey app"
+        }
+      ],
+      "quickstart": "# Graphify-Labs/graphify\n$ git clone https://github.com/Graphify-Labs/graphify.git\n$ cd graphify\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-25"
+    },
+    {
+      "rank": 10,
+      "slug": "rohitg00-ai-engineering-from-scratch",
+      "full_name": "rohitg00/ai-engineering-from-scratch",
+      "name": "ai-engineering-from-scratch",
+      "owner": "rohitg00",
+      "url": "https://github.com/rohitg00/ai-engineering-from-scratch",
+      "homepage": "https://aiengineeringfromscratch.com/",
+      "language": "Python",
+      "category": "framework",
+      "topics": [
+        "agents",
+        "ai",
+        "ai-agents",
+        "ai-engineering",
+        "computer-vision",
+        "course",
+        "deep-learning",
+        "from-scratch"
+      ],
+      "stars": 57050,
+      "forks": 9982,
+      "openIssues": 43,
+      "contributors": 21,
+      "releases90d": 3,
+      "prActivity": 39,
+      "issueActivity": 51,
+      "weeklyGain": 2106,
+      "dailyGain": 300.9,
+      "growthRate": 3.7,
+      "forksGain": null,
+      "forksGrowthRate": 0,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": null,
+      "scores": {
+        "heat": 80,
+        "community": 52,
+        "innovation": 74,
+        "practical": 100,
+        "ecosystem": 31,
+        "health": 82,
+        "forksGrowth": 26,
+        "activity": 23,
+        "overall": 65
+      },
+      "why": {
+        "zh": "近 7 天新增 2,106 star（日均约 301），累计 57,050 star、9,982 fork。采用 MIT 协议，最近一次提交在 0 天前，近 30 天新建 PR 39 个、issue 51 个。",
+        "en": "Gained 2,106 stars over the last 7 days (~301/day), now at 57,050 stars and 9,982 forks. Licensed under MIT; last push 0 day(s) ago, with 39 PRs and 51 issues opened in the last 30 days."
+      },
+      "highlights": [
+        {
+          "zh": "21 位公开贡献者",
+          "en": "21 public contributors"
+        },
+        {
+          "zh": "近 90 天发布 3 个版本",
+          "en": "3 release(s) in the last 90 days"
+        },
+        {
+          "zh": "宽松许可证（MIT），商用门槛低",
+          "en": "Permissive license (MIT) — easy commercial use"
+        },
+        {
+          "zh": "新仓库，创建至今仅 191 天",
+          "en": "Young project — only 191 days old"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        },
+        {
+          "zh": "需要可扩展抽象层而非端到端方案的团队",
+          "en": "Teams wanting an extensible abstraction layer rather than a turnkey app"
+        }
+      ],
+      "quickstart": "# rohitg00/ai-engineering-from-scratch\n$ git clone https://github.com/rohitg00/ai-engineering-from-scratch.git\n$ cd ai-engineering-from-scratch\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-25"
+    }
+  ]
+}
