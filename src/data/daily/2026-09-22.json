@@ -33,14 +33,15 @@
         "overall": 86
       },
       "why": {
-        "zh": "近 7 天新增 1,024 star（日均 146），采用 MIT 协议，社区近期保持活跃更新。",
-        "en": "Gained 1,024 stars in the last 7 days (~146/day), licensed under MIT, with active maintenance."
+        "zh": "「deepseek-ai/deepseek-harness」是 AI Agent 生态里的通用项目；聚焦 AI Agent、cordis、dsh、dsh-plugin 等方向；主要使用 TypeScript。",
+        "en": "DeepSeek Harness: Everything is a Plugin. A project in the AI agent ecosystem, mainly written in TypeScript, focused on AI Agents, cordis, dsh, dsh-plugin."
       },
       "highlights": [],
       "cons": [],
       "fitFor": [],
       "quickstart": "",
-      "firstSeen": "2026-09-22"
+      "firstSeen": "2026-09-22",
+      "description": "DeepSeek Harness: Everything is a Plugin."
     },
     {
       "rank": 2,
@@ -76,14 +77,15 @@
         "overall": 94
       },
       "why": {
-        "zh": "近 7 天新增 931 star（日均 133），采用 MIT 协议，社区近期保持活跃更新。",
-        "en": "Gained 931 stars in the last 7 days (~133/day), licensed under MIT, with active maintenance."
+        "zh": "「stablyai/orca」是 AI Agent 生态里的通用项目；聚焦 ade、Agent IDE、AI Agent、Claude Code 等方向；主要使用 TypeScript。",
+        "en": "Orca is the ADE for working with a fleet of parallel agents. Run any coding agent with your own subscription. Available on desktop, mobile and remote runtime. A project in the AI agent ecosystem, mainly written in TypeScript, focused on ade, Agent IDE, AI Agents, Claude Code."
       },
       "highlights": [],
       "cons": [],
       "fitFor": [],
       "quickstart": "",
-      "firstSeen": "2026-09-22"
+      "firstSeen": "2026-09-22",
+      "description": "Orca is the ADE for working with a fleet of parallel agents. Run any coding agent with your own subscription. Available on desktop, mobile and remote runtime."
     },
     {
       "rank": 3,
@@ -119,14 +121,15 @@
         "overall": 93
       },
       "why": {
-        "zh": "近 7 天新增 707 star（日均 101），采用 MIT 协议，社区近期保持活跃更新。",
-        "en": "Gained 707 stars in the last 7 days (~101/day), licensed under MIT, with active maintenance."
+        "zh": "「affaan-m/ECC」是 AI Agent 生态里的通用项目；聚焦 AI Agent、Anthropic、Claude、Claude Code 等方向；主要使用 JavaScript。",
+        "en": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond. A project in the AI agent ecosystem, mainly written in JavaScript, focused on AI Agents, Anthropic, Claude, Claude Code."
       },
       "highlights": [],
       "cons": [],
       "fitFor": [],
       "quickstart": "",
-      "firstSeen": "2026-09-22"
+      "firstSeen": "2026-09-22",
+      "description": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond."
     },
     {
       "rank": 4,
@@ -162,14 +165,15 @@
         "overall": 91
       },
       "why": {
-        "zh": "近 7 天新增 609 star（日均 87），采用 MIT 协议，社区近期保持活跃更新。",
-        "en": "Gained 609 stars in the last 7 days (~87/day), licensed under MIT, with active maintenance."
+        "zh": "「DietrichGebert/ponytail」是 AI Agent 生态里的通用项目；聚焦 Agent 技能、AI Agent、Claude、Claude Code 等方向；主要使用 JavaScript。",
+        "en": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote. A project in the AI agent ecosystem, mainly written in JavaScript, focused on Agent Skills, AI Agents, Claude, Claude Code."
       },
       "highlights": [],
       "cons": [],
       "fitFor": [],
       "quickstart": "",
-      "firstSeen": "2026-09-22"
+      "firstSeen": "2026-09-22",
+      "description": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote."
     },
     {
       "rank": 5,
@@ -205,14 +209,15 @@
         "overall": 89
       },
       "why": {
-        "zh": "近 7 天新增 459 star（日均 66），采用 MIT 协议，社区近期保持活跃更新。",
-        "en": "Gained 459 stars in the last 7 days (~66/day), licensed under MIT, with active maintenance."
+        "zh": "「Panniantong/Agent-Reach」是 AI Agent 生态里的通用项目；聚焦 agent-infrastructure、AI Agent、ai-search、自动化 等方向；主要使用 Python。",
+        "en": "Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — one CLI, zero API fees. A project in the AI agent ecosystem, mainly written in Python, focused on agent-infrastructure, AI Agents, ai-search, Automation."
       },
       "highlights": [],
       "cons": [],
       "fitFor": [],
       "quickstart": "",
-      "firstSeen": "2026-09-22"
+      "firstSeen": "2026-09-22",
+      "description": "Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — one CLI, zero API fees."
     },
     {
       "rank": 6,
@@ -239,14 +244,15 @@
         "overall": 93
       },
       "why": {
-        "zh": "近 7 天新增 377 star（日均 54），采用 MIT 协议，社区近期保持活跃更新。",
-        "en": "Gained 377 stars in the last 7 days (~54/day), licensed under MIT, with active maintenance."
+        "zh": "「earendil-works/pi」是 AI Agent 生态里的通用项目；主要使用 TypeScript。",
+        "en": "AI agent toolkit: unified LLM API, agent loop, TUI, coding agent CLI. A project in the AI agent ecosystem, mainly written in TypeScript."
       },
       "highlights": [],
       "cons": [],
       "fitFor": [],
       "quickstart": "",
-      "firstSeen": "2026-09-22"
+      "firstSeen": "2026-09-22",
+      "description": "AI agent toolkit: unified LLM API, agent loop, TUI, coding agent CLI"
     },
     {
       "rank": 7,
@@ -282,14 +288,15 @@
         "overall": 85
       },
       "why": {
-        "zh": "近 7 天新增 375 star（日均 54），采用 AGPL-3.0 协议，社区近期保持活跃更新。",
-        "en": "Gained 375 stars in the last 7 days (~54/day), licensed under AGPL-3.0, with active maintenance."
+        "zh": "「firecrawl/firecrawl」是 AI Agent 生态里的通用项目；聚焦 ai、AI Agent、ai-crawler、ai-scraping 等方向；主要使用 TypeScript。",
+        "en": "The web data API to search, scrape, and interact at scale. 🔥. A project in the AI agent ecosystem, mainly written in TypeScript, focused on ai, AI Agents, ai-crawler, ai-scraping."
       },
       "highlights": [],
       "cons": [],
       "fitFor": [],
       "quickstart": "",
-      "firstSeen": "2026-09-22"
+      "firstSeen": "2026-09-22",
+      "description": "The web data API to search, scrape, and interact at scale. 🔥"
     },
     {
       "rank": 8,
@@ -325,14 +332,15 @@
         "overall": 92
       },
       "why": {
-        "zh": "近 7 天新增 348 star（日均 50），采用 MIT 协议，社区近期保持活跃更新。",
-        "en": "Gained 348 stars in the last 7 days (~50/day), licensed under MIT, with active maintenance."
+        "zh": "「diegosouzapw/OmniRoute」是 AI Agent 生态里的通用项目；聚焦 a2a、AI Agent、ai-gateway、Anthropic 等方向；主要使用 TypeScript。",
+        "en": "Never stop coding. Free MIT AI gateway: one endpoint, 359 providers (150+ free), 1200+ models Kimi, Claude, GPT, Gemini, GLM, DeepSeek, MiniMax. Works with Claude Code, Codex, Cursor, OpenCode, Cline & Copilot. Quota-aware auto-fallback, RTK+Caveman compression saves 15-95% tokens, MCP/A2A, Desktop/PWA. Built by hundreds of contributors. A project in the AI agent ecosystem, mainly written in TypeScript, focused on a2a, AI Agents, ai-gateway, Anthropic."
       },
       "highlights": [],
       "cons": [],
       "fitFor": [],
       "quickstart": "",
-      "firstSeen": "2026-09-22"
+      "firstSeen": "2026-09-22",
+      "description": "Never stop coding. Free MIT AI gateway: one endpoint, 359 providers (150+ free), 1200+ models Kimi, Claude, GPT, Gemini, GLM, DeepSeek, MiniMax. Works with Claude Code, Codex, Cursor, OpenCode, Cline & Copilot. Quota-aware auto-fallback, RTK+Caveman compression saves 15-95% tokens, MCP/A2A, Desktop/PWA. Built by hundreds of contributors"
     },
     {
       "rank": 9,
@@ -366,14 +374,15 @@
         "overall": 91
       },
       "why": {
-        "zh": "近 7 天新增 319 star（日均 46），采用 MIT 协议，社区近期保持活跃更新。",
-        "en": "Gained 319 stars in the last 7 days (~46/day), licensed under MIT, with active maintenance."
+        "zh": "「addyosmani/agent-skills」是 AI Agent 生态里的通用项目；聚焦 Agent 技能、antigravity、Claude Code、Codex 等方向；主要使用 JavaScript。",
+        "en": "Production-grade engineering skills for AI coding agents. A project in the AI agent ecosystem, mainly written in JavaScript, focused on Agent Skills, antigravity, Claude Code, Codex."
       },
       "highlights": [],
       "cons": [],
       "fitFor": [],
       "quickstart": "",
-      "firstSeen": "2026-09-22"
+      "firstSeen": "2026-09-22",
+      "description": "Production-grade engineering skills for AI coding agents."
     },
     {
       "rank": 10,
@@ -409,14 +418,15 @@
         "overall": 91
       },
       "why": {
-        "zh": "近 7 天新增 311 star（日均 44），采用 Apache-2.0 协议，社区近期保持活跃更新。",
-        "en": "Gained 311 stars in the last 7 days (~44/day), licensed under Apache-2.0, with active maintenance."
+        "zh": "「Graphify-Labs/graphify」是 AI Agent 生态里的通用项目；聚焦 AI Agent、antigravity、ast、Claude Code 等方向；主要使用 Python。",
+        "en": "Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store. A project in the AI agent ecosystem, mainly written in Python, focused on AI Agents, antigravity, ast, Claude Code."
       },
       "highlights": [],
       "cons": [],
       "fitFor": [],
       "quickstart": "",
-      "firstSeen": "2026-09-22"
+      "firstSeen": "2026-09-22",
+      "description": "Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store."
     }
   ]
 }

@@ -9,6 +9,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { categorize } from "../src/lib/categorize.mjs";
+import { positioningWhy, ruleBasedInterpretation } from "../src/lib/interpret.mjs";
+import { topicLabel, topicLabels } from "../src/lib/topic-labels.mjs";
 import { toCsv, csvCell } from "../src/lib/csv.ts";
 import { buildPoolContext, clamp, log01, log100, percentile, recomputeOverall, scoreProject } from "../src/lib/scoring.mjs";
 import {
@@ -379,4 +381,39 @@ test("校验器拦住同一天内的重复 slug 与未排序的增量", () => {
 
 test("校验器拦住日期不匹配", () => {
   assert.ok(validateDailyDoc(validDoc(), { expectedDate: "2026-01-01" }).some((e) => e.includes("date")));
+});
+
+// ---------------------------------------------------------------- 定位解读
+
+test("规则解读的 why 是项目定位，不再复述 star / fork 指标", () => {
+  const result = ruleBasedInterpretation({
+    ...record(),
+    category: "framework",
+    language: "TypeScript",
+    description: "An agent framework",
+    windowDays: 7,
+  });
+  assert.ok(result.why.zh.includes("框架 / SDK"), `中文应给出分类定位：${result.why.zh}`);
+  assert.ok(result.why.zh.includes("TypeScript"));
+  assert.ok(result.why.en.startsWith("An agent framework"), "英文应优先用仓库原始描述");
+  assert.equal(result.source, "rules");
+  // 指标由卡片的数据行与 highlights 承担，why 里再复述一次就是冗余
+  for (const text of [result.why.zh, result.why.en]) {
+    assert.ok(!/star|fork/i.test(text), `定位解读不应复述指标：${text}`);
+  }
+});
+
+test("定位解读在缺 description / topics / language 时仍产出合规文本", () => {
+  const why = positioningWhy({ full_name: "acme/agent", name: "agent", category: "other" });
+  assert.ok(why.zh.length > 0 && why.en.length > 0);
+  assert.ok(!why.en.includes("a Other project"), `other 分类不应拼出语法不通的英文：${why.en}`);
+  assert.ok(why.en.startsWith("acme/agent is a project"), why.en);
+});
+
+test("话题标签：收录的用双语显示名，未收录的保留原始 slug", () => {
+  assert.equal(topicLabel("claude-code", "zh"), "Claude Code");
+  assert.equal(topicLabel("mcp", "en"), "MCP");
+  assert.equal(topicLabel("ade", "en"), "ade", "不臆造大小写");
+  assert.deepEqual(topicLabels(["ai-agents", "ai-agent", "unknown-x"], "zh", 4), ["AI Agent", "unknown-x"]);
+  assert.deepEqual(topicLabels(["a", "b", "c", "d", "e"], "zh", 2), ["a", "b"]);
 });

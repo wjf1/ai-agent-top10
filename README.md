@@ -33,6 +33,7 @@
 | 特性 | 说明 |
 |---|---|
 | **8 维可解释评分** | 热度趋势 / 社区活跃 / 技术创新 / 实用完成度 / 生态潜力 / 健康可持续 / 分叉增速 / 迭代活跃度。权重与阈值全部在 `config/scoring.json`，改配置即可调分，无需动代码。 |
+| **项目定位解读** | 每条榜单先说清"这是什么项目、用来做什么"，而不是复述 star / fork。英文直接引用仓库原始描述，中文由子分类 + 话题标签拼装（未收录的标签保留原始 slug，不硬译产品名）；数字留在数据行与详情页里，不重复第二遍。 |
 | **日 / 周 / 月三种周期** | 周榜与月榜在构建期用历史快照聚合，不额外调用任何 API。历史不足一个完整窗口时会显式标注实际覆盖天数，**不做线性外推**。 |
 | **真实增量优先** | star 增量优先取"约 7 天前那一期快照"的真实差值（零 API 成本）；快照缺失才回落到 stargazers 接口；超大仓库在事件流覆盖率不足时**直接跳过**，而不是把稀疏样本放大 20 倍。 |
 | **趋势可视化** | 项目详情页展示 star 历史折线，数据来自每日快照序列。图表全部手写 SVG，不引入任何图表库：首页与详情页**零外部 JS**（仅约 1.7 KB 内联脚本），全站 CSS 8.8 KB，只有对比页加载 4.4 KB 脚本。 |
@@ -47,6 +48,7 @@
 ### Key features
 
 - **8 explainable scoring dimensions** — momentum, community, innovation, practicality, ecosystem, health, fork growth and iteration activity. Weights and thresholds live in `config/scoring.json`.
+- **Project positioning, not metric restatement** — every entry opens with what the project is and what it is for. English reuses the repository's own description; Chinese is composed from category and topic labels (unknown tags keep their original slug). The numbers stay in the data row and the detail page, so nothing is said twice.
 - **Daily / weekly / monthly boards** — weekly and monthly are aggregated at build time from historical snapshots, with **no extra API calls** and **no linear extrapolation** when history is short.
 - **Real deltas first** — star gains come from actual snapshot deltas when available, fall back to the stargazers endpoint, and **skip** large repos whose event-stream coverage is too sparse instead of amplifying noise.
 - **Trend charts & interactive radar** — hand-written SVG, no chart library, no client-side data fetching.
@@ -57,7 +59,7 @@
 
 ## 榜单截图
 
-### 日榜首页（浅色）：8 维雷达 + 分类标签 + 排名变化
+### 日榜首页（浅色）：项目定位解读 + 8 维雷达 + 分类标签 + 排名变化
 
 ![日榜首页](docs/home-light.jpg)
 

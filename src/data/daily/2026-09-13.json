@@ -37,8 +37,8 @@
         "overall": 91
       },
       "why": {
-        "zh": "一个让 AI 编程代理「少写代码」的技能包：在真实 FastAPI + React 仓库的 12 个功能任务上实测，代码量平均减少约 54%（最高 94%），成本降约 20%、速度提升约 27%，且保留了全部安全防护。主打「资深工程师式克制」，兼容 Claude Code 等 20 个 agent，一周内以日均 750+ star 的速度引爆。",
-        "en": "A skill pack that makes AI coding agents write less code: benchmarked on 12 real tasks in a FastAPI + React repo, it cuts code volume by ~54% on average (up to 94%), ~20% cost and ~27% faster, while keeping all safety guards. Its 'senior engineer restraint' philosophy works with 20 agents including Claude Code, and it exploded at 750+ stars/day this week."
+        "zh": "「DietrichGebert/ponytail」是 AI Agent 生态里的通用项目；聚焦 Agent 技能、AI Agent、Claude、Claude Code 等方向；主要使用 JavaScript。",
+        "en": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote. A project in the AI agent ecosystem, mainly written in JavaScript, focused on Agent Skills, AI Agents, Claude, Claude Code."
       },
       "highlights": [
         {
@@ -71,7 +71,8 @@
         }
       ],
       "quickstart": "npm install -g @dietrichgebert/ponytail",
-      "firstSeen": "2026-09-13"
+      "firstSeen": "2026-09-13",
+      "description": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote."
     },
     {
       "rank": 2,
@@ -107,8 +108,8 @@
         "overall": 88
       },
       "why": {
-        "zh": "「给你的 AI Agent 一键装上互联网能力」：为 agent 提供搜索、社交媒体（含 B 站）、内容抓取等网络接口的统一接入层，替你选好、装好、体检好最稳的接入方式并随平台换代自动升级。曾登 GitHub Trending 日榜 #1，本周再获 5100+ star。",
-        "en": "'One-click internet superpowers for your AI agent': a unified integration layer giving agents web search, social media (incl. Bilibili) and content-scraping capabilities. It picks, installs and health-checks the most stable integration for you and upgrades automatically as platforms change. A former GitHub Trending #1 of the day, adding 5,100+ stars this week."
+        "zh": "「Panniantong/Agent-Reach」是 AI Agent 生态里的通用项目；聚焦 agent-infrastructure、AI Agent、ai-search、自动化 等方向；主要使用 Python。",
+        "en": "Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — one CLI, zero API fees. A project in the AI agent ecosystem, mainly written in Python, focused on agent-infrastructure, AI Agents, ai-search, Automation."
       },
       "highlights": [
         {
@@ -141,7 +142,8 @@
         }
       ],
       "quickstart": "pip install agent-reach && agent-reach setup",
-      "firstSeen": "2026-09-13"
+      "firstSeen": "2026-09-13",
+      "description": "Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — one CLI, zero API fees."
     },
     {
       "rank": 3,
@@ -177,8 +179,8 @@
         "overall": 82
       },
       "why": {
-        "zh": "逐字收录 ChatGPT、Claude、Gemini、Grok 等主流 AI 产品的系统提示词（泄露原文），并持续更新：本月已跟进 Claude Code headless（Fable 5.1）、Codex GPT-6-Astra 等。被《华盛顿邮报》用于制作交互报道，被 CEPS AI World 做成数据看板——是研究各家 agent 行为约束的第一手语料库。",
-        "en": "A verbatim archive of leaked system prompts from ChatGPT, Claude, Gemini, Grok and other major AI products, continuously updated — this month alone it tracked Claude Code headless (Fable 5.1) and Codex GPT-6-Astra. Cited by The Washington Post for an interactive story and turned into a live dashboard by CEPS' AI World: the first-hand corpus for studying how AI vendors constrain their agents."
+        "zh": "「asgeirtj/system_prompts_leaks」是 AI Agent 生态里的通用项目；聚焦 ai、AI Agent、ai-prompts、Anthropic 等方向；主要使用 JavaScript。",
+        "en": "Documented system prompts from Anthropic - Claude Fable 5.1, Opus 5.5, Claude Design, Claude Code. OpenAI - ChatGPT GPT-6-Astra, Codex. Google - Gemini 3.8 Flash, 3.1 Pro, Antigravity. xAI - Grok, Grok Bot, Cursor, Kimi and more! Updated regularly. A project in the AI agent ecosystem, mainly written in JavaScript, focused on ai, AI Agents, ai-prompts, Anthropic."
       },
       "highlights": [
         {
@@ -211,7 +213,8 @@
         }
       ],
       "quickstart": "",
-      "firstSeen": "2026-09-13"
+      "firstSeen": "2026-09-13",
+      "description": "Documented system prompts from Anthropic - Claude Fable 5.1, Opus 5.5, Claude Design, Claude Code. OpenAI - ChatGPT GPT-6-Astra, Codex. Google - Gemini 3.8 Flash, 3.1 Pro, Antigravity. xAI - Grok, Grok Bot, Cursor, Kimi and more! Updated regularly."
     },
     {
       "rank": 4,
@@ -243,8 +246,8 @@
         "overall": 86
       },
       "why": {
-        "zh": "DeepSeek 官方开源的 agent 运行时（dsh），本周 +4720 star。核心是「一切皆插件」架构，底层基于 Cordis 并附论文《A Programming Paradigm for Spatiotemporal Composability》。`npx @deepseek-ai/dsh web` 一条命令即可在本地 3080 端口拉起完整 Web UI。头部实验室下场做 agent 基础设施，值得重点关注。",
-        "en": "DeepSeek's official open-source agent harness (dsh), +4,720 stars this week. Its core is an 'everything-is-a-plugin' architecture built on Cordis, with an accompanying paper on 'A Programming Paradigm for Spatiotemporal Composability'. One command (`npx @deepseek-ai/dsh web`) boots a full local Web UI on port 3080. A top lab shipping agent infrastructure deserves close attention."
+        "zh": "「deepseek-ai/deepseek-harness」是 AI Agent 生态里的通用项目；聚焦 AI Agent、cordis、dsh、dsh-plugin 等方向；主要使用 TypeScript。",
+        "en": "DeepSeek Harness: Everything is a Plugin. A project in the AI agent ecosystem, mainly written in TypeScript, focused on AI Agents, cordis, dsh, dsh-plugin."
       },
       "highlights": [
         {
@@ -277,7 +280,8 @@
         }
       ],
       "quickstart": "npx @deepseek-ai/dsh web",
-      "firstSeen": "2026-09-13"
+      "firstSeen": "2026-09-13",
+      "description": "DeepSeek Harness: Everything is a Plugin."
     },
     {
       "rank": 5,
@@ -313,8 +317,8 @@
         "overall": 93
       },
       "why": {
-        "zh": "自定位为「agent harness 操作系统」：围绕 Claude Code 等编码 agent 提供组织化管理层——GitHub App、官网 ecc.tools、活跃 Discord 社区与 13 种语言的文档一应俱全。产品化速度和社区运营是其一周 +3480 star 的主要推手。",
-        "en": "Self-described as the 'operating system for agent harnesses': an orchestration layer around coding agents like Claude Code, complete with a GitHub App, a website (ecc.tools), an active Discord, and docs in 13 languages. Rapid productization and community ops drove its +3,480 stars this week."
+        "zh": "「affaan-m/ECC」是 AI Agent 生态里的通用项目；聚焦 AI Agent、Anthropic、Claude、Claude Code 等方向；主要使用 JavaScript。",
+        "en": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond. A project in the AI agent ecosystem, mainly written in JavaScript, focused on AI Agents, Anthropic, Claude, Claude Code."
       },
       "highlights": [
         {
@@ -347,7 +351,8 @@
         }
       ],
       "quickstart": "",
-      "firstSeen": "2026-09-13"
+      "firstSeen": "2026-09-13",
+      "description": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond."
     },
     {
       "rank": 6,
@@ -379,8 +384,8 @@
         "overall": 91
       },
       "why": {
-        "zh": "100+ 个可运行的开源 AI agent / RAG 应用合集，全部 Apache-2.0，覆盖从「项目墓园解剖师」这类趣味 agent 到保险理赔语音 agent 团队等实战场景，兼容 Claude/Gemini/GPT/DeepSeek/Qwen。每周持续上新，是学做 agent 应用最实用的代码库。",
-        "en": "A collection of 100+ runnable open-source AI agent and RAG apps, all Apache-2.0 — from fun ones like the 'Project Graveyard' autopsier to production-grade teams like a live insurance-claim voice agent squad — compatible with Claude/Gemini/GPT/DeepSeek/Qwen. Updated weekly; the most practical code base for learning agent development."
+        "zh": "「Shubhamsaboo/awesome-llm-apps」是 AI Agent 生态里的通用项目；聚焦 Agent、大语言模型、python、RAG 检索增强 等方向；主要使用 Python。",
+        "en": "100+ AI Agents, Agent Skills and RAG Apps - Free and Open Source. A project in the AI agent ecosystem, mainly written in Python, focused on Agents, LLMs, python, RAG."
       },
       "highlights": [
         {
@@ -413,7 +418,8 @@
         }
       ],
       "quickstart": "git clone https://github.com/Shubhamsaboo/awesome-llm-apps",
-      "firstSeen": "2026-09-13"
+      "firstSeen": "2026-09-13",
+      "description": "100+ AI Agents, Agent Skills and RAG Apps - Free and Open Source."
     },
     {
       "rank": 7,
@@ -449,8 +455,8 @@
         "overall": 93
       },
       "why": {
-        "zh": "免费 AI 网关：把 Claude Code、Codex、Cursor、Cline、Copilot 等 356 家服务商的模型收敛到一个端点，其中 150+ 免费档位经去重计算后约每月 14.7 亿免费 token，自动故障转移 + 19 种路由策略，还有平均约 89% 的 token 压缩。对被额度限制折磨的开发者是刚需型项目。",
-        "en": "The free AI gateway: one endpoint fronting 356 providers for Claude Code, Codex, Cursor, Cline and Copilot — 150+ free tiers totaling ~1.47B free tokens/month (deduplicated), auto-fallback, 19 routing strategies, and token compression averaging ~89%. A must-have for anyone fighting rate limits."
+        "zh": "「diegosouzapw/OmniRoute」是 AI Agent 生态里的通用项目；聚焦 a2a、AI Agent、ai-gateway、Anthropic 等方向；主要使用 TypeScript。",
+        "en": "Never stop coding. Free MIT AI gateway: one endpoint, 359 providers (150+ free), 1200+ models Kimi, Claude, GPT, Gemini, GLM, DeepSeek, MiniMax. Works with Claude Code, Codex, Cursor, OpenCode, Cline & Copilot. Quota-aware auto-fallback, RTK+Caveman compression saves 15-95% tokens, MCP/A2A, Desktop/PWA. Built by hundreds of contributors. A project in the AI agent ecosystem, mainly written in TypeScript, focused on a2a, AI Agents, ai-gateway, Anthropic."
       },
       "highlights": [
         {
@@ -483,7 +489,8 @@
         }
       ],
       "quickstart": "npx omniroute",
-      "firstSeen": "2026-09-13"
+      "firstSeen": "2026-09-13",
+      "description": "Never stop coding. Free MIT AI gateway: one endpoint, 359 providers (150+ free), 1200+ models Kimi, Claude, GPT, Gemini, GLM, DeepSeek, MiniMax. Works with Claude Code, Codex, Cursor, OpenCode, Cline & Copilot. Quota-aware auto-fallback, RTK+Caveman compression saves 15-95% tokens, MCP/A2A, Desktop/PWA. Built by hundreds of contributors"
     },
     {
       "rank": 8,
@@ -519,8 +526,8 @@
         "overall": 86
       },
       "why": {
-        "zh": "AI 时代的数据基础设施常青树：为 LLM 提供规模化网页搜索、抓取与交互 API，自动输出 markdown/结构化数据，已处理数十亿页面。老牌项目本周仍以 +2232 star 增速上榜，说明 agent 抓数据的需求仍在指数增长。",
-        "en": "The evergreen data infrastructure of the AI era: a scale API for web search, scraping and interaction for LLMs, emitting markdown/structured data, having processed billions of pages. A veteran project still gaining +2,232 stars this week — proof that agents' appetite for web data keeps compounding."
+        "zh": "「firecrawl/firecrawl」是 AI Agent 生态里的通用项目；聚焦 ai、AI Agent、ai-crawler、ai-scraping 等方向；主要使用 TypeScript。",
+        "en": "The web data API to search, scrape, and interact at scale. 🔥. A project in the AI agent ecosystem, mainly written in TypeScript, focused on ai, AI Agents, ai-crawler, ai-scraping."
       },
       "highlights": [
         {
@@ -553,7 +560,8 @@
         }
       ],
       "quickstart": "pip install firecrawl-py",
-      "firstSeen": "2026-09-13"
+      "firstSeen": "2026-09-13",
+      "description": "The web data API to search, scrape, and interact at scale. 🔥"
     },
     {
       "rank": 9,
@@ -589,8 +597,8 @@
         "overall": 84
       },
       "why": {
-        "zh": "「第一个开源的 agentic 视频生产系统」：粘贴一个你喜欢的视频，agent 团队即可解析其结构并驱动 ffmpeg、ElevenLabs 等供应商完成成片生产，GitHub Trending 日榜 #1。多模态 agent 从对话走向实际生产力工具的标志性项目，本周 +2105 star。",
-        "en": "'The first open-source agentic video production system': paste a video you love and an agent team parses its structure, then drives providers like ffmpeg and ElevenLabs to produce finished cuts. #1 on GitHub Trending of the day — a landmark project taking multimodal agents from chat to real production, +2,105 stars this week."
+        "zh": "「calesthio/OpenMontage」是 AI Agent 生态里的通用项目；聚焦 Agent、Agentic AI、ai、Claude 等方向；主要使用 Python。",
+        "en": "World's first open-source, agentic video production system. 12 production pipelines, 100+ tools, 700+ agent skill and production-knowledge files. Turn your AI coding assistant into a full video production studio. A project in the AI agent ecosystem, mainly written in Python, focused on Agent, Agentic AI, ai, Claude."
       },
       "highlights": [
         {
@@ -627,7 +635,8 @@
         }
       ],
       "quickstart": "git clone https://github.com/calesthio/OpenMontage",
-      "firstSeen": "2026-09-13"
+      "firstSeen": "2026-09-13",
+      "description": "World's first open-source, agentic video production system. 12 production pipelines, 100+ tools, 700+ agent skill and production-knowledge files. Turn your AI coding assistant into a full video production studio."
     },
     {
       "rank": 10,
@@ -654,8 +663,8 @@
         "overall": 90
       },
       "why": {
-        "zh": "「一个装在口袋里的 AI 代理公司」：精心设计的专家型 agent 人格合集——从前端专家到 Reddit 社区运营、从「奇思妙想注入器」到「现实检验员」，每个角色都有个性、流程与交付物模板，一键装进 Claude Code、Cursor、Codex、Gemini。已推出 macOS/Win/Linux 原生 App，本周 +1603 star。",
-        "en": "An AI agency in your pocket: a curated roster of specialist agent personas — from frontend wizards to Reddit community ninjas, from 'whimsy injectors' to 'reality checkers' — each with personality, processes and deliverable templates, one-click installable into Claude Code, Cursor, Codex and Gemini. Now with a native macOS/Win/Linux app; +1,603 stars this week."
+        "zh": "「msitarzewski/agency-agents」是 AI Agent 生态里的通用项目；主要使用 Shell。",
+        "en": "A complete AI agency at your fingertips - From frontend wizards to Reddit community ninjas, from whimsy injectors to reality checkers. Each agent is a specialized expert with personality, processes, and proven deliverables. A project in the AI agent ecosystem, mainly written in Shell."
       },
       "highlights": [
         {
@@ -688,7 +697,8 @@
         }
       ],
       "quickstart": "",
-      "firstSeen": "2026-09-13"
+      "firstSeen": "2026-09-13",
+      "description": "A complete AI agency at your fingertips - From frontend wizards to Reddit community ninjas, from whimsy injectors to reality checkers. Each agent is a specialized expert with personality, processes, and proven deliverables."
     }
   ]
 }

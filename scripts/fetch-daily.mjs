@@ -186,6 +186,8 @@ async function main() {
       homepage: p.homepage,
       language: p.language,
       category: p.category,
+      // 定位解读要用的仓库描述，必须落进日榜条目（构建期只有 src/data/ 可读）
+      description: p.description ?? "",
       topics: p.topics.slice(0, 8),
       stars: p.metrics.stars,
       forks: p.metrics.forks,

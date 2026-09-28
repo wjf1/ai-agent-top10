@@ -1,11 +1,14 @@
 /**
  * 规则化解读 + 解读结构校验（无外部依赖，流水线与构建期共用）。
  *
- * 规则版只陈述已采集的客观指标，不做主观评价；LLM 版（scripts/lib/interpret.mjs）
+ * why 是"定位解读"：说明这个项目是什么、用在哪里，素材来自仓库描述、分类与
+ * 话题标签；star / fork / 提交等数字由卡片的数据行和 highlights 承担，不在这里复述。
+ * 规则版只陈述已采集的客观信息，不做主观评价；LLM 版（scripts/lib/interpret.mjs）
  * 和人工版都必须过同一套 normalize 校验，不合格就退回规则版。
  */
 import { categoryLabel } from "./categorize.mjs";
 import { config } from "./config.mjs";
+import { topicLabels } from "./topic-labels.mjs";
 import {
   sanitizeBilingualList,
   sanitizeBilingualText,
@@ -44,6 +47,64 @@ export function fitForCategory(category) {
   }
 }
 
+/** 分类对应的"这个项目拿来实现什么"，用于定位解读 */
+const CATEGORY_PURPOSE = {
+  framework: {
+    zh: "可把 Agent 能力集成进自研产品或工作流",
+    en: "for embedding agent capabilities into your own product or workflow",
+  },
+  tool: {
+    zh: "常用来给现有工作流补齐 Agent 与自动化能力",
+    en: "for adding agent capability and automation to an existing workflow",
+  },
+  app: { zh: "开箱即可上手使用", en: "usable out of the box" },
+  data: {
+    zh: "服务于 Agent 能力评测与数据处理",
+    en: "for evaluating agent behaviour and preparing datasets",
+  },
+  other: { zh: "多用于 AI Agent 生态的各类场景", en: "in the AI agent ecosystem" },
+};
+
+/**
+ * 定位解读：回答"这是什么项目、用来做什么"。
+ *
+ * 英文优先用仓库原始 description（信息量最高）；中文没有可靠的英文翻译来源，
+ * 改用分类 + 话题标签拼装 —— 未收录的标签保留原始 slug，不硬译产品名。
+ * description 与 topics 都缺失时仍会给出分类维度的定位句，不会产出空文本。
+ */
+export function positioningWhy(project) {
+  const category = project.category ?? "other";
+  const catZh = categoryLabel(category, "zh");
+  const catEn = categoryLabel(category, "en");
+  const purpose = CATEGORY_PURPOSE[category] ?? CATEGORY_PURPOSE.other;
+  const name = project.full_name || project.name || "该项目";
+  const language = project.language && project.language !== "Other" ? project.language : "";
+  const zhTopics = topicLabels(project.topics, "zh", 4);
+  const enTopics = topicLabels(project.topics, "en", 4);
+  const description = typeof project.description === "string" ? project.description.trim() : "";
+
+  const zhHead = category === "other" ? `「${name}」是 AI Agent 生态里的通用项目` : `「${name}」属于${catZh}，${purpose.zh}`;
+  const zhTail = [zhTopics.length ? `聚焦 ${zhTopics.join("、")} 等方向` : "", language ? `主要使用 ${language}` : ""]
+    .filter(Boolean)
+    .join("；");
+  const zh = `${zhHead}${zhTail ? `；${zhTail}` : ""}。`;
+
+  // other 分类没有可读的英文名（"a Other project" 不通），改用生态描述
+  const enClause =
+    category === "other"
+      ? `a project ${purpose.en}`
+      : `${/^[aeiou]/i.test(catEn) ? "an" : "a"} ${catEn} project ${purpose.en}`;
+  const enFocus = enTopics.length ? `, focused on ${enTopics.join(", ")}` : "";
+  const enLanguage = language ? `, mainly written in ${language}` : "";
+  const en = description
+    ? `${/[.!?]$/.test(description) ? description : `${description}.`} ${
+        enClause.charAt(0).toUpperCase() + enClause.slice(1)
+      }${enLanguage}${enFocus}.`
+    : `${name} is ${enClause}${enLanguage}${enFocus}.`;
+
+  return { zh, en };
+}
+
 /**
  * 生成规则化解读。
  * @param {object} project 至少需要 metrics / weeklyGain / dailyGain / category / windowDays
@@ -51,22 +112,8 @@ export function fitForCategory(category) {
 export function ruleBasedInterpretation(project, { lang = "zh" } = {}) {
   const m = project.metrics;
   const windowDays = project.windowDays ?? 7;
-  const gain = project.weeklyGain ?? 0;
-  const perDay = Math.round(project.dailyGain ?? gain / windowDays);
-  const metricsComplete = m.contributors != null;
 
-  const why = {
-    zh: `近 ${windowDays} 天新增 ${fmt(gain)} star（日均约 ${perDay}），累计 ${fmt(m.stars)} star、${fmt(m.forks)} fork。${
-      m.license ? `采用 ${m.license} 协议` : "许可证尚未标注"
-    }${metricsComplete ? `，最近一次提交在 ${m.pushDaysAgo} 天前，近 30 天新建 PR ${m.prActivity} 个、issue ${m.issueActivity} 个` : ""}。`,
-    en: `Gained ${fmt(gain)} stars over the last ${windowDays} days (~${perDay}/day), now at ${fmt(m.stars)} stars and ${fmt(
-      m.forks
-    )} forks. ${m.license ? `Licensed under ${m.license}` : "No license declared"}${
-      metricsComplete
-        ? `; last push ${m.pushDaysAgo} day(s) ago, with ${m.prActivity} PRs and ${m.issueActivity} issues opened in the last 30 days`
-        : ""
-    }.`,
-  };
+  const why = positioningWhy(project);
 
   const highlights = [];
   if (m.contributors >= 10) highlights.push({ zh: `${m.contributors} 位公开贡献者`, en: `${m.contributors} public contributors` });
