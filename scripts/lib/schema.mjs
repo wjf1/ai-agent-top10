@@ -22,6 +22,12 @@ export function validateEntry(entry, { index = 0, errors = [] } = {}) {
   if (!entry.why || !isStr(entry.why.zh) || !isStr(entry.why.en)) {
     errors.push(`${at}.why: requires both zh and en strings`);
   }
+  // intro / cardLine 允许缺失（老数据没有），但一旦提供就必须双语齐全
+  for (const field of ["intro", "cardLine"]) {
+    const value = entry[field];
+    if (value == null) continue;
+    if (!isStr(value.zh) || !isStr(value.en)) errors.push(`${at}.${field}: requires both zh and en strings`);
+  }
   if (!entry.scores || typeof entry.scores !== "object") {
     errors.push(`${at}.scores: missing`);
   } else {

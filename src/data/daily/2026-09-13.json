@@ -37,21 +37,25 @@
         "overall": 91
       },
       "why": {
-        "zh": "「DietrichGebert/ponytail」是 AI Agent 生态里的通用项目；聚焦 Agent 技能、AI Agent、Claude、Claude Code 等方向；主要使用 JavaScript。",
-        "en": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote. A project in the AI agent ecosystem, mainly written in JavaScript, focused on Agent Skills, AI Agents, Claude, Claude Code."
+        "zh": "近 7 天新增 5,250 star（日均约 750，相对存量增速 3.8%），累计 136,914 star、7,348 fork。",
+        "en": "Gained 5,250 stars over the last 7 days (~750/day, 3.8% of its base), now at 136,914 stars and 7,348 forks."
       },
       "highlights": [
         {
-          "zh": "有完整可复现的基准测试（benchmarks/ 目录），不是纯营销数字",
-          "en": "Ships a fully reproducible benchmark (benchmarks/ directory), not just marketing numbers"
+          "zh": "在真实开源仓库的 12 个功能任务上实测，代码量平均减少约 54%",
+          "en": "Measured across 12 real feature tasks, roughly 54% less code on average"
         },
         {
-          "zh": "npm 一行安装，兼容 20+ 编码代理（Claude Code、Cursor 等）",
-          "en": "One-line npm install, compatible with 20+ coding agents (Claude Code, Cursor, etc.)"
+          "zh": "越容易过度设计的任务削减越明显，日期选择器从 404 行降到 23 行",
+          "en": "Biggest cuts where agents over-build: a date picker dropped from 404 to 23 lines"
         },
         {
-          "zh": "MIT 协议，产品化程度高（logo、多语言文档、waitlist）",
-          "en": "MIT licensed, highly productized (branding, i18n docs, waitlist)"
+          "zh": "作者称在裁剪的同时保留了全部安全检查，裸写「只写一行」的提示词会丢一条",
+          "en": "Keeps every safety guard, unlike a bare 'write one-liners' prompt"
+        },
+        {
+          "zh": "除代码量外，实测 token、成本与耗时三项也一并下降",
+          "en": "Token use, cost and time all drop along with the line count"
         }
       ],
       "cons": [
@@ -72,7 +76,16 @@
       ],
       "quickstart": "npm install -g @dietrichgebert/ponytail",
       "firstSeen": "2026-09-13",
-      "description": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote."
+      "description": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote.",
+      "intro": {
+        "zh": "给 AI Agent 装上「屋里最懒的资深工程师」思维：动手前先问一句，这段代码真的需要存在吗。装上后，Agent 更倾向用最少代码解决问题——比如日期选择器直接上原生输入控件，而不是装组件库再写包装层。作为 Claude Code 等编码 Agent 的技能安装即用。",
+        "en": "A skill that gives your AI agent the instincts of the laziest senior dev in the room: before writing anything, ask whether the code needs to exist at all. With it, your agent reaches for a native input instead of installing a component library and a wrapper. Installs as a skill for coding agents like Claude Code."
+      },
+      "cardLine": {
+        "zh": "让 AI Agent 少写代码的编码技能，逼它先问「真需要吗」",
+        "en": "A coding skill that makes your agent write less code"
+      },
+      "interpretationSource": "llm"
     },
     {
       "rank": 2,
@@ -108,21 +121,25 @@
         "overall": 88
       },
       "why": {
-        "zh": "「Panniantong/Agent-Reach」是 AI Agent 生态里的通用项目；聚焦 agent-infrastructure、AI Agent、ai-search、自动化 等方向；主要使用 Python。",
-        "en": "Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — one CLI, zero API fees. A project in the AI agent ecosystem, mainly written in Python, focused on agent-infrastructure, AI Agents, ai-search, Automation."
+        "zh": "近 7 天新增 5,220 star（日均约 746，相对存量增速 6.5%），累计 80,082 star、6,945 fork。",
+        "en": "Gained 5,220 stars over the last 7 days (~746/day, 6.5% of its base), now at 80,082 stars and 6,945 forks."
       },
       "highlights": [
         {
-          "zh": "CLI + Claude Code/Cursor 插件双形态，开箱即用",
-          "en": "Both a CLI and Claude Code/Cursor plugins, ready out of the box"
+          "zh": "覆盖网页、YouTube、RSS、GitHub、Twitter、B站、Reddit、小红书、LinkedIn 等平台",
+          "en": "Covers web, YouTube, RSS, GitHub, Twitter, Bilibili, Reddit, XiaoHongShu, LinkedIn"
         },
         {
-          "zh": "中文开发者主导，文档覆盖中/英/日/韩四语",
-          "en": "Led by a Chinese developer, docs in Chinese/English/Japanese/Korean"
+          "zh": "工具开源、接口免费，Cookie 只存本地；唯一可能花钱的是服务器代理",
+          "en": "Open source and free to use, cookies stay local; only a server proxy may cost money"
         },
         {
-          "zh": "接入方式平台化封装，平台改版不需要用户操心",
-          "en": "Integrations are platformized — platform redesigns don't break your setup"
+          "zh": "每个平台采取「首选+备选」多后端路由，某种接入方式失效时自动切换",
+          "en": "Preferred-plus-fallback backend routing per platform, switching when one breaks"
+        },
+        {
+          "zh": "一条 agent-reach doctor 命令即可诊断哪个渠道可用、哪里该怎么修",
+          "en": "A single agent-reach doctor command diagnoses which channels work"
         }
       ],
       "cons": [
@@ -143,7 +160,16 @@
       ],
       "quickstart": "pip install agent-reach && agent-reach setup",
       "firstSeen": "2026-09-13",
-      "description": "Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — one CLI, zero API fees."
+      "description": "Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — one CLI, zero API fees.",
+      "intro": {
+        "zh": "一个命令行工具，给 AI Agent 补上「上网」的能力：读任意网页、提取 YouTube 字幕、搜 Twitter 和 Reddit、刷小红书、读 GitHub 仓库和 RSS，全都不用买付费 API。把安装说明复制给 Agent，几分钟后它就能自己去查资料。还自带 doctor 自检，告诉你哪个渠道通、怎么修。",
+        "en": "A CLI that gives your AI agent eyes on the internet: read any page, pull YouTube subtitles, search Twitter and Reddit, browse XiaoHongShu, read GitHub repos and RSS — no paid APIs. Paste the install line to your agent and it's browsing minutes later. A built-in doctor command tells you which channels work and how to fix the rest."
+      },
+      "cardLine": {
+        "zh": "给 AI Agent 装上读网页、刷推特小红书、看 YouTube 的能力",
+        "en": "One CLI giving agents web, Twitter, Reddit, YouTube access"
+      },
+      "interpretationSource": "llm"
     },
     {
       "rank": 3,
@@ -179,21 +205,25 @@
         "overall": 82
       },
       "why": {
-        "zh": "「asgeirtj/system_prompts_leaks」是 AI Agent 生态里的通用项目；聚焦 ai、AI Agent、ai-prompts、Anthropic 等方向；主要使用 JavaScript。",
-        "en": "Documented system prompts from Anthropic - Claude Fable 5.1, Opus 5.5, Claude Design, Claude Code. OpenAI - ChatGPT GPT-6-Astra, Codex. Google - Gemini 3.8 Flash, 3.1 Pro, Antigravity. xAI - Grok, Grok Bot, Cursor, Kimi and more! Updated regularly. A project in the AI agent ecosystem, mainly written in JavaScript, focused on ai, AI Agents, ai-prompts, Anthropic."
+        "zh": "近 7 天新增 4,942 star（日均约 706，相对存量增速 7.5%），累计 65,693 star、10,774 fork。",
+        "en": "Gained 4,942 stars over the last 7 days (~706/day, 7.5% of its base), now at 65,693 stars and 10,774 forks."
       },
       "highlights": [
         {
-          "zh": "更新极快，几乎与新模型发布同步",
-          "en": "Extremely fast updates, nearly in sync with new model releases"
+          "zh": "按厂商和产品分目录，附更新时间表，方便直接找到最新一版",
+          "en": "Organized by vendor and product with a dated changelog of recent additions"
         },
         {
-          "zh": "按厂商/产品分目录组织，检索友好",
-          "en": "Organized by vendor/product directories, easy to navigate"
+          "zh": "既收录普通聊天模型，也收录 Claude Code、Codex 等 Agent 形态的提示词",
+          "en": "Covers chat models plus agent-form prompts like Claude Code and Codex"
         },
         {
-          "zh": "已被主流媒体与学术机构引用",
-          "en": "Already cited by major media and research institutions"
+          "zh": "想研究模型被设定的角色、边界和拒答规则，可以直接对照原文",
+          "en": "Compare wording to study assigned roles, boundaries and refusal rules"
+        },
+        {
+          "zh": "欢迎提交 PR 补充你自己抓到的不同结果",
+          "en": "PRs welcome if you got a different result yourself"
         }
       ],
       "cons": [
@@ -212,9 +242,18 @@
           "en": "Analysts comparing cross-vendor agent behavior"
         }
       ],
-      "quickstart": "",
+      "quickstart": "# asgeirtj/system_prompts_leaks\n$ git clone https://github.com/asgeirtj/system_prompts_leaks.git\n$ cd system_prompts_leaks\n# 具体安装与运行方式请参考仓库 README",
       "firstSeen": "2026-09-13",
-      "description": "Documented system prompts from Anthropic - Claude Fable 5.1, Opus 5.5, Claude Design, Claude Code. OpenAI - ChatGPT GPT-6-Astra, Codex. Google - Gemini 3.8 Flash, 3.1 Pro, Antigravity. xAI - Grok, Grok Bot, Cursor, Kimi and more! Updated regularly."
+      "description": "Documented system prompts from Anthropic - Claude Fable 5.1, Opus 5.5, Claude Design, Claude Code. OpenAI - ChatGPT GPT-6-Astra, Codex. Google - Gemini 3.8 Flash, 3.1 Pro, Antigravity. xAI - Grok, Grok Bot, Cursor, Kimi and more! Updated regularly.",
+      "intro": {
+        "zh": "一个持续更新的合集，收录各家主流聊天机器人和编码 Agent 的系统提示词原文，覆盖 Anthropic、OpenAI、Google、xAI 等厂商。想知道「模型在回答我之前被交代了什么」，按目录打开对应文件即可，也可以拿来当自己写 Agent 提示词的参考。",
+        "en": "A regularly updated archive of verbatim system prompts behind popular chatbots and coding agents from Anthropic, OpenAI, Google, xAI and more. If you want to know what a model was told before it answered you, open the matching file — it also works as a reference when writing prompts for your own agent."
+      },
+      "cardLine": {
+        "zh": "主流大模型与编码 Agent 的系统提示词原文合集，持续更新",
+        "en": "Verbatim system prompts from major models and coding agents"
+      },
+      "interpretationSource": "llm"
     },
     {
       "rank": 4,
@@ -246,21 +285,25 @@
         "overall": 86
       },
       "why": {
-        "zh": "「deepseek-ai/deepseek-harness」是 AI Agent 生态里的通用项目；聚焦 AI Agent、cordis、dsh、dsh-plugin 等方向；主要使用 TypeScript。",
-        "en": "DeepSeek Harness: Everything is a Plugin. A project in the AI agent ecosystem, mainly written in TypeScript, focused on AI Agents, cordis, dsh, dsh-plugin."
+        "zh": "近 7 天新增 4,720 star（日均约 674，相对存量增速 2.1%），累计 222,035 star、26,352 fork。",
+        "en": "Gained 4,720 stars over the last 7 days (~674/day, 2.1% of its base), now at 222,035 stars and 26,352 forks."
       },
       "highlights": [
         {
-          "zh": "大厂官方出品 + 学术论文背书，工程与理论双支撑",
-          "en": "Official release from a major lab, backed by an academic paper"
+          "zh": "一条 npm 命令启动本地 Web UI，默认在 127.0.0.1:3080 并自动打开浏览器",
+          "en": "One npm command boots a local Web UI on 127.0.0.1:3080 and opens the browser"
         },
         {
-          "zh": "插件化架构天然利于生态扩展（dsh-plugin 话题已上线）",
-          "en": "Plugin architecture favors ecosystem growth (dsh-plugin topic already live)"
+          "zh": "一切皆插件：Agent 能力以插件组合，插件仓库打 dsh-plugin 话题便于发现",
+          "en": "Plugin-first design; tag plugin repos with dsh-plugin for discoverability"
         },
         {
-          "zh": "提供 Web UI、SSH、无头多种运行形态与官方文档站",
-          "en": "Multiple run modes (Web UI, SSH, headless) plus an official docs site"
+          "zh": "支持从源码运行，构建后可直接用产物启动而不必重复构建",
+          "en": "Can run from a source checkout, with built artifacts reused by pnpm dsh web"
+        },
+        {
+          "zh": "处于开发者预览阶段，运行前建议先读仓库里的安全说明",
+          "en": "Developer preview; read the safety notice before running it"
         }
       ],
       "cons": [
@@ -281,7 +324,16 @@
       ],
       "quickstart": "npx @deepseek-ai/dsh web",
       "firstSeen": "2026-09-13",
-      "description": "DeepSeek Harness: Everything is a Plugin."
+      "description": "DeepSeek Harness: Everything is a Plugin.",
+      "intro": {
+        "zh": "DeepSeek 开源的 Agent 运行框架，命令行叫 dsh，核心思路是「一切皆插件」——Agent 的能力都由插件拼装，底层用 Cordis 做组合。装好 Node.js 后一条 npm 命令就能起本地 Web 界面，在浏览器里和 Agent 交互。目前是开发者预览版，官方提醒会有破坏性兼容变更。",
+        "en": "DeepSeek's open-source agent harness, run from the command line as dsh, built on an everything-is-a-plugin architecture powered by Cordis. Install Node.js, run one npm command, and a local Web UI opens in your browser. It's a developer preview, and the project warns that compatibility-breaking changes will happen."
+      },
+      "cardLine": {
+        "zh": "DeepSeek 开源的 Agent 运行框架，一切皆插件，自带 Web 界面",
+        "en": "DeepSeek's open-source agent harness where everything is a plugin"
+      },
+      "interpretationSource": "llm"
     },
     {
       "rank": 5,
@@ -317,21 +369,25 @@
         "overall": 93
       },
       "why": {
-        "zh": "「affaan-m/ECC」是 AI Agent 生态里的通用项目；聚焦 AI Agent、Anthropic、Claude、Claude Code 等方向；主要使用 JavaScript。",
-        "en": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond. A project in the AI agent ecosystem, mainly written in JavaScript, focused on AI Agents, Anthropic, Claude, Claude Code."
+        "zh": "近 7 天新增 3,540 star（日均约 506，相对存量增速 1.4%），累计 257,372 star、38,504 fork。",
+        "en": "Gained 3,540 stars over the last 7 days (~506/day, 1.4% of its base), now at 257,372 stars and 38,504 forks."
       },
       "highlights": [
         {
-          "zh": "GitHub App 形态接入，对团队协作场景友好",
-          "en": "Integrates as a GitHub App, friendly to team workflows"
+          "zh": "内置 68 个专职 Agent 与 292 个技能，覆盖规划、评审、构建修复、安全与架构",
+          "en": "68 specialized agents and 292 skills spanning planning, review, build repair, security"
         },
         {
-          "zh": "本地化覆盖 13 种语言，国际化程度罕见地高",
-          "en": "Localized in 13 languages — unusually thorough internationalization"
+          "zh": "AgentShield 安全扫描，为 Agent 引入的能力和依赖做一层检查",
+          "en": "AgentShield security scanning as an extra layer over what your agent pulls in"
         },
         {
-          "zh": "MIT 协议 + 官网 + 社区，商业化路径清晰",
-          "en": "MIT license + website + community: a clear commercialization path"
+          "zh": "记忆与持续学习：把重复成功的做法沉淀成可复用的技能和工作流",
+          "en": "Memory and continuous learning turn repeated wins into reusable skills and workflows"
+        },
+        {
+          "zh": "以 Claude Code 为主，同时提供 Cursor、OpenCode、Gemini、Zed、Copilot 等适配",
+          "en": "Claude Code first, with adapters for Cursor, OpenCode, Gemini, Zed, Copilot and others"
         }
       ],
       "cons": [
@@ -350,9 +406,18 @@
           "en": "Power users wanting a management layer over Claude Code"
         }
       ],
-      "quickstart": "",
+      "quickstart": "# affaan-m/ECC\n$ git clone https://github.com/affaan-m/ECC.git\n$ cd ECC\n# 具体安装与运行方式请参考仓库 README",
       "firstSeen": "2026-09-13",
-      "description": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond."
+      "description": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.",
+      "intro": {
+        "zh": "一套给编码 Agent 用的工程体系：让 Agent 先规划再动手、用测试验证改动、换个干净上下文自查、记住关键信息，并把反复奏效的做法沉淀成可复用技能。装一次就融进日常流程，不用在每个提示词里重复交代。目前对 Claude Code 支持最好，也为 Codex、Cursor、OpenCode 等提供适配。",
+        "en": "An engineering system for coding agents: it makes the agent plan before building, verify changes with tests, review its own work from a fresh context, remember what matters, and turn repeated wins into reusable skills. Install once instead of re-explaining the process in every prompt. Best supported on Claude Code, with adapters for Codex, Cursor, OpenCode and more."
+      },
+      "cardLine": {
+        "zh": "给编码 Agent 装上规划、记忆、自审与安全扫描的工程化体系",
+        "en": "Planning, memory, self-review and security for coding agents"
+      },
+      "interpretationSource": "llm"
     },
     {
       "rank": 6,
@@ -384,21 +449,25 @@
         "overall": 91
       },
       "why": {
-        "zh": "「Shubhamsaboo/awesome-llm-apps」是 AI Agent 生态里的通用项目；聚焦 Agent、大语言模型、python、RAG 检索增强 等方向；主要使用 Python。",
-        "en": "100+ AI Agents, Agent Skills and RAG Apps - Free and Open Source. A project in the AI agent ecosystem, mainly written in Python, focused on Agents, LLMs, python, RAG."
+        "zh": "近 7 天新增 3,101 star（日均约 443，相对存量增速 2.3%），累计 137,813 star、20,252 fork。",
+        "en": "Gained 3,101 stars over the last 7 days (~443/day, 2.3% of its base), now at 137,813 stars and 20,252 forks."
       },
       "highlights": [
         {
-          "zh": "每个示例端到端测试过，clone 即跑",
-          "en": "Every example is end-to-end tested — clone and run"
+          "zh": "技能类模板给编码 Agent 加新能力，一条命令安装、用自然语言调用",
+          "en": "Skill templates add abilities to coding agents with one-command install"
         },
         {
-          "zh": "分类清晰：单 agent / 多 agent / 语音 / RAG / agent skills",
-          "en": "Clean taxonomy: single-agent / multi-agent / voice / RAG / agent skills"
+          "zh": "每个技能都附带真实代码，并过一道安全与评测 CI 关卡",
+          "en": "Every skill ships real code and passes a security plus eval CI gate"
         },
         {
-          "zh": "Apache-2.0，可商用作学习模板",
-          "en": "Apache-2.0: usable as commercial learning templates"
+          "zh": "选题很具体：项目坟场、初读者模拟、范围蔓延检测、依赖体检等",
+          "en": "Concrete examples: project graveyard, first reader, scope creep detector, dependency doctor"
+        },
+        {
+          "zh": "单文件起步的入门 Agent，克隆后很快就能跑起来看效果",
+          "en": "Single-file starter agents you can clone and run right away"
         }
       ],
       "cons": [
@@ -419,7 +488,16 @@
       ],
       "quickstart": "git clone https://github.com/Shubhamsaboo/awesome-llm-apps",
       "firstSeen": "2026-09-13",
-      "description": "100+ AI Agents, Agent Skills and RAG Apps - Free and Open Source."
+      "description": "100+ AI Agents, Agent Skills and RAG Apps - Free and Open Source.",
+      "intro": {
+        "zh": "一个开源的 AI 应用与 Agent 模板合集，收录 100 多个能直接跑起来的项目，涵盖 AI Agent、Agent 技能和 RAG 应用，Apache-2.0 协议，克隆下来改改就能用。支持 Claude、Gemini、GPT、DeepSeek、Llama、Qwen 等模型，适合找脚手架或直接拿现成的。",
+        "en": "An open-source collection of 100+ runnable AI agents, agent skills and RAG apps under Apache-2.0 — clone it, ship it, sell it. Works with Claude, Gemini, GPT, DeepSeek, Llama, Qwen and other models, useful either as scaffolding or as a template you can run today."
+      },
+      "cardLine": {
+        "zh": "100+ 开源 AI Agent、技能与 RAG 应用模板，克隆即可用",
+        "en": "100+ open-source AI agent, skill and RAG app templates"
+      },
+      "interpretationSource": "llm"
     },
     {
       "rank": 7,
@@ -455,21 +533,25 @@
         "overall": 93
       },
       "why": {
-        "zh": "「diegosouzapw/OmniRoute」是 AI Agent 生态里的通用项目；聚焦 a2a、AI Agent、ai-gateway、Anthropic 等方向；主要使用 TypeScript。",
-        "en": "Never stop coding. Free MIT AI gateway: one endpoint, 359 providers (150+ free), 1200+ models Kimi, Claude, GPT, Gemini, GLM, DeepSeek, MiniMax. Works with Claude Code, Codex, Cursor, OpenCode, Cline & Copilot. Quota-aware auto-fallback, RTK+Caveman compression saves 15-95% tokens, MCP/A2A, Desktop/PWA. Built by hundreds of contributors. A project in the AI agent ecosystem, mainly written in TypeScript, focused on a2a, AI Agents, ai-gateway, Anthropic."
+        "zh": "近 7 天新增 2,340 star（日均约 334，相对存量增速 3.6%），累计 65,475 star、9,163 fork。",
+        "en": "Gained 2,340 stars over the last 7 days (~334/day, 3.6% of its base), now at 65,475 stars and 9,163 forks."
       },
       "highlights": [
         {
-          "zh": "免费额度目录化 + 预算仪表盘，数字算得明明白白",
-          "en": "Cataloged free tiers + budget dashboard with transparent math"
+          "zh": "聚合大量免费额度入口，仪表盘上能直接看到当前可用量",
+          "en": "Aggregates many free-tier entries and shows what's available on a dashboard"
         },
         {
-          "zh": "对标商业网关（LiteLLM/OpenRouter）的自托管替代",
-          "en": "A self-hosted alternative benchmarked against LiteLLM/OpenRouter"
+          "zh": "配额感知调度：某个厂商额度用尽会自动回落到下一个",
+          "en": "Quota-aware scheduling falls back when a provider's quota runs out"
         },
         {
-          "zh": "带完整 dashboard 截图与架构图，文档投入大",
-          "en": "Full dashboard screenshots and architecture diagrams — serious docs effort"
+          "zh": "内置压缩能力，长会话编码时可显著减少 token 消耗",
+          "en": "Built-in compression cuts token use on long coding sessions"
+        },
+        {
+          "zh": "支持 MCP/A2A 接入，并提供桌面端与 PWA 运行方式",
+          "en": "Speaks MCP/A2A and runs as desktop or PWA"
         }
       ],
       "cons": [
@@ -490,7 +572,16 @@
       ],
       "quickstart": "npx omniroute",
       "firstSeen": "2026-09-13",
-      "description": "Never stop coding. Free MIT AI gateway: one endpoint, 359 providers (150+ free), 1200+ models Kimi, Claude, GPT, Gemini, GLM, DeepSeek, MiniMax. Works with Claude Code, Codex, Cursor, OpenCode, Cline & Copilot. Quota-aware auto-fallback, RTK+Caveman compression saves 15-95% tokens, MCP/A2A, Desktop/PWA. Built by hundreds of contributors"
+      "description": "Never stop coding. Free MIT AI gateway: one endpoint, 359 providers (150+ free), 1200+ models Kimi, Claude, GPT, Gemini, GLM, DeepSeek, MiniMax. Works with Claude Code, Codex, Cursor, OpenCode, Cline & Copilot. Quota-aware auto-fallback, RTK+Caveman compression saves 15-95% tokens, MCP/A2A, Desktop/PWA. Built by hundreds of contributors",
+      "intro": {
+        "zh": "一个 MIT 协议的开源 AI 网关：对外只暴露一个接口，背后接上几百家模型服务商，其中不少带免费额度。它会按剩余配额自动切换供应商，让你在 Claude Code、Codex、Cursor 等工具里尽量不中断地继续写代码。还内置 token 压缩、MCP/A2A 支持和桌面 / PWA 形态。",
+        "en": "An MIT-licensed AI gateway that puts hundreds of model providers behind a single endpoint, many of them with free tiers. It falls back based on remaining quota so you keep coding in Claude Code, Codex, Cursor and similar tools. Also bundles token compression, MCP/A2A support, and desktop/PWA clients."
+      },
+      "cardLine": {
+        "zh": "开源 AI 网关，一个接口接入数百家模型服务并自动切换配额",
+        "en": "Open-source gateway to hundreds of model providers, one endpoint"
+      },
+      "interpretationSource": "llm"
     },
     {
       "rank": 8,
@@ -526,21 +617,25 @@
         "overall": 86
       },
       "why": {
-        "zh": "「firecrawl/firecrawl」是 AI Agent 生态里的通用项目；聚焦 ai、AI Agent、ai-crawler、ai-scraping 等方向；主要使用 TypeScript。",
-        "en": "The web data API to search, scrape, and interact at scale. 🔥. A project in the AI agent ecosystem, mainly written in TypeScript, focused on ai, AI Agents, ai-crawler, ai-scraping."
+        "zh": "近 7 天新增 2,278 star（日均约 325，相对存量增速 1.3%），累计 179,696 star、9,770 fork。",
+        "en": "Gained 2,278 stars over the last 7 days (~325/day, 1.3% of its base), now at 179,696 stars and 9,770 forks."
       },
       "highlights": [
         {
-          "zh": "Python/Node SDK + MCP server，agent 接入零门槛",
-          "en": "Python/Node SDKs + MCP server: zero-friction agent integration"
+          "zh": "同一套接口覆盖搜索、抓取、整站爬取、URL 发现和批量抓取",
+          "en": "One API for search, scrape, crawl, map and batch scrape"
         },
         {
-          "zh": "开源可自托管 + 云服务双模式",
-          "en": "Open-source self-hostable, plus a managed cloud"
+          "zh": "输出面向大模型：Markdown、结构化 JSON、截图，还能解析网页上的 PDF 与 DOCX",
+          "en": "LLM-ready output: markdown, structured JSON, screenshots, plus PDF and DOCX parsing"
         },
         {
-          "zh": "处理 JS 渲染页、反爬与结构化提取能力强",
-          "en": "Strong on JS-rendered pages, anti-bot handling and structured extraction"
+          "zh": "支持先点击、滚动、输入、等待，再提取页面内容",
+          "en": "Click, scroll, write, wait and press before extracting content"
+        },
+        {
+          "zh": "一条命令就能把 Firecrawl 接到任意 AI Agent 或 MCP 客户端",
+          "en": "Connect it to any AI agent or MCP client with a single command"
         }
       ],
       "cons": [
@@ -561,7 +656,16 @@
       ],
       "quickstart": "pip install firecrawl-py",
       "firstSeen": "2026-09-13",
-      "description": "The web data API to search, scrape, and interact at scale. 🔥"
+      "description": "The web data API to search, scrape, and interact at scale. 🔥",
+      "intro": {
+        "zh": "一个把网页变成 Agent 可用数据的 API：给一个链接或搜索词，它返回干净的 Markdown 或结构化 JSON，代理轮换、JS 渲染和限速这些麻烦事都由它处理。除了抓取，还能整站爬取、列出站点所有 URL、批量抓取，以及先点击滚动再提取内容。",
+        "en": "A web data API that turns pages into agent-ready data: hand it a URL or a search query and get back clean Markdown or structured JSON, with proxies, JS rendering and rate limits handled for you. Beyond scraping there's site crawling, URL discovery, batch scraping, and page interaction before extraction."
+      },
+      "cardLine": {
+        "zh": "把网页变成干净 Markdown / JSON 的抓取与搜索 API",
+        "en": "The web data API for scraping, search and interaction at scale"
+      },
+      "interpretationSource": "llm"
     },
     {
       "rank": 9,
@@ -597,21 +701,25 @@
         "overall": 84
       },
       "why": {
-        "zh": "「calesthio/OpenMontage」是 AI Agent 生态里的通用项目；聚焦 Agent、Agentic AI、ai、Claude 等方向；主要使用 Python。",
-        "en": "World's first open-source, agentic video production system. 12 production pipelines, 100+ tools, 700+ agent skill and production-knowledge files. Turn your AI coding assistant into a full video production studio. A project in the AI agent ecosystem, mainly written in Python, focused on Agent, Agentic AI, ai, Claude."
+        "zh": "近 7 天新增 2,058 star（日均约 294，相对存量增速 3.5%），累计 58,036 star、7,316 fork。",
+        "en": "Gained 2,058 stars over the last 7 days (~294/day, 3.5% of its base), now at 58,036 stars and 7,316 forks."
       },
       "highlights": [
         {
-          "zh": "视频生产全流程 agent 化：脚本、剪辑、配音、字幕",
-          "en": "Full video pipeline agentized: scripting, editing, voiceover, subtitles"
+          "zh": "覆盖 12 条制作流水线、100 多个工具，从脚本到合成各有对应流程",
+          "en": "12 production pipelines and 100+ tools spanning script to render"
         },
         {
-          "zh": "供应商可插拔（见 docs/PROVIDERS.md），不锁定单一模型",
-          "en": "Pluggable providers (docs/PROVIDERS.md), no single-model lock-in"
+          "zh": "能从免费素材库和开放档案检索真实动态片段，剪成时间线再渲染",
+          "en": "Retrieves real motion clips from free stock and open archives, then edits a timeline"
         },
         {
-          "zh": "自带 mascot、网站与 prompt 示例库，社区氛围好",
-          "en": "Ships mascot, website and a prompt library — strong community vibes"
+          "zh": "仓库附示例成片，包含用生成视频片段加配乐与字幕合成的短片",
+          "en": "Ships example films built from generated motion clips, narration and music"
+        },
+        {
+          "zh": "面向 Claude、Copilot、Cursor 等编码助手，提示词直接驱动全流程",
+          "en": "Driven by prompts inside Claude, Copilot, Cursor and similar assistants"
         }
       ],
       "cons": [
@@ -636,7 +744,16 @@
       ],
       "quickstart": "git clone https://github.com/calesthio/OpenMontage",
       "firstSeen": "2026-09-13",
-      "description": "World's first open-source, agentic video production system. 12 production pipelines, 100+ tools, 700+ agent skill and production-knowledge files. Turn your AI coding assistant into a full video production studio."
+      "description": "World's first open-source, agentic video production system. 12 production pipelines, 100+ tools, 700+ agent skill and production-knowledge files. Turn your AI coding assistant into a full video production studio.",
+      "intro": {
+        "zh": "一个开源的 Agent 视频制作系统：把你的编码助手变成视频工作室，你用自然语言描述想要什么，它负责调研、写脚本、找素材、剪辑和合成。它不只是把几张图动起来，还能从免费素材和开放档案里检索真实动态片段，剪成时间线渲染成片。",
+        "en": "An open-source agentic video production system that turns your coding assistant into a video studio: describe what you want in plain language and it handles research, scripting, asset gathering, editing and final composition. It pulls real motion clips from free stock footage and open archives rather than animating stills."
+      },
+      "cardLine": {
+        "zh": "开源 Agent 视频制作系统，用自然语言走完脚本到成片",
+        "en": "Open-source agentic video production from prompt to final cut"
+      },
+      "interpretationSource": "llm"
     },
     {
       "rank": 10,
@@ -663,21 +780,25 @@
         "overall": 90
       },
       "why": {
-        "zh": "「msitarzewski/agency-agents」是 AI Agent 生态里的通用项目；主要使用 Shell。",
-        "en": "A complete AI agency at your fingertips - From frontend wizards to Reddit community ninjas, from whimsy injectors to reality checkers. Each agent is a specialized expert with personality, processes, and proven deliverables. A project in the AI agent ecosystem, mainly written in Shell."
+        "zh": "近 7 天新增 1,593 star（日均约 228，相对存量增速 1%），累计 152,012 star、24,490 fork。",
+        "en": "Gained 1,593 stars over the last 7 days (~228/day, 1% of its base), now at 152,012 stars and 24,490 forks."
       },
       "highlights": [
         {
-          "zh": "角色设计细致到流程与交付物，可直接落地使用",
-          "en": "Personas detailed down to processes and deliverables — immediately usable"
+          "zh": "每个智能体文件都带身份设定、核心流程、代码示例和成功标准",
+          "en": "Each agent file carries identity, workflows, code examples and success metrics"
         },
         {
-          "zh": "原生 App 免配置安装与自动更新",
-          "en": "Native app installs without config and auto-updates"
+          "zh": "可以只安装需要的团队，不必把整套阵容塞进工具里",
+          "en": "Install only the teams you need instead of the whole roster"
         },
         {
-          "zh": "MIT 协议，源自 Reddit 社区迭代",
-          "en": "MIT licensed, community-iterated from a Reddit thread"
+          "zh": "支持 Claude Code、Cursor、Codex、Gemini CLI、Copilot、OpenCode 等多种工具",
+          "en": "Works with Claude Code, Cursor, Codex, Gemini CLI, Copilot, OpenCode and more"
+        },
+        {
+          "zh": "提供 macOS/Linux/Windows 桌面应用，点一下安装并自动更新",
+          "en": "A macOS/Linux/Windows app browses and installs the roster with auto-updates"
         }
       ],
       "cons": [
@@ -696,9 +817,18 @@
           "en": "Small teams spanning consulting, marketing and more"
         }
       ],
-      "quickstart": "",
+      "quickstart": "# msitarzewski/agency-agents\n$ git clone https://github.com/msitarzewski/agency-agents.git\n$ cd agency-agents\n# 具体安装与运行方式请参考仓库 README",
       "firstSeen": "2026-09-13",
-      "description": "A complete AI agency at your fingertips - From frontend wizards to Reddit community ninjas, from whimsy injectors to reality checkers. Each agent is a specialized expert with personality, processes, and proven deliverables."
+      "description": "A complete AI agency at your fingertips - From frontend wizards to Reddit community ninjas, from whimsy injectors to reality checkers. Each agent is a specialized expert with personality, processes, and proven deliverables.",
+      "intro": {
+        "zh": "一整套「AI 员工」人设合集：前端高手、Reddit 社区运营、脑洞注入者、现实检查员等，每个智能体都有明确的身份、工作流程和交付物，不是泛泛的提示词模板。可以只挑需要的团队装进 Claude Code、Cursor、Codex 等工具，也提供桌面应用一键浏览与安装。",
+        "en": "A roster of AI specialist personas — frontend wizards, Reddit community ninjas, whimsy injectors, reality checkers — each with its own identity, workflows and expected deliverables rather than a generic prompt template. Install only the teams you need into Claude Code, Cursor, Codex and others, or browse the roster in a desktop app."
+      },
+      "cardLine": {
+        "zh": "可装进编码 Agent 的 AI 专家人设合集，按团队挑选",
+        "en": "A roster of installable AI specialist personas for your agent"
+      },
+      "interpretationSource": "llm"
     }
   ]
 }

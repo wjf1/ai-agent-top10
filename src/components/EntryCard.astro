@@ -52,7 +52,7 @@ const sourceLabel =
       {entry.category && <span class="cat-tag">{categoryLabel(entry.category, lang)}</span>}
       <span class="gain-chip">+{fmt(entry.weeklyGain)} / {windowDays}d</span>
     </div>
-    <p class="entry-desc">{entry.why[lang]}</p>
+    <p class="entry-desc">{entry.cardLine?.[lang] ?? entry.why[lang]}</p>
     <div class="entry-meta">
       <span>⭐ {fmt(entry.stars)} {t.stars}</span>
       <span>🍴 {fmt(entry.forks)} {t.forks}</span>

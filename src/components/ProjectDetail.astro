@@ -53,7 +53,7 @@ const sourceLabel =
   lang={lang}
   langHref={langHref}
   title={entry.full_name}
-  desc={String(entry.why?.[lang] ?? "").slice(0, 150)}
+  desc={String(entry.intro?.[lang] ?? entry.why?.[lang] ?? "").slice(0, 150)}
   active="day"
   date={date}
 >
@@ -115,6 +115,11 @@ const sourceLabel =
     </div>
 
     <div class="detail-col">
+      <div class="panel">
+        <h2>📖 {t.intro}</h2>
+        <p class="prose">{entry.intro?.[lang] ?? entry.why[lang]}</p>
+      </div>
+
       <div class="panel">
         <h2>💡 {t.why}</h2>
         <p class="prose">{entry.why[lang]}</p>

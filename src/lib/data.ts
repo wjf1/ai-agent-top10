@@ -45,6 +45,7 @@ export const L = {
     forksGain: "新增 fork",
     overall: "综合分",
     why: "为什么上榜",
+    intro: "项目介绍",
     highlights: "亮点",
     cons: "局限",
     fitFor: "适合谁",

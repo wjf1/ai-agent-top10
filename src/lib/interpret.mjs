@@ -1,10 +1,15 @@
 /**
  * 规则化解读 + 解读结构校验（无外部依赖，流水线与构建期共用）。
  *
- * why 是"定位解读"：说明这个项目是什么、用在哪里，素材来自仓库描述、分类与
- * 话题标签；star / fork / 提交等数字由卡片的数据行和 highlights 承担，不在这里复述。
- * 规则版只陈述已采集的客观信息，不做主观评价；LLM 版（scripts/lib/interpret.mjs）
- * 和人工版都必须过同一套 normalize 校验，不合格就退回规则版。
+ * 四条内容各司其职：
+ *   why       为什么上榜 —— 用当日指标回答"它凭什么进榜"，只陈述客观数据
+ *   intro     项目介绍   —— 这是什么、解决什么问题、怎么用
+ *   cardLine  卡片一行版 —— 列表页那行的极简定位
+ *   highlights 亮点      —— 值得注意的具体能力
+ *
+ * LLM 版（scripts/lib/interpret.mjs）读 README 产出 intro / cardLine / highlights；
+ * why 始终由这里的规则版生成 —— 增速、活跃度这类数字必须与数据文件一一对应，
+ * 不适合交给模型复述。LLM 不可用时其余三项也回落到这里的规则版。
  */
 import { categoryLabel } from "./categorize.mjs";
 import { config } from "./config.mjs";
@@ -47,7 +52,7 @@ export function fitForCategory(category) {
   }
 }
 
-/** 分类对应的"这个项目拿来实现什么"，用于定位解读 */
+/** 分类对应的"这个项目拿来实现什么"，用于规则版的项目介绍 */
 const CATEGORY_PURPOSE = {
   framework: {
     zh: "可把 Agent 能力集成进自研产品或工作流",
@@ -65,22 +70,26 @@ const CATEGORY_PURPOSE = {
   other: { zh: "多用于 AI Agent 生态的各类场景", en: "in the AI agent ecosystem" },
 };
 
-/**
- * 定位解读：回答"这是什么项目、用来做什么"。
- *
- * 英文优先用仓库原始 description（信息量最高）；中文没有可靠的英文翻译来源，
- * 改用分类 + 话题标签拼装 —— 未收录的标签保留原始 slug，不硬译产品名。
- * description 与 topics 都缺失时仍会给出分类维度的定位句，不会产出空文本。
- */
-export function positioningWhy(project) {
+function categoryBits(project) {
   const category = project.category ?? "other";
-  const catZh = categoryLabel(category, "zh");
-  const catEn = categoryLabel(category, "en");
-  const purpose = CATEGORY_PURPOSE[category] ?? CATEGORY_PURPOSE.other;
-  const name = project.full_name || project.name || "该项目";
-  const language = project.language && project.language !== "Other" ? project.language : "";
-  const zhTopics = topicLabels(project.topics, "zh", 4);
-  const enTopics = topicLabels(project.topics, "en", 4);
+  return {
+    category,
+    catZh: categoryLabel(category, "zh"),
+    catEn: categoryLabel(category, "en"),
+    purpose: CATEGORY_PURPOSE[category] ?? CATEGORY_PURPOSE.other,
+    name: project.full_name || project.name || "该项目",
+    language: project.language && project.language !== "Other" ? project.language : "",
+    zhTopics: topicLabels(project.topics, "zh", 4),
+    enTopics: topicLabels(project.topics, "en", 4),
+  };
+}
+
+/**
+ * 规则版项目介绍：分类 + 话题标签拼装。
+ * 读不懂 README，所以只能给出这一层颗粒度；LLM 版会用仓库描述补足细节。
+ */
+export function ruleIntro(project) {
+  const { category, catZh, catEn, purpose, name, language, zhTopics, enTopics } = categoryBits(project);
   const description = typeof project.description === "string" ? project.description.trim() : "";
 
   const zhHead = category === "other" ? `「${name}」是 AI Agent 生态里的通用项目` : `「${name}」属于${catZh}，${purpose.zh}`;
@@ -89,7 +98,6 @@ export function positioningWhy(project) {
     .join("；");
   const zh = `${zhHead}${zhTail ? `；${zhTail}` : ""}。`;
 
-  // other 分类没有可读的英文名（"a Other project" 不通），改用生态描述
   const enClause =
     category === "other"
       ? `a project ${purpose.en}`
@@ -105,23 +113,89 @@ export function positioningWhy(project) {
   return { zh, en };
 }
 
-/**
- * 生成规则化解读。
- * @param {object} project 至少需要 metrics / weeklyGain / dailyGain / category / windowDays
- */
-export function ruleBasedInterpretation(project, { lang = "zh" } = {}) {
-  const m = project.metrics;
+/** 规则版卡片一行：定位 + 方向，控制在卡片一行的长度内 */
+export function ruleCardLine(project) {
+  const { category, catZh, catEn, name, language } = categoryBits(project);
+  const zhTopicsShort = topicLabels(project.topics, "zh", 3);
+  const enTopicsShort = topicLabels(project.topics, "en", 3);
+
+  const zh =
+    category === "other"
+      ? [`${name} 属于 AI Agent 生态项目`, zhTopicsShort.length ? `方向：${zhTopicsShort.join("、")}` : ""]
+          .filter(Boolean)
+          .join("，")
+      : [
+          `${catZh} 项目`,
+          zhTopicsShort.length ? `方向：${zhTopicsShort.join("、")}` : language ? `主要使用 ${language}` : "",
+        ]
+          .filter(Boolean)
+          .join("，");
+
+  const en =
+    category === "other"
+      ? [`${name} — an AI agent ecosystem project`, enTopicsShort.join(", ")].filter(Boolean).join(": ")
+      : [`A ${catEn} project`, enTopicsShort.length ? `focused on ${enTopicsShort.join(", ")}` : language ? `in ${language}` : ""]
+          .filter(Boolean)
+          .join(", ");
+
+  return { zh: `${zh}。`, en: `${en}.` };
+}
+
+/** 规则版"为什么上榜"：只复述当日客观指标，不做主观推断 */
+export function ruleWhy(project) {
+  const m = project.metrics ?? {};
   const windowDays = project.windowDays ?? 7;
+  const gain = project.weeklyGain ?? 0;
+  const perDay = Math.round(project.dailyGain ?? gain / windowDays);
+  const growthRate = project.growthRate;
 
-  const why = positioningWhy(project);
+  const zhOpening = `近 ${windowDays} 天新增 ${fmt(gain)} star（日均约 ${fmt(perDay)}${
+    growthRate ? `，相对存量增速 ${growthRate}%` : ""
+  }），累计 ${fmt(m.stars)} star、${fmt(m.forks)} fork`;
+  const enOpening = `Gained ${fmt(gain)} stars over the last ${windowDays} days (~${fmt(perDay)}/day${
+    growthRate ? `, ${growthRate}% of its base` : ""
+  }), now at ${fmt(m.stars)} stars and ${fmt(m.forks)} forks`;
 
+  const zhExtra = [];
+  const enExtra = [];
+  if (project.forksGain > 0) {
+    zhExtra.push(`窗口内被 fork ${fmt(project.forksGain)} 次`);
+    enExtra.push(`${fmt(project.forksGain)} new forks in the window`);
+  }
+  if (m.pushDaysAgo != null) {
+    zhExtra.push(`最近一次提交在 ${m.pushDaysAgo} 天前`);
+    enExtra.push(`last push ${m.pushDaysAgo} day(s) ago`);
+  }
+  if (m.prActivity != null && m.issueActivity != null) {
+    zhExtra.push(`近 30 天新建 PR ${fmt(m.prActivity)} 个、issue ${fmt(m.issueActivity)} 个`);
+    enExtra.push(`${fmt(m.prActivity)} PRs and ${fmt(m.issueActivity)} issues opened in the last 30 days`);
+  }
+  if (m.contributors != null) {
+    zhExtra.push(`${fmt(m.contributors)} 位贡献者共同维护`);
+    enExtra.push(`${fmt(m.contributors)} contributors`);
+  }
+
+  return {
+    zh: `${zhOpening}。${zhExtra.length ? `${zhExtra.join("，")}。` : ""}`,
+    en: `${enOpening}.${enExtra.length ? ` ${enExtra.join("; ")}.` : ""}`,
+  };
+}
+
+/** 规则版亮点：只有指标可用，给不出"能干什么"的场景描述 */
+export function ruleHighlights(project) {
+  const m = project.metrics ?? {};
+  const windowDays = project.windowDays ?? 7;
   const highlights = [];
   if (m.contributors >= 10) highlights.push({ zh: `${m.contributors} 位公开贡献者`, en: `${m.contributors} public contributors` });
   if (m.releases90d > 0) highlights.push({ zh: `近 90 天发布 ${m.releases90d} 个版本`, en: `${m.releases90d} release(s) in the last 90 days` });
   if (m.licensePermissive) highlights.push({ zh: `宽松许可证（${m.license}），商用门槛低`, en: `Permissive license (${m.license}) — easy commercial use` });
   if (project.forksGain > 0) highlights.push({ zh: `${windowDays} 天内新增 ${fmt(project.forksGain)} 次 fork`, en: `${fmt(project.forksGain)} new forks in the window` });
   if (m.ageDays != null && m.ageDays < 365) highlights.push({ zh: `新仓库，创建至今仅 ${m.ageDays} 天`, en: `Young project — only ${m.ageDays} days old` });
+  return highlights;
+}
 
+export function ruleCons(project) {
+  const m = project.metrics ?? {};
   const cons = [];
   if (m.pushDaysAgo > 30) cons.push({ zh: `最近 ${m.pushDaysAgo} 天没有提交，维护可能停滞`, en: `No commits for ${m.pushDaysAgo} days — maintenance may have stalled` });
   if (!m.license) cons.push({ zh: "未声明开源许可证，商用存在法务不确定性", en: "No open-source license declared — legal uncertainty for commercial use" });
@@ -132,22 +206,47 @@ export function ruleBasedInterpretation(project, { lang = "zh" } = {}) {
     cons.push({ zh: `贡献者仅 ${m.contributors} 人，存在单点依赖风险`, en: `Only ${m.contributors} contributor(s) — bus-factor risk` });
   }
   if (!m.hasHomepage && !m.hasDocs) cons.push({ zh: "缺少官网与文档入口，上手成本较高", en: "No homepage or docs site — steeper onboarding" });
+  return cons;
+}
 
+/**
+ * 生成规则化解读（LLM 不可用时的完整兜底）。
+ * @param {object} project 至少需要 metrics / weeklyGain / dailyGain / category / windowDays
+ */
+export function ruleBasedInterpretation(project, { lang = "zh" } = {}) {
   const quickstart = project.url
     ? `# ${project.full_name}\n$ git clone ${project.url}.git\n$ cd ${project.name}\n# 具体安装与运行方式请参考仓库 README`
     : "";
 
-  return { why, highlights, cons, fitFor: fitForCategory(project.category), quickstart, source: "rules" };
+  return {
+    why: ruleWhy(project),
+    intro: ruleIntro(project),
+    cardLine: ruleCardLine(project),
+    highlights: ruleHighlights(project),
+    cons: ruleCons(project),
+    fitFor: fitForCategory(project.category),
+    quickstart,
+    source: "rules",
+  };
 }
 
-/** 校验并净化任意来源的解读对象；不合法返回 null */
+/**
+ * 校验并净化任意来源的解读对象。
+ * why 不要求由外部提供（LLM 不写 why，它由规则版按指标生成），
+ * 但整份解读至少要有一项有效内容，否则视为不合法。
+ */
 export function normalizeInterpretation(raw) {
   if (!raw || typeof raw !== "object") return null;
   const why = sanitizeBilingualText(raw.why, config.sanitize?.maxWhyLength);
-  if (!why) return null;
+  const intro = sanitizeBilingualText(raw.intro, config.sanitize?.maxIntroLength);
+  const cardLine = sanitizeBilingualText(raw.cardLine, config.sanitize?.maxCardLineLength);
+  const highlights = sanitizeBilingualList(raw.highlights);
+  if (!why && !intro && !cardLine && !highlights.length) return null;
   return {
     why,
-    highlights: sanitizeBilingualList(raw.highlights),
+    intro,
+    cardLine,
+    highlights,
     cons: sanitizeBilingualList(raw.cons),
     fitFor: sanitizeBilingualList(raw.fitFor),
     quickstart: sanitizeMultiline(raw.quickstart, config.sanitize?.maxQuickstartLength),

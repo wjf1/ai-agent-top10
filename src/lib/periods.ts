@@ -224,7 +224,10 @@ export async function buildPeriodBoard(
       rankChange: null,
       scores: r.scores,
       why: interpretation.why,
-      highlights: interpretation.highlights,
+      // 该项目最近一期日榜已有 LLM 版介绍时直接复用，避免周 / 月榜退回模板腔
+      intro: e.intro ?? interpretation.intro,
+      cardLine: e.cardLine ?? interpretation.cardLine,
+      highlights: e.highlights?.length ? e.highlights : interpretation.highlights,
       cons: interpretation.cons,
       fitFor: interpretation.fitFor,
       quickstart: interpretation.quickstart,

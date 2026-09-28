@@ -244,6 +244,8 @@
     "maxTopicCount": 20,
     "maxTopicLength": 50,
     "maxWhyLength": 600,
+    "maxIntroLength": 600,
+    "maxCardLineLength": 140,
     "maxQuickstartLength": 1200,
     "maxListItemLength": 200,
     "maxListItems": 6,
@@ -251,12 +253,19 @@
   },
 
   "interpretation": {
-    "provider": "none",
-    "model": "gpt-4o-mini",
-    "baseUrl": "https://api.openai.com/v1",
-    "apiKeyEnv": "LLM_API_KEY",
-    "timeoutMs": 45000,
+    "$comment": [
+      "解读生成：LLM 读仓库 README 产出「项目介绍 / 卡片一行版 / 亮点」，",
+      "「为什么上榜」由 src/lib/interpret.mjs 的规则版按当日指标生成（模型不复述数字）。",
+      "provider 为 none、缺 apiKey、请求失败或返回不合法时，整份解读静默回落到规则版。",
+      "默认指向本机 Command Code 代理（OpenAI 兼容网关），也可改回任意 OpenAI 兼容服务。"
+    ],
+    "provider": "openai",
+    "model": "deepseek/deepseek-v4.1-flash",
+    "baseUrl": "http://127.0.0.1:9090/v1",
+    "apiKeyEnv": "COMMANDCODE_API_KEY",
+    "timeoutMs": 120000,
     "maxEntries": 10,
-    "temperature": 0.4
+    "temperature": 0.4,
+    "readmeExcerptLength": 2600
   }
 }

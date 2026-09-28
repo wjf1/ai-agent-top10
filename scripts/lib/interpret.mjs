@@ -1,8 +1,11 @@
 /**
- * LLM 解读生成（可选，W4-3）。
+ * LLM 解读生成（可选）。
  *
  * 规则化版本在 src/lib/interpret.mjs，供流水线兜底与构建期聚合复用；
  * 这里只保留需要网络与密钥的 LLM 部分，任何失败都静默回落到规则版。
+ *
+ * 分工：LLM 负责「项目介绍 / 卡片一行版 / 亮点」——这些要把 README 读成人话，
+ * 规则模板做不到；「为什么上榜」始终由规则版按当日指标生成，模型不参与复述数字。
  */
 import { categoryLabel } from "../../src/lib/categorize.mjs";
 import { config } from "../../src/lib/config.mjs";
@@ -10,13 +13,17 @@ import { normalizeInterpretation } from "../../src/lib/interpret.mjs";
 
 export { normalizeInterpretation, ruleBasedInterpretation } from "../../src/lib/interpret.mjs";
 
-const LLM_SYSTEM_PROMPT = `You write concise, factual release notes for a daily "AI Agent Top 10" board.
-Return ONLY a JSON object with this exact shape:
-{"entries":[{"full_name":"owner/repo","why":{"zh":"...","en":"..."},"highlights":[{"zh":"...","en":"..."}],"cons":[{"zh":"...","en":"..."}],"fitFor":[{"zh":"...","en":"..."}],"quickstart":"..."}]}
-Rules: use only the facts given in the input; never invent features, benchmarks, user counts, or funding.
-why: one paragraph, 60-120 Chinese characters / 40-80 English words. highlights: 2-4 items. cons: 1-3 items.
-fitFor: 2 items describing who should adopt it. quickstart: 3-6 shell lines of setup commands.
-No markdown fences, no extra prose, no trailing commentary.`;
+const LLM_SYSTEM_PROMPT = `你是「AI Agent 日报」的编辑，为 GitHub 项目写通俗易懂的双语解读，读者是关注 AI Agent 的开发者。
+
+只依据给定材料（仓库描述、README 摘要、语言 / 分类 / 话题）写作。严禁编造材料中没有的功能、性能数字、融资金额、用户数量或版本号 —— 宁可少写一条，也不要凭空补一个特性。
+只输出一个 JSON 对象，结构如下：
+{"entries":[{"full_name":"owner/repo","intro":{"zh":"...","en":"..."},"cardLine":{"zh":"...","en":"..."},"highlights":[{"zh":"...","en":"..."}]}]}
+
+- intro（项目介绍）：2-3 句，讲清这是什么、解决什么问题、怎么用；口语化，不堆术语，可以带一个典型使用场景。中文 60-120 字。
+- cardLine（卡片一行版）：中文不超过 45 字，一句话说清「它是什么、能干什么」。
+- highlights（亮点）：3-4 条，每条要落到「能干什么」或具体场景，中文每条 20-40 字；不要复述 star / fork / 贡献者数量这类指标，它们会由数据行展示。
+不要输出「为什么上榜」，那部分由系统按指标生成。
+不要 markdown 代码块，不要额外说明文字。`;
 
 /**
  * @returns {Promise<Map<string, object>>} full_name -> 解读对象（失败时为空 Map）
@@ -36,22 +43,12 @@ export async function llmInterpretation(projects, { log = console.log } = {}) {
 
   const payload = projects.slice(0, cfg.maxEntries ?? 10).map((p) => ({
     full_name: p.full_name,
-    category: categoryLabel(p.category, "en"),
-    language: p.language,
     description: p.description,
+    // 项目介绍要读得懂 README；拿不到就留空，模型会退回描述句
+    readme_excerpt: p.readmeExcerpt ?? "",
+    language: p.language,
+    category: categoryLabel(p.category, "en"),
     topics: p.topics,
-    stars: p.metrics.stars,
-    forks: p.metrics.forks,
-    stars_7d: p.weeklyGain,
-    forks_7d: p.forksGain,
-    contributors: p.metrics.contributors,
-    releases_90d: p.metrics.releases90d,
-    prs_30d: p.metrics.prActivity,
-    issues_30d: p.metrics.issueActivity,
-    license: p.metrics.license,
-    last_push_days_ago: p.metrics.pushDaysAgo,
-    open_issues: p.metrics.openIssues,
-    scores: p.scores,
   }));
 
   const controller = new AbortController();

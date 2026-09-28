@@ -34,6 +34,7 @@ import { discoverCandidates } from "./lib/candidates.mjs";
 import { resolveForkGrowth, resolveStarGrowth } from "./lib/growth.mjs";
 import { collectMetrics } from "./lib/metrics.mjs";
 import { llmInterpretation, normalizeInterpretation, ruleBasedInterpretation } from "./lib/interpret.mjs";
+import { fetchReadmeExcerpt } from "./lib/readme.mjs";
 import {
   dataPaths,
   listDailyDates,
@@ -162,15 +163,30 @@ async function main() {
   const manual = readJson(path.join(paths.interpDir, `${date}.json`), {});
   const manualCount = Object.keys(manual).length;
   let llmMap = new Map();
-  if (!manualCount) llmMap = await llmInterpretation(ranked, { log: console.log });
-  else console.log(`interpretation: manual file found (${manualCount} entries), skipping LLM`);
+  if (!manualCount) {
+    // 项目介绍要把 README 读成人话；只对最终上榜的项目抓，避免白花 API 调用
+    const readmeLimit = config.interpretation?.readmeExcerptLength ?? 2600;
+    for (const p of ranked) p.readmeExcerpt = await fetchReadmeExcerpt(client, p.full_name, { limit: readmeLimit });
+    console.log(`readme: ${ranked.filter((p) => p.readmeExcerpt).length}/${ranked.length} excerpt(s) fetched`);
+    llmMap = await llmInterpretation(ranked, { log: console.log });
+  } else console.log(`interpretation: manual file found (${manualCount} entries), skipping LLM`);
+
+  const pickList = (first, second, fallbackList) =>
+    first?.length ? first : second?.length ? second : fallbackList;
 
   const entries = ranked.map((p, i) => {
     const manualRaw = manual[p.full_name] ?? manual[p.slug];
     const fromManual = manualRaw ? normalizeInterpretation(manualRaw) : null;
     const fromLlm = llmMap.get(p.full_name) ?? null;
     const fallback = ruleBasedInterpretation({ ...p, windowDays: WINDOW });
-    const chosen = fromManual ?? fromLlm ?? fallback;
+    // why 不走 LLM：增速 / 活跃度必须与数据文件一一对应，模型只负责把 README 读成人话
+    const why = fromManual?.why ?? fallback.why;
+    const intro = fromManual?.intro ?? fromLlm?.intro ?? fallback.intro;
+    const cardLine = fromManual?.cardLine ?? fromLlm?.cardLine ?? fallback.cardLine;
+    const highlights = pickList(fromManual?.highlights, fromLlm?.highlights, fallback.highlights);
+    const cons = pickList(fromManual?.cons, null, fallback.cons);
+    const fitFor = pickList(fromManual?.fitFor, null, fallback.fitFor);
+    const quickstart = fromManual?.quickstart || fallback.quickstart;
     const source = fromManual ? "manual" : fromLlm ? "llm" : "rules";
 
     const rank = i + 1;
@@ -205,13 +221,15 @@ async function main() {
       gainExact: p.exact,
       rankChange: typeof before === "number" ? before - rank : null,
       scores: p.scores,
-      why: chosen.why,
-      highlights: chosen.highlights ?? [],
-      cons: chosen.cons ?? [],
-      fitFor: chosen.fitFor ?? [],
-      quickstart: chosen.quickstart ?? "",
+      why,
+      intro,
+      cardLine,
+      highlights,
+      cons,
+      fitFor,
+      quickstart,
       interpretationSource: source,
-      firstSeen: chosen.firstSeen ?? date,
+      firstSeen: fromManual?.firstSeen ?? date,
     };
   });
 

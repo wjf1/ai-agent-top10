@@ -9,7 +9,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { categorize } from "../src/lib/categorize.mjs";
-import { positioningWhy, ruleBasedInterpretation } from "../src/lib/interpret.mjs";
+import { normalizeInterpretation, ruleBasedInterpretation, ruleIntro } from "../src/lib/interpret.mjs";
 import { topicLabel, topicLabels } from "../src/lib/topic-labels.mjs";
 import { toCsv, csvCell } from "../src/lib/csv.ts";
 import { buildPoolContext, clamp, log01, log100, percentile, recomputeOverall, scoreProject } from "../src/lib/scoring.mjs";
@@ -383,9 +383,9 @@ test("校验器拦住日期不匹配", () => {
   assert.ok(validateDailyDoc(validDoc(), { expectedDate: "2026-01-01" }).some((e) => e.includes("date")));
 });
 
-// ---------------------------------------------------------------- 定位解读
+// ---------------------------------------------------------------- 解读
 
-test("规则解读的 why 是项目定位，不再复述 star / fork 指标", () => {
+test("规则解读四段各司其职：为什么上榜讲指标，项目介绍讲定位", () => {
   const result = ruleBasedInterpretation({
     ...record(),
     category: "framework",
@@ -393,21 +393,37 @@ test("规则解读的 why 是项目定位，不再复述 star / fork 指标", ()
     description: "An agent framework",
     windowDays: 7,
   });
-  assert.ok(result.why.zh.includes("框架 / SDK"), `中文应给出分类定位：${result.why.zh}`);
-  assert.ok(result.why.zh.includes("TypeScript"));
-  assert.ok(result.why.en.startsWith("An agent framework"), "英文应优先用仓库原始描述");
+  // why 回答「凭什么进榜」，必须落到当日的客观数字上
+  assert.ok(result.why.zh.includes("star"), result.why.zh);
+  assert.ok(result.why.zh.includes("70"), `why 应包含窗口增量：${result.why.zh}`);
+  // intro 回答「这是什么」，且不复述指标
+  assert.ok(result.intro.zh.includes("框架 / SDK"), `介绍应给出分类定位：${result.intro.zh}`);
+  assert.ok(result.intro.zh.includes("TypeScript"));
+  assert.ok(result.intro.en.startsWith("An agent framework"), "英文介绍应优先用仓库原始描述");
+  assert.ok(!/star|fork/i.test(result.intro.zh), `项目介绍不该复述指标：${result.intro.zh}`);
+  // cardLine 要能塞进卡片一行
+  assert.ok(result.cardLine.zh.length <= 45, `卡片一行版过长：${result.cardLine.zh}`);
   assert.equal(result.source, "rules");
-  // 指标由卡片的数据行与 highlights 承担，why 里再复述一次就是冗余
-  for (const text of [result.why.zh, result.why.en]) {
-    assert.ok(!/star|fork/i.test(text), `定位解读不应复述指标：${text}`);
-  }
 });
 
-test("定位解读在缺 description / topics / language 时仍产出合规文本", () => {
-  const why = positioningWhy({ full_name: "acme/agent", name: "agent", category: "other" });
-  assert.ok(why.zh.length > 0 && why.en.length > 0);
-  assert.ok(!why.en.includes("a Other project"), `other 分类不应拼出语法不通的英文：${why.en}`);
-  assert.ok(why.en.startsWith("acme/agent is a project"), why.en);
+test("规则介绍在缺 description / topics / language 时仍产出合规文本", () => {
+  const intro = ruleIntro({ full_name: "acme/agent", name: "agent", category: "other" });
+  assert.ok(intro.zh.length > 0 && intro.en.length > 0);
+  assert.ok(!intro.en.includes("a Other project"), `other 分类不应拼出语法不通的英文：${intro.en}`);
+  assert.ok(intro.en.startsWith("acme/agent is a project"), intro.en);
+});
+
+test("解读校验：LLM 不写 why 也合法，但整份空解读必须被拒", () => {
+  // why 由规则版按指标生成，LLM 只负责 intro / cardLine / highlights
+  const llmOnly = normalizeInterpretation({
+    intro: { zh: "介绍", en: "Intro" },
+    cardLine: { zh: "一行", en: "One line" },
+    highlights: [{ zh: "亮点", en: "Highlight" }],
+  });
+  assert.ok(llmOnly, "只有 intro / cardLine / highlights 时不应被判为不合法");
+  assert.equal(llmOnly.why, null);
+  assert.equal(llmOnly.intro.zh, "介绍");
+  assert.equal(normalizeInterpretation({}), null, "全空解读必须被拒");
 });
 
 test("话题标签：收录的用双语显示名，未收录的保留原始 slug", () => {

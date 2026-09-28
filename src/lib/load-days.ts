@@ -67,7 +67,12 @@ export interface Entry {
   gainExact?: boolean;
   rankChange?: number | null;
   scores: ScoreSet;
+  /** 为什么上榜：按当日指标生成，只陈述客观数据 */
   why: Bilingual;
+  /** 项目介绍：这是什么、解决什么问题、怎么用（LLM 读 README 生成，规则版兜底） */
+  intro?: Bilingual;
+  /** 卡片一行版：列表页那句极简定位 */
+  cardLine?: Bilingual;
   highlights: Bilingual[];
   cons: Bilingual[];
   fitFor: Bilingual[];
