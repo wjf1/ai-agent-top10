@@ -42,8 +42,13 @@ jobs:
         run: node scripts/fetch-daily.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # 可选：配置了密钥就让 LLM 生成解读，否则自动回落到规则化文案
+          # 解读（项目介绍 / 亮点）由 LLM 读 README 生成。runner 上访问不到本机的
+          # 127.0.0.1:9090 网关，所以这里要用外部兼容服务：配好 secrets.LLM_API_KEY
+          # 与 vars.LLM_BASE_URL / vars.LLM_MODEL（DeepSeek、OpenAI 等均可）。
+          # 未配置时自动回落到规则化文案，抓取照常完成、不会失败。
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
+          LLM_MODEL: ${{ vars.LLM_MODEL }}
 
       - name: Backfill snapshot history
         run: node scripts/backfill-metrics.mjs

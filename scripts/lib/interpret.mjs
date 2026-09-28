@@ -30,14 +30,19 @@ const LLM_SYSTEM_PROMPT = `你是「AI Agent 日报」的编辑，为 GitHub 项
  */
 export async function llmInterpretation(projects, { log = console.log } = {}) {
   const cfg = config.interpretation ?? {};
-  const apiKey = process.env[cfg.apiKeyEnv ?? "LLM_API_KEY"];
+  // 本机默认用 config 里配的网关；CI 等环境用环境变量指向任意兼容服务
+  // （config 里写死的 127.0.0.1 在 runner 上不可达，必须能被覆盖）
+  const baseUrl = process.env.LLM_BASE_URL || cfg.baseUrl || "https://api.openai.com/v1";
+  const model = process.env.LLM_MODEL || cfg.model || "gpt-4o-mini";
+  const apiKeyEnv = cfg.apiKeyEnv ?? "LLM_API_KEY";
+  const apiKey = process.env[apiKeyEnv] || process.env.LLM_API_KEY || "";
 
   if (cfg.provider === "none") {
     log("interpretation: rules (LLM disabled in config)");
     return new Map();
   }
   if (!apiKey) {
-    log(`interpretation: rules (env ${cfg.apiKeyEnv ?? "LLM_API_KEY"} not set)`);
+    log(`interpretation: rules (neither ${apiKeyEnv} nor LLM_API_KEY is set)`);
     return new Map();
   }
 
@@ -54,12 +59,12 @@ export async function llmInterpretation(projects, { log = console.log } = {}) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), cfg.timeoutMs ?? 45000);
   try {
-    const base = (cfg.baseUrl ?? "https://api.openai.com/v1").replace(/\/$/, "");
+    const base = baseUrl.replace(/\/$/, "");
     const res = await fetch(`${base}/chat/completions`, {
       method: "POST",
       headers: { "content-type": "application/json", authorization: `Bearer ${apiKey}` },
       body: JSON.stringify({
-        model: cfg.model ?? "gpt-4o-mini",
+        model,
         temperature: cfg.temperature ?? 0.4,
         response_format: { type: "json_object" },
         messages: [

@@ -4,6 +4,18 @@
 
 ---
 
+## [0.4.1] — 2026-09-28
+
+### 修复
+
+- **CI 上解读调不到 LLM**：`interpretation.baseUrl` 默认指向本机 Command Code 代理（`127.0.0.1:9090`），
+  而每日抓取跑在 GitHub Actions 上，该地址在 runner 里不可达 —— 线上每天自动更新的解读会静默退回
+  模板腔的规则文案。现在 `LLM_BASE_URL` / `LLM_MODEL` 环境变量可覆盖配置项，workflow 也已接上
+  `vars.LLM_BASE_URL` / `vars.LLM_MODEL`。在仓库里配好这两个变量与 `secrets.LLM_API_KEY`
+  （任一 OpenAI 兼容服务），CI 也能生成读 README 的通俗解读；未配置时依旧安全回落到规则版。
+
+---
+
 ## [0.4.0] — 2026-09-28
 
 解读从「模板拼装」升级为「读 README 说人话」。
