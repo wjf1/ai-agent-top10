@@ -25,17 +25,19 @@ const dims = allDims.filter((d) => typeof entry.scores?.[d.key] === "number");
 const listHref = dayPath(B, lang, date);
 const archiveHref = archivePath(B, lang);
 
-const pills = [
-  { label: t.rank, value: `#${entry.rank}` },
+const stats = [
   { label: t.stars, value: fmt(entry.stars) },
-  { label: t.weekGain, value: `+${fmt(entry.weeklyGain)}` },
-  { label: t.growthRate, value: `${entry.growthRate}%` },
-  { label: t.language, value: entry.language },
+  { label: t.language, value: entry.language || "—" },
+  { label: t.statWeekGain, value: `+${fmt(entry.weeklyGain)}` },
   { label: t.forks, value: fmt(entry.forks) },
-  ...(typeof entry.forksGain === "number" ? [{ label: t.forksGain, value: `+${fmt(entry.forksGain)}` }] : []),
-  ...(typeof entry.contributors === "number" ? [{ label: lang === "zh" ? "贡献者" : "Contributors", value: fmt(entry.contributors) }] : []),
-  ...(typeof entry.prActivity === "number" ? [{ label: "PR / 30d", value: fmt(entry.prActivity) }] : []),
-  ...(typeof entry.issueActivity === "number" ? [{ label: "Issue / 30d", value: fmt(entry.issueActivity) }] : []),
+];
+const minorStats = [
+  `${t.rank} #${entry.rank}`,
+  `${t.growthRate} +${entry.growthRate}%`,
+  ...(typeof entry.forksGain === "number" ? [`${t.forksGain} +${fmt(entry.forksGain)}`] : []),
+  ...(typeof entry.contributors === "number" ? [`${lang === "zh" ? "贡献者" : "Contributors"} ${fmt(entry.contributors)}`] : []),
+  ...(typeof entry.prActivity === "number" ? [`PR / 30d ${fmt(entry.prActivity)}`] : []),
+  ...(typeof entry.issueActivity === "number" ? [`Issue / 30d ${fmt(entry.issueActivity)}`] : []),
 ];
 
 const change = typeof entry.rankChange === "number" ? entry.rankChange : null;
@@ -73,11 +75,12 @@ const sourceLabel =
         <span class="topic-chip">#{topic}</span>
       ))}
     </div>
-    <div class="meta-row">
-      {pills.map((p) => (
-        <div class="meta-pill"><b>{p.value}</b><span>{p.label}</span></div>
+    <div class="stat-row">
+      {stats.map((p) => (
+        <div class="stat-card"><span>{p.label}</span><b>{p.value}</b></div>
       ))}
     </div>
+    <div class="stat-minor">{minorStats.join(" · ")}</div>
     <div class="meta-row">
       <a class="btn" href={entry.url} target="_blank" rel="noopener noreferrer">GitHub →</a>
       {entry.homepage && (
@@ -116,42 +119,37 @@ const sourceLabel =
 
     <div class="detail-col">
       <div class="panel">
-        <h2>📖 {t.intro}</h2>
+        <h2>{t.intro}</h2>
         <p class="prose">{entry.intro?.[lang] ?? entry.why[lang]}</p>
       </div>
 
-      <div class="panel">
-        <h2>💡 {t.why}</h2>
-        <p class="prose">{entry.why[lang]}</p>
-      </div>
-
       {entry.highlights?.length > 0 && (
-        <div class="panel">
-          <h2>✨ {t.highlights}</h2>
+        <div class="panel spot">
+          <h2>{t.highlights}</h2>
           <ul>{entry.highlights.map((h: any) => <li class="good">{h[lang]}</li>)}</ul>
-        </div>
-      )}
-      {entry.cons?.length > 0 && (
-        <div class="panel">
-          <h2>⚠️ {t.cons}</h2>
-          <ul>{entry.cons.map((c: any) => <li class="bad">{c[lang]}</li>)}</ul>
         </div>
       )}
       {entry.fitFor?.length > 0 && (
         <div class="panel">
-          <h2>🎯 {t.fitFor}</h2>
-          <div class="chips">{entry.fitFor.map((f: any) => <span class="chip">{f[lang]}</span>)}</div>
+          <h2>{t.fitFor}</h2>
+          <p class="prose">{entry.fitFor.map((f: any) => f[lang]).join(lang === "zh" ? "；" : "; ")}</p>
+        </div>
+      )}
+      {entry.cons?.length > 0 && (
+        <div class="panel">
+          <h2>{t.cons}</h2>
+          <ul>{entry.cons.map((c: any) => <li class="bad">{c[lang]}</li>)}</ul>
         </div>
       )}
 
       <div class="panel">
-        <h2>📈 {t.trend}</h2>
+        <h2>{t.trend}</h2>
         <TrendChart points={series} metric="stars" {lang} emptyText={t.trendEmpty} />
       </div>
 
       {entry.quickstart && (
         <div class="panel">
-          <h2>⌨️ {t.quickstart}</h2>
+          <h2>{t.quickstart}</h2>
           <pre class="code"><code>{entry.quickstart}</code></pre>
         </div>
       )}
@@ -171,8 +169,6 @@ const sourceLabel =
     font-weight: 600;
   }
   .topic-chip { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: var(--card-2); color: var(--muted); border: 1px solid var(--line); }
-  .meta-pill b { font-size: 14.5px; }
-  .meta-pill span { color: var(--muted); font-size: 11.5px; display: block; }
   .change-chip { align-self: center; font-size: 12px; font-weight: 700; padding: 3px 11px; border-radius: 999px; }
   .change-chip.up { color: var(--good); background: var(--good-soft); }
   .change-chip.down { color: var(--warn); background: var(--warn-soft); }
