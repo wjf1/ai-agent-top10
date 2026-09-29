@@ -49,6 +49,11 @@ const sourceLabel =
       : entry.gainSource === "snapshot-window"
         ? t.sourceWindow
         : t.sourceSnapshot;
+
+// 头图副标题：中文页用解读文案的首句（GitHub 原始 description 是英文），英文页沿用原描述
+const rawDesc = String(entry.intro?.zh || entry.description || "");
+const firstDot = rawDesc.indexOf("。");
+const brief = lang === "zh" ? (firstDot > 8 ? rawDesc.slice(0, firstDot + 1) : rawDesc) : String(entry.description || "");
 ---
 
 <Base
@@ -67,7 +72,7 @@ const sourceLabel =
     </div>
     <h1>{entry.full_name}</h1>
     {entry.description && (
-      <p class="sub desc">{entry.description}</p>
+      <p class="sub desc">{brief}</p>
     )}
     <div class="tag-row">
       {entry.category && <a class="cat-chip" href={categoryPath(B, lang, entry.category)}>{categoryLabel(entry.category, lang)}</a>}
@@ -100,7 +105,7 @@ const sourceLabel =
     <div class="panel">
       <div class="overall-big"><div class="n">{entry.scores.overall}</div><div class="l">{t.overall} / 100</div></div>
       <div class="radar-holder">
-        <Radar scores={entry.scores} dims={dims} size={244} />
+        <Radar scores={entry.scores} dims={dims} size={262} pad={62} />
       </div>
       <div class="dim-rows">
         {dims.map((d) => (
@@ -124,7 +129,7 @@ const sourceLabel =
       </div>
 
       {entry.highlights?.length > 0 && (
-        <div class="panel spot">
+        <div class="panel">
           <h2>{t.highlights}</h2>
           <ul>{entry.highlights.map((h: any) => <li class="good">{h[lang]}</li>)}</ul>
         </div>

@@ -20,9 +20,6 @@
   --radius: 14px;
   --radar-fill: rgba(79, 70, 229, 0.18);
   --trend-fill: rgba(79, 70, 229, 0.12);
-  --spot-bg: #20263a;
-  --spot-ink: #eef0f7;
-  --spot-accent: #fbbf24;
   --tip-bg: #1f2233;
   --tip-ink: #e8e9f3;
   --header-bg: rgba(255, 255, 255, 0.86);
@@ -45,9 +42,6 @@
   --warn-ink: #f5d18a;
   --radar-fill: rgba(139, 139, 245, 0.2);
   --trend-fill: rgba(139, 139, 245, 0.14);
-  --spot-bg: #1b2030;
-  --spot-ink: #e8e9f2;
-  --spot-accent: #fbbf24;
   --tip-bg: #e8e9f2;
   --tip-ink: #14161d;
   --header-bg: rgba(14, 16, 23, 0.86);
@@ -172,10 +166,6 @@ img, svg { max-width: 100%; }
 .panel li.bad::marker { color: var(--warn); }
 .chips { display: flex; gap: 8px; flex-wrap: wrap; }
 .chips .chip { background: var(--accent-soft); color: var(--accent); font-size: 12.5px; border-radius: 999px; padding: 3px 12px; font-weight: 600; }
-.panel.spot { background: var(--spot-bg); border-color: transparent; }
-.panel.spot h2 { color: var(--spot-accent); }
-.panel.spot .prose, .panel.spot li { color: var(--spot-ink); }
-.panel.spot li.good::marker, .panel.spot li.bad::marker { color: var(--spot-accent); }
 pre.code { background: #14161d; color: #d6e2ff; border-radius: 10px; padding: 14px 16px; font-size: 12.5px; overflow-x: auto; margin: 0; }
 
 /* archive */

@@ -22,9 +22,11 @@ interface Props {
   size?: number;
   showValues?: boolean;
   interactive?: boolean;
+  /** 外圈留白（决定图形半径与标签空间），详情页大图需要更大留白放两行标签 */
+  pad?: number;
 }
 
-const { scores, dims, size = 150, showValues = size >= 200, interactive = size >= 200 } = Astro.props;
+const { scores, dims, size = 150, showValues = size >= 200, interactive = size >= 200, pad: padProp } = Astro.props;
 // 小尺寸图用短名（热度 / 社区 / …），大尺寸图用全名
 const useShortLabels = size < 180;
 const labelOf = (d: RadarDim) => (useShortLabels && d.short ? d.short : d.label);
@@ -32,7 +34,7 @@ const labelOf = (d: RadarDim) => (useShortLabels && d.short ? d.short : d.label)
 const n = Math.max(3, dims.length);
 const cx = size / 2;
 const cy = size / 2;
-const pad = size >= 200 ? 40 : 22;
+const pad = padProp ?? (size >= 200 ? 40 : 22);
 const R = size / 2 - pad;
 
 const values = dims.map((d) => {
@@ -113,7 +115,18 @@ const fontMain = size >= 200 ? 12 : 9.5;
         fill="var(--muted)"
         class="radar-label"
       >
-        {labelOf(v.dim)}{showValues ? ` ${v.value}` : ""}
+        <tspan x={v.labelPos.x.toFixed(1)} y={v.labelPos.y.toFixed(1)}>{labelOf(v.dim)}</tspan>
+        {showValues && (
+          <tspan
+            x={v.labelPos.x.toFixed(1)}
+            y={(v.labelPos.y + 13).toFixed(1)}
+            font-size={fontMain - 1}
+            fill="var(--accent)"
+            font-weight="700"
+          >
+            {v.value}
+          </tspan>
+        )}
       </text>
     </g>
   ))}
