@@ -1,0 +1,943 @@
+{
+  "date": "2026-09-30",
+  "generatedAt": "2026-09-30T11:29:19.716Z",
+  "windowDays": 7,
+  "poolSize": 44,
+  "entries": [
+    {
+      "rank": 1,
+      "slug": "stablyai-orca",
+      "full_name": "stablyai/orca",
+      "name": "orca",
+      "owner": "stablyai",
+      "url": "https://github.com/stablyai/orca",
+      "homepage": "https://onorca.dev/",
+      "language": "TypeScript",
+      "category": "framework",
+      "description": "Orca is the ADE for working with a fleet of parallel agents. Run any coding agent with your own subscription. Available on desktop, mobile and remote runtime.",
+      "topics": [
+        "ade",
+        "agent-ide",
+        "ai-agents",
+        "claude-code",
+        "cli",
+        "codex",
+        "cursor-agent",
+        "devtools"
+      ],
+      "stars": 82008,
+      "forks": 5324,
+      "openIssues": 7151,
+      "contributors": 100,
+      "releases90d": 30,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 5635,
+      "dailyGain": 805,
+      "growthRate": 6.9,
+      "forksGain": 318,
+      "forksGrowthRate": 6,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": 0,
+      "scores": {
+        "heat": 100,
+        "community": 64,
+        "innovation": 83,
+        "practical": 100,
+        "ecosystem": 47,
+        "health": 63,
+        "forksGrowth": 76,
+        "activity": 100,
+        "overall": 81
+      },
+      "why": {
+        "zh": "近 7 天新增 5,635 star（日均约 805，相对存量增速 6.9%），累计 82,008 star、5,324 fork。窗口内被 fork 318 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
+        "en": "Gained 5,635 stars over the last 7 days (~805/day, 6.9% of its base), now at 82,008 stars and 5,324 forks. 318 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 100 contributors."
+      },
+      "intro": {
+        "zh": "「stablyai/orca」属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 ade、Agent IDE、AI Agent、Claude Code 等方向；主要使用 TypeScript。",
+        "en": "Orca is the ADE for working with a fleet of parallel agents. Run any coding agent with your own subscription. Available on desktop, mobile and remote runtime. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in TypeScript, focused on ade, Agent IDE, AI Agents, Claude Code."
+      },
+      "cardLine": {
+        "zh": "框架 / SDK 项目，方向：ade、Agent IDE、AI Agent。",
+        "en": "A Framework / SDK project, focused on ade, Agent IDE, AI Agents."
+      },
+      "highlights": [
+        {
+          "zh": "100 位公开贡献者",
+          "en": "100 public contributors"
+        },
+        {
+          "zh": "近 90 天发布 30 个版本",
+          "en": "30 release(s) in the last 90 days"
+        },
+        {
+          "zh": "宽松许可证（MIT），商用门槛低",
+          "en": "Permissive license (MIT) — easy commercial use"
+        },
+        {
+          "zh": "7 天内新增 318 次 fork",
+          "en": "318 new forks in the window"
+        },
+        {
+          "zh": "新仓库，创建至今仅 197 天",
+          "en": "Young project — only 197 days old"
+        }
+      ],
+      "cons": [
+        {
+          "zh": "开放 issue 7,151 个，相对 star 规模偏高",
+          "en": "7,151 open issues — high relative to its star count"
+        }
+      ],
+      "fitFor": [
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        },
+        {
+          "zh": "需要可扩展抽象层而非端到端方案的团队",
+          "en": "Teams wanting an extensible abstraction layer rather than a turnkey app"
+        }
+      ],
+      "quickstart": "# stablyai/orca\n$ git clone https://github.com/stablyai/orca.git\n$ cd orca\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-30"
+    },
+    {
+      "rank": 2,
+      "slug": "rohitg00-ai-engineering-from-scratch",
+      "full_name": "rohitg00/ai-engineering-from-scratch",
+      "name": "ai-engineering-from-scratch",
+      "owner": "rohitg00",
+      "url": "https://github.com/rohitg00/ai-engineering-from-scratch",
+      "homepage": "https://aiengineeringfromscratch.com/",
+      "language": "Python",
+      "category": "framework",
+      "description": "Learn it. Build it. Ship it for others.",
+      "topics": [
+        "agents",
+        "ai",
+        "ai-agents",
+        "ai-engineering",
+        "computer-vision",
+        "course",
+        "deep-learning",
+        "from-scratch"
+      ],
+      "stars": 61959,
+      "forks": 10595,
+      "openIssues": 59,
+      "contributors": 22,
+      "releases90d": 4,
+      "prActivity": 49,
+      "issueActivity": 72,
+      "weeklyGain": 4957,
+      "dailyGain": 708.1,
+      "growthRate": 8,
+      "forksGain": 772,
+      "forksGrowthRate": 7.3,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": 0,
+      "scores": {
+        "heat": 98,
+        "community": 51,
+        "innovation": 79,
+        "practical": 100,
+        "ecosystem": 34,
+        "health": 80,
+        "forksGrowth": 90,
+        "activity": 25,
+        "overall": 71
+      },
+      "why": {
+        "zh": "近 7 天新增 4,957 star（日均约 708，相对存量增速 8%），累计 61,959 star、10,595 fork。窗口内被 fork 772 次，最近一次提交在 1 天前，近 30 天新建 PR 49 个、issue 72 个，22 位贡献者共同维护。",
+        "en": "Gained 4,957 stars over the last 7 days (~708/day, 8% of its base), now at 61,959 stars and 10,595 forks. 772 new forks in the window; last push 1 day(s) ago; 49 PRs and 72 issues opened in the last 30 days; 22 contributors."
+      },
+      "intro": {
+        "zh": "「rohitg00/ai-engineering-from-scratch」属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 Agent、ai、AI Agent、ai-engineering 等方向；主要使用 Python。",
+        "en": "Learn it. Build it. Ship it for others. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in Python, focused on Agents, ai, AI Agents, ai-engineering."
+      },
+      "cardLine": {
+        "zh": "框架 / SDK 项目，方向：Agent、ai、AI Agent。",
+        "en": "A Framework / SDK project, focused on Agents, ai, AI Agents."
+      },
+      "highlights": [
+        {
+          "zh": "22 位公开贡献者",
+          "en": "22 public contributors"
+        },
+        {
+          "zh": "近 90 天发布 4 个版本",
+          "en": "4 release(s) in the last 90 days"
+        },
+        {
+          "zh": "宽松许可证（MIT），商用门槛低",
+          "en": "Permissive license (MIT) — easy commercial use"
+        },
+        {
+          "zh": "7 天内新增 772 次 fork",
+          "en": "772 new forks in the window"
+        },
+        {
+          "zh": "新仓库，创建至今仅 196 天",
+          "en": "Young project — only 196 days old"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        },
+        {
+          "zh": "需要可扩展抽象层而非端到端方案的团队",
+          "en": "Teams wanting an extensible abstraction layer rather than a turnkey app"
+        }
+      ],
+      "quickstart": "# rohitg00/ai-engineering-from-scratch\n$ git clone https://github.com/rohitg00/ai-engineering-from-scratch.git\n$ cd ai-engineering-from-scratch\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-30"
+    },
+    {
+      "rank": 3,
+      "slug": "affaan-m-ecc",
+      "full_name": "affaan-m/ECC",
+      "name": "ECC",
+      "owner": "affaan-m",
+      "url": "https://github.com/affaan-m/ECC",
+      "homepage": "https://ecc.tools/",
+      "language": "JavaScript",
+      "category": "framework",
+      "description": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.",
+      "topics": [
+        "ai-agents",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "developer-tools",
+        "llm",
+        "mcp",
+        "productivity"
+      ],
+      "stars": 269897,
+      "forks": 40336,
+      "openIssues": 210,
+      "contributors": 100,
+      "releases90d": 3,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 3905,
+      "dailyGain": 557.9,
+      "growthRate": 1.4,
+      "forksGain": 592,
+      "forksGrowthRate": 1.5,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": 0,
+      "scores": {
+        "heat": 95,
+        "community": 62,
+        "innovation": 80,
+        "practical": 100,
+        "ecosystem": 75,
+        "health": 84,
+        "forksGrowth": 97,
+        "activity": 100,
+        "overall": 87
+      },
+      "why": {
+        "zh": "近 7 天新增 3,905 star（日均约 558，相对存量增速 1.4%），累计 269,897 star、40,336 fork。窗口内被 fork 592 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
+        "en": "Gained 3,905 stars over the last 7 days (~558/day, 1.4% of its base), now at 269,897 stars and 40,336 forks. 592 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 100 contributors."
+      },
+      "intro": {
+        "zh": "「affaan-m/ECC」属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 AI Agent、Anthropic、Claude、Claude Code 等方向；主要使用 JavaScript。",
+        "en": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in JavaScript, focused on AI Agents, Anthropic, Claude, Claude Code."
+      },
+      "cardLine": {
+        "zh": "框架 / SDK 项目，方向：AI Agent、Anthropic、Claude。",
+        "en": "A Framework / SDK project, focused on AI Agents, Anthropic, Claude."
+      },
+      "highlights": [
+        {
+          "zh": "100 位公开贡献者",
+          "en": "100 public contributors"
+        },
+        {
+          "zh": "近 90 天发布 3 个版本",
+          "en": "3 release(s) in the last 90 days"
+        },
+        {
+          "zh": "宽松许可证（MIT），商用门槛低",
+          "en": "Permissive license (MIT) — easy commercial use"
+        },
+        {
+          "zh": "7 天内新增 592 次 fork",
+          "en": "592 new forks in the window"
+        },
+        {
+          "zh": "新仓库，创建至今仅 255 天",
+          "en": "Young project — only 255 days old"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        },
+        {
+          "zh": "需要可扩展抽象层而非端到端方案的团队",
+          "en": "Teams wanting an extensible abstraction layer rather than a turnkey app"
+        }
+      ],
+      "quickstart": "# affaan-m/ECC\n$ git clone https://github.com/affaan-m/ECC.git\n$ cd ECC\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-30"
+    },
+    {
+      "rank": 4,
+      "slug": "dietrichgebert-ponytail",
+      "full_name": "DietrichGebert/ponytail",
+      "name": "ponytail",
+      "owner": "DietrichGebert",
+      "url": "https://github.com/DietrichGebert/ponytail",
+      "homepage": "https://ponytail.dev/",
+      "language": "JavaScript",
+      "category": "framework",
+      "description": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote.",
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "cursor-rules",
+        "developer-tools",
+        "llm"
+      ],
+      "stars": 148581,
+      "forks": 7990,
+      "openIssues": 317,
+      "contributors": 64,
+      "releases90d": 2,
+      "prActivity": 130,
+      "issueActivity": 173,
+      "weeklyGain": 3708,
+      "dailyGain": 529.7,
+      "growthRate": 2.5,
+      "forksGain": 234,
+      "forksGrowthRate": 2.9,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": 0,
+      "scores": {
+        "heat": 93,
+        "community": 37,
+        "innovation": 68,
+        "practical": 100,
+        "ecosystem": 55,
+        "health": 65,
+        "forksGrowth": 79,
+        "activity": 43,
+        "overall": 69
+      },
+      "why": {
+        "zh": "近 7 天新增 3,708 star（日均约 530，相对存量增速 2.5%），累计 148,581 star、7,990 fork。窗口内被 fork 234 次，最近一次提交在 16 天前，近 30 天新建 PR 130 个、issue 173 个，64 位贡献者共同维护。",
+        "en": "Gained 3,708 stars over the last 7 days (~530/day, 2.5% of its base), now at 148,581 stars and 7,990 forks. 234 new forks in the window; last push 16 day(s) ago; 130 PRs and 173 issues opened in the last 30 days; 64 contributors."
+      },
+      "intro": {
+        "zh": "「DietrichGebert/ponytail」属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 Agent 技能、AI Agent、Claude、Claude Code 等方向；主要使用 JavaScript。",
+        "en": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in JavaScript, focused on Agent Skills, AI Agents, Claude, Claude Code."
+      },
+      "cardLine": {
+        "zh": "框架 / SDK 项目，方向：Agent 技能、AI Agent、Claude。",
+        "en": "A Framework / SDK project, focused on Agent Skills, AI Agents, Claude."
+      },
+      "highlights": [
+        {
+          "zh": "64 位公开贡献者",
+          "en": "64 public contributors"
+        },
+        {
+          "zh": "近 90 天发布 2 个版本",
+          "en": "2 release(s) in the last 90 days"
+        },
+        {
+          "zh": "宽松许可证（MIT），商用门槛低",
+          "en": "Permissive license (MIT) — easy commercial use"
+        },
+        {
+          "zh": "7 天内新增 234 次 fork",
+          "en": "234 new forks in the window"
+        },
+        {
+          "zh": "新仓库，创建至今仅 110 天",
+          "en": "Young project — only 110 days old"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        },
+        {
+          "zh": "需要可扩展抽象层而非端到端方案的团队",
+          "en": "Teams wanting an extensible abstraction layer rather than a turnkey app"
+        }
+      ],
+      "quickstart": "# DietrichGebert/ponytail\n$ git clone https://github.com/DietrichGebert/ponytail.git\n$ cd ponytail\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-30"
+    },
+    {
+      "rank": 5,
+      "slug": "firecrawl-firecrawl",
+      "full_name": "firecrawl/firecrawl",
+      "name": "firecrawl",
+      "owner": "firecrawl",
+      "url": "https://github.com/firecrawl/firecrawl",
+      "homepage": "https://firecrawl.dev/",
+      "language": "TypeScript",
+      "category": "tool",
+      "description": "🔥 Supercharge your AI agents with data from the web and beyond. A web data API to search, scrape, and access more sources.",
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-crawler",
+        "ai-scraping",
+        "ai-search",
+        "crawler",
+        "data-extraction",
+        "html-to-markdown"
+      ],
+      "stars": 186875,
+      "forks": 9991,
+      "openIssues": 701,
+      "contributors": 100,
+      "releases90d": 0,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 3148,
+      "dailyGain": 449.7,
+      "growthRate": 1.7,
+      "forksGain": 90,
+      "forksGrowthRate": 0.9,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": 0,
+      "scores": {
+        "heat": 91,
+        "community": 63,
+        "innovation": 47,
+        "practical": 62,
+        "ecosystem": 73,
+        "health": 91,
+        "forksGrowth": 63,
+        "activity": 100,
+        "overall": 73
+      },
+      "why": {
+        "zh": "近 7 天新增 3,148 star（日均约 450，相对存量增速 1.7%），累计 186,875 star、9,991 fork。窗口内被 fork 90 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
+        "en": "Gained 3,148 stars over the last 7 days (~450/day, 1.7% of its base), now at 186,875 stars and 9,991 forks. 90 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 100 contributors."
+      },
+      "intro": {
+        "zh": "「firecrawl/firecrawl」属于工具 / 平台，常用来给现有工作流补齐 Agent 与自动化能力；聚焦 ai、AI Agent、ai-crawler、ai-scraping 等方向；主要使用 TypeScript。",
+        "en": "🔥 Supercharge your AI agents with data from the web and beyond. A web data API to search, scrape, and access more sources. A Tool / Platform project for adding agent capability and automation to an existing workflow, mainly written in TypeScript, focused on ai, AI Agents, ai-crawler, ai-scraping."
+      },
+      "cardLine": {
+        "zh": "工具 / 平台 项目，方向：ai、AI Agent、ai-crawler。",
+        "en": "A Tool / Platform project, focused on ai, AI Agents, ai-crawler."
+      },
+      "highlights": [
+        {
+          "zh": "100 位公开贡献者",
+          "en": "100 public contributors"
+        },
+        {
+          "zh": "7 天内新增 90 次 fork",
+          "en": "90 new forks in the window"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "想给现有工作流加一层 Agent 自动化的团队",
+          "en": "Teams adding an agent-automation layer to an existing workflow"
+        },
+        {
+          "zh": "偏工具链方向、重视可观测性的工程师",
+          "en": "Engineers on the tooling side who value observability"
+        }
+      ],
+      "quickstart": "# firecrawl/firecrawl\n$ git clone https://github.com/firecrawl/firecrawl.git\n$ cd firecrawl\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-30"
+    },
+    {
+      "rank": 6,
+      "slug": "diegosouzapw-omniroute",
+      "full_name": "diegosouzapw/OmniRoute",
+      "name": "OmniRoute",
+      "owner": "diegosouzapw",
+      "url": "https://github.com/diegosouzapw/OmniRoute",
+      "homepage": "https://omniroute.online/",
+      "language": "TypeScript",
+      "category": "tool",
+      "description": "Never stop coding. Free MIT AI gateway: one endpoint, 359 providers (150+ free), 1200+ models Kimi, Claude, GPT, Gemini, GLM, DeepSeek, MiniMax. Works with Claude Code, Codex, Cursor, OpenCode, Cline & Copilot. Quota-aware auto-fallback, RTK+Caveman compression saves 15-95% tokens, MCP/A2A, Desktop/PWA. Built by hundreds of contributors",
+      "topics": [
+        "a2a",
+        "ai-agents",
+        "ai-gateway",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "cline",
+        "codex"
+      ],
+      "stars": 71585,
+      "forks": 10197,
+      "openIssues": 479,
+      "contributors": 100,
+      "releases90d": 10,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 2058,
+      "dailyGain": 294,
+      "growthRate": 2.9,
+      "forksGain": 335,
+      "forksGrowthRate": 3.3,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": 0,
+      "scores": {
+        "heat": 89,
+        "community": 62,
+        "innovation": 79,
+        "practical": 100,
+        "ecosystem": 39,
+        "health": 77,
+        "forksGrowth": 87,
+        "activity": 100,
+        "overall": 80
+      },
+      "why": {
+        "zh": "近 7 天新增 2,058 star（日均约 294，相对存量增速 2.9%），累计 71,585 star、10,197 fork。窗口内被 fork 335 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
+        "en": "Gained 2,058 stars over the last 7 days (~294/day, 2.9% of its base), now at 71,585 stars and 10,197 forks. 335 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 100 contributors."
+      },
+      "intro": {
+        "zh": "「diegosouzapw/OmniRoute」属于工具 / 平台，常用来给现有工作流补齐 Agent 与自动化能力；聚焦 a2a、AI Agent、ai-gateway、Anthropic 等方向；主要使用 TypeScript。",
+        "en": "Never stop coding. Free MIT AI gateway: one endpoint, 359 providers (150+ free), 1200+ models Kimi, Claude, GPT, Gemini, GLM, DeepSeek, MiniMax. Works with Claude Code, Codex, Cursor, OpenCode, Cline & Copilot. Quota-aware auto-fallback, RTK+Caveman compression saves 15-95% tokens, MCP/A2A, Desktop/PWA. Built by hundreds of contributors. A Tool / Platform project for adding agent capability and automation to an existing workflow, mainly written in TypeScript, focused on a2a, AI Agents, ai-gateway, Anthropic."
+      },
+      "cardLine": {
+        "zh": "工具 / 平台 项目，方向：a2a、AI Agent、ai-gateway。",
+        "en": "A Tool / Platform project, focused on a2a, AI Agents, ai-gateway."
+      },
+      "highlights": [
+        {
+          "zh": "100 位公开贡献者",
+          "en": "100 public contributors"
+        },
+        {
+          "zh": "近 90 天发布 10 个版本",
+          "en": "10 release(s) in the last 90 days"
+        },
+        {
+          "zh": "宽松许可证（MIT），商用门槛低",
+          "en": "Permissive license (MIT) — easy commercial use"
+        },
+        {
+          "zh": "7 天内新增 335 次 fork",
+          "en": "335 new forks in the window"
+        },
+        {
+          "zh": "新仓库，创建至今仅 229 天",
+          "en": "Young project — only 229 days old"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "想给现有工作流加一层 Agent 自动化的团队",
+          "en": "Teams adding an agent-automation layer to an existing workflow"
+        },
+        {
+          "zh": "偏工具链方向、重视可观测性的工程师",
+          "en": "Engineers on the tooling side who value observability"
+        }
+      ],
+      "quickstart": "# diegosouzapw/OmniRoute\n$ git clone https://github.com/diegosouzapw/OmniRoute.git\n$ cd OmniRoute\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-30"
+    },
+    {
+      "rank": 7,
+      "slug": "nousresearch-hermes-agent",
+      "full_name": "NousResearch/hermes-agent",
+      "name": "hermes-agent",
+      "owner": "NousResearch",
+      "url": "https://github.com/NousResearch/hermes-agent",
+      "homepage": "https://hermes-agent.nousresearch.com/",
+      "language": "Python",
+      "category": "other",
+      "description": "The agent that grows with you",
+      "topics": [
+        "ai",
+        "ai-agent",
+        "ai-agents",
+        "anthropic",
+        "chatgpt",
+        "claude",
+        "claude-code",
+        "codex"
+      ],
+      "stars": 250216,
+      "forks": 53429,
+      "openIssues": 47283,
+      "contributors": 100,
+      "releases90d": 17,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 1898,
+      "dailyGain": 271.1,
+      "growthRate": 0.8,
+      "forksGain": 970,
+      "forksGrowthRate": 1.8,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": 0,
+      "scores": {
+        "heat": 86,
+        "community": 72,
+        "innovation": 56,
+        "practical": 100,
+        "ecosystem": 87,
+        "health": 70,
+        "forksGrowth": 100,
+        "activity": 100,
+        "overall": 84
+      },
+      "why": {
+        "zh": "近 7 天新增 1,898 star（日均约 271，相对存量增速 0.8%），累计 250,216 star、53,429 fork。窗口内被 fork 970 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
+        "en": "Gained 1,898 stars over the last 7 days (~271/day, 0.8% of its base), now at 250,216 stars and 53,429 forks. 970 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 100 contributors."
+      },
+      "intro": {
+        "zh": "「NousResearch/hermes-agent」是 AI Agent 生态里的通用项目；聚焦 ai、AI Agent、Anthropic、ChatGPT 等方向；主要使用 Python。",
+        "en": "The agent that grows with you. A project in the AI agent ecosystem, mainly written in Python, focused on ai, AI Agents, Anthropic, ChatGPT."
+      },
+      "cardLine": {
+        "zh": "NousResearch/hermes-agent 属于 AI Agent 生态项目，方向：ai、AI Agent、Anthropic。",
+        "en": "NousResearch/hermes-agent — an AI agent ecosystem project: ai, AI Agents, Anthropic."
+      },
+      "highlights": [
+        {
+          "zh": "100 位公开贡献者",
+          "en": "100 public contributors"
+        },
+        {
+          "zh": "近 90 天发布 17 个版本",
+          "en": "17 release(s) in the last 90 days"
+        },
+        {
+          "zh": "宽松许可证（MIT），商用门槛低",
+          "en": "Permissive license (MIT) — easy commercial use"
+        },
+        {
+          "zh": "7 天内新增 970 次 fork",
+          "en": "970 new forks in the window"
+        }
+      ],
+      "cons": [
+        {
+          "zh": "开放 issue 47,283 个，相对 star 规模偏高",
+          "en": "47,283 open issues — high relative to its star count"
+        }
+      ],
+      "fitFor": [
+        {
+          "zh": "关注 AI Agent 生态、想快速了解新项目的从业者",
+          "en": "Practitioners tracking the AI agent ecosystem"
+        }
+      ],
+      "quickstart": "# NousResearch/hermes-agent\n$ git clone https://github.com/NousResearch/hermes-agent.git\n$ cd hermes-agent\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-30"
+    },
+    {
+      "rank": 8,
+      "slug": "graphify-labs-graphify",
+      "full_name": "Graphify-Labs/graphify",
+      "name": "graphify",
+      "owner": "Graphify-Labs",
+      "url": "https://github.com/Graphify-Labs/graphify",
+      "homepage": "https://www.graphify.com/",
+      "language": "Python",
+      "category": "framework",
+      "description": "Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store.",
+      "topics": [
+        "ai-agents",
+        "antigravity",
+        "ast",
+        "claude-code",
+        "code-analysis",
+        "code-search",
+        "codex",
+        "cursor"
+      ],
+      "stars": 122630,
+      "forks": 11814,
+      "openIssues": 1504,
+      "contributors": 100,
+      "releases90d": 30,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 1816,
+      "dailyGain": 259.4,
+      "growthRate": 1.5,
+      "forksGain": 158,
+      "forksGrowthRate": 1.3,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": 0,
+      "scores": {
+        "heat": 84,
+        "community": 59,
+        "innovation": 79,
+        "practical": 100,
+        "ecosystem": 72,
+        "health": 68,
+        "forksGrowth": 82,
+        "activity": 100,
+        "overall": 82
+      },
+      "why": {
+        "zh": "近 7 天新增 1,816 star（日均约 259，相对存量增速 1.5%），累计 122,630 star、11,814 fork。窗口内被 fork 158 次，最近一次提交在 1 天前，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
+        "en": "Gained 1,816 stars over the last 7 days (~259/day, 1.5% of its base), now at 122,630 stars and 11,814 forks. 158 new forks in the window; last push 1 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 100 contributors."
+      },
+      "intro": {
+        "zh": "「Graphify-Labs/graphify」属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 AI Agent、antigravity、ast、Claude Code 等方向；主要使用 Python。",
+        "en": "Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in Python, focused on AI Agents, antigravity, ast, Claude Code."
+      },
+      "cardLine": {
+        "zh": "框架 / SDK 项目，方向：AI Agent、antigravity、ast。",
+        "en": "A Framework / SDK project, focused on AI Agents, antigravity, ast."
+      },
+      "highlights": [
+        {
+          "zh": "100 位公开贡献者",
+          "en": "100 public contributors"
+        },
+        {
+          "zh": "近 90 天发布 30 个版本",
+          "en": "30 release(s) in the last 90 days"
+        },
+        {
+          "zh": "宽松许可证（Apache-2.0），商用门槛低",
+          "en": "Permissive license (Apache-2.0) — easy commercial use"
+        },
+        {
+          "zh": "7 天内新增 158 次 fork",
+          "en": "158 new forks in the window"
+        },
+        {
+          "zh": "新仓库，创建至今仅 180 天",
+          "en": "Young project — only 180 days old"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        },
+        {
+          "zh": "需要可扩展抽象层而非端到端方案的团队",
+          "en": "Teams wanting an extensible abstraction layer rather than a turnkey app"
+        }
+      ],
+      "quickstart": "# Graphify-Labs/graphify\n$ git clone https://github.com/Graphify-Labs/graphify.git\n$ cd graphify\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-30"
+    },
+    {
+      "rank": 9,
+      "slug": "earendil-works-pi",
+      "full_name": "earendil-works/pi",
+      "name": "pi",
+      "owner": "earendil-works",
+      "url": "https://github.com/earendil-works/pi",
+      "homepage": "",
+      "language": "TypeScript",
+      "category": "framework",
+      "description": "AI agent toolkit: unified LLM API, agent loop, TUI, coding agent CLI",
+      "topics": [],
+      "stars": 110615,
+      "forks": 14062,
+      "openIssues": 250,
+      "contributors": 100,
+      "releases90d": 24,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 1749,
+      "dailyGain": 249.9,
+      "growthRate": 1.6,
+      "forksGain": 236,
+      "forksGrowthRate": 1.7,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": 0,
+      "scores": {
+        "heat": 82,
+        "community": 66,
+        "innovation": 55,
+        "practical": 80,
+        "ecosystem": 72,
+        "health": 87,
+        "forksGrowth": 89,
+        "activity": 100,
+        "overall": 78
+      },
+      "why": {
+        "zh": "近 7 天新增 1,749 star（日均约 250，相对存量增速 1.6%），累计 110,615 star、14,062 fork。窗口内被 fork 236 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
+        "en": "Gained 1,749 stars over the last 7 days (~250/day, 1.6% of its base), now at 110,615 stars and 14,062 forks. 236 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 100 contributors."
+      },
+      "intro": {
+        "zh": "「earendil-works/pi」属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；主要使用 TypeScript。",
+        "en": "AI agent toolkit: unified LLM API, agent loop, TUI, coding agent CLI. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in TypeScript."
+      },
+      "cardLine": {
+        "zh": "框架 / SDK 项目，主要使用 TypeScript。",
+        "en": "A Framework / SDK project, in TypeScript."
+      },
+      "highlights": [
+        {
+          "zh": "100 位公开贡献者",
+          "en": "100 public contributors"
+        },
+        {
+          "zh": "近 90 天发布 24 个版本",
+          "en": "24 release(s) in the last 90 days"
+        },
+        {
+          "zh": "宽松许可证（MIT），商用门槛低",
+          "en": "Permissive license (MIT) — easy commercial use"
+        },
+        {
+          "zh": "7 天内新增 236 次 fork",
+          "en": "236 new forks in the window"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        },
+        {
+          "zh": "需要可扩展抽象层而非端到端方案的团队",
+          "en": "Teams wanting an extensible abstraction layer rather than a turnkey app"
+        }
+      ],
+      "quickstart": "# earendil-works/pi\n$ git clone https://github.com/earendil-works/pi.git\n$ cd pi\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-30"
+    },
+    {
+      "rank": 10,
+      "slug": "addyosmani-agent-skills",
+      "full_name": "addyosmani/agent-skills",
+      "name": "agent-skills",
+      "owner": "addyosmani",
+      "url": "https://github.com/addyosmani/agent-skills",
+      "homepage": "https://skills.addy.ie/",
+      "language": "JavaScript",
+      "category": "framework",
+      "description": "Production-grade engineering skills for AI coding agents.",
+      "topics": [
+        "agent-skills",
+        "antigravity",
+        "claude-code",
+        "codex",
+        "cursor",
+        "skills"
+      ],
+      "stars": 100027,
+      "forks": 10506,
+      "openIssues": 119,
+      "contributors": 75,
+      "releases90d": 9,
+      "prActivity": 70,
+      "issueActivity": 87,
+      "weeklyGain": 1379,
+      "dailyGain": 197,
+      "growthRate": 1.4,
+      "forksGain": 142,
+      "forksGrowthRate": 1.4,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "rankChange": null,
+      "scores": {
+        "heat": 80,
+        "community": 53,
+        "innovation": 60,
+        "practical": 100,
+        "ecosystem": 54,
+        "health": 79,
+        "forksGrowth": 77,
+        "activity": 32,
+        "overall": 68
+      },
+      "why": {
+        "zh": "近 7 天新增 1,379 star（日均约 197，相对存量增速 1.4%），累计 100,027 star、10,506 fork。窗口内被 fork 142 次，最近一次提交在 4 天前，近 30 天新建 PR 70 个、issue 87 个，75 位贡献者共同维护。",
+        "en": "Gained 1,379 stars over the last 7 days (~197/day, 1.4% of its base), now at 100,027 stars and 10,506 forks. 142 new forks in the window; last push 4 day(s) ago; 70 PRs and 87 issues opened in the last 30 days; 75 contributors."
+      },
+      "intro": {
+        "zh": "「addyosmani/agent-skills」属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 Agent 技能、antigravity、Claude Code、Codex 等方向；主要使用 JavaScript。",
+        "en": "Production-grade engineering skills for AI coding agents. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in JavaScript, focused on Agent Skills, antigravity, Claude Code, Codex."
+      },
+      "cardLine": {
+        "zh": "框架 / SDK 项目，方向：Agent 技能、antigravity、Claude Code。",
+        "en": "A Framework / SDK project, focused on Agent Skills, antigravity, Claude Code."
+      },
+      "highlights": [
+        {
+          "zh": "75 位公开贡献者",
+          "en": "75 public contributors"
+        },
+        {
+          "zh": "近 90 天发布 9 个版本",
+          "en": "9 release(s) in the last 90 days"
+        },
+        {
+          "zh": "宽松许可证（MIT），商用门槛低",
+          "en": "Permissive license (MIT) — easy commercial use"
+        },
+        {
+          "zh": "7 天内新增 142 次 fork",
+          "en": "142 new forks in the window"
+        },
+        {
+          "zh": "新仓库，创建至今仅 227 天",
+          "en": "Young project — only 227 days old"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        },
+        {
+          "zh": "需要可扩展抽象层而非端到端方案的团队",
+          "en": "Teams wanting an extensible abstraction layer rather than a turnkey app"
+        }
+      ],
+      "quickstart": "# addyosmani/agent-skills\n$ git clone https://github.com/addyosmani/agent-skills.git\n$ cd agent-skills\n# 具体安装与运行方式请参考仓库 README",
+      "interpretationSource": "rules",
+      "firstSeen": "2026-09-30"
+    }
+  ]
+}
