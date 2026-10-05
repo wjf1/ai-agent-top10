@@ -56,12 +56,12 @@
         "en": "Gained 5,665 stars over the last 7 days (~809/day, 6.8% of its base), now at 83,524 stars and 5,402 forks. 307 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 100 contributors."
       },
       "intro": {
-        "zh": "「stablyai/orca」属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 ade、Agent IDE、AI Agent、Claude Code 等方向；主要使用 TypeScript。",
-        "en": "Orca is the ADE for working with a fleet of parallel agents. Run any coding agent with your own subscription. Available on desktop, mobile and remote runtime. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in TypeScript, focused on ade, Agent IDE, AI Agents, Claude Code."
+        "zh": "「stablyai/orca」的仓库自述是 “Orca is the ADE for working with a fleet of parallel agents. Run any coding agent with your own subscription. Available on desktop, mobile and remote runtime.”；它属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 Agent IDE、AI Agent、Claude Code、命令行工具 等方向；主要使用 TypeScript。",
+        "en": "Orca is the ADE for working with a fleet of parallel agents. Run any coding agent with your own subscription. Available on desktop, mobile and remote runtime. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in TypeScript, focused on Agent IDE, AI Agents, Claude Code, CLI."
       },
       "cardLine": {
-        "zh": "框架 / SDK 项目，方向：ade、Agent IDE、AI Agent。",
-        "en": "A Framework / SDK project, focused on ade, Agent IDE, AI Agents."
+        "zh": "Orca is the ADE for working with a fleet of parallel agents. Run any coding agent with…",
+        "en": "Orca is the ADE for working with a fleet of parallel agents. Run any coding agent with…"
       },
       "highlights": [
         {
@@ -73,16 +73,8 @@
           "en": "30 release(s) in the last 90 days"
         },
         {
-          "zh": "宽松许可证（MIT），商用门槛低",
-          "en": "Permissive license (MIT) — easy commercial use"
-        },
-        {
           "zh": "7 天内新增 307 次 fork",
           "en": "307 new forks in the window"
-        },
-        {
-          "zh": "新仓库，创建至今仅 199 天",
-          "en": "Young project — only 199 days old"
         }
       ],
       "cons": [
@@ -157,12 +149,12 @@
         "en": "Gained 5,403 stars over the last 7 days (~772/day, 3.6% of its base), now at 151,112 stars and 8,107 forks. 295 new forks in the window; last push 18 day(s) ago; 141 PRs and 182 issues opened in the last 30 days; 64 contributors."
       },
       "intro": {
-        "zh": "「DietrichGebert/ponytail」属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 Agent 技能、AI Agent、Claude、Claude Code 等方向；主要使用 JavaScript。",
+        "zh": "「DietrichGebert/ponytail」的仓库自述是 “Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote.”；它属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 Agent 技能、AI Agent、Claude、Claude Code 等方向；主要使用 JavaScript。",
         "en": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in JavaScript, focused on Agent Skills, AI Agents, Claude, Claude Code."
       },
       "cardLine": {
-        "zh": "框架 / SDK 项目，方向：Agent 技能、AI Agent、Claude。",
-        "en": "A Framework / SDK project, focused on Agent Skills, AI Agents, Claude."
+        "zh": "Makes your AI agent think like the laziest senior dev in the room. The best code is the…",
+        "en": "Makes your AI agent think like the laziest senior dev in the room. The best code is the…"
       },
       "highlights": [
         {
@@ -174,16 +166,8 @@
           "en": "2 release(s) in the last 90 days"
         },
         {
-          "zh": "宽松许可证（MIT），商用门槛低",
-          "en": "Permissive license (MIT) — easy commercial use"
-        },
-        {
           "zh": "7 天内新增 295 次 fork",
           "en": "295 new forks in the window"
-        },
-        {
-          "zh": "新仓库，创建至今仅 112 天",
-          "en": "Young project — only 112 days old"
         }
       ],
       "cons": [],
@@ -253,12 +237,12 @@
         "en": "Gained 5,005 stars over the last 7 days (~715/day, 8% of its base), now at 62,558 stars and 10,697 forks. 715 new forks in the window; last push 0 day(s) ago; 49 PRs and 73 issues opened in the last 30 days; 22 contributors."
       },
       "intro": {
-        "zh": "「rohitg00/ai-engineering-from-scratch」属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 Agent、ai、AI Agent、ai-engineering 等方向；主要使用 Python。",
-        "en": "Learn it. Build it. Ship it for others. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in Python, focused on Agents, ai, AI Agents, ai-engineering."
+        "zh": "「rohitg00/ai-engineering-from-scratch」的仓库自述是 “Learn it. Build it. Ship it for others.”；它属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 Agent、AI Agent 等方向；主要使用 Python。",
+        "en": "Learn it. Build it. Ship it for others. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in Python, focused on Agents, AI Agents."
       },
       "cardLine": {
-        "zh": "框架 / SDK 项目，方向：Agent、ai、AI Agent。",
-        "en": "A Framework / SDK project, focused on Agents, ai, AI Agents."
+        "zh": "Learn it. Build it. Ship it for others.",
+        "en": "Learn it. Build it. Ship it for others."
       },
       "highlights": [
         {
@@ -270,16 +254,8 @@
           "en": "4 release(s) in the last 90 days"
         },
         {
-          "zh": "宽松许可证（MIT），商用门槛低",
-          "en": "Permissive license (MIT) — easy commercial use"
-        },
-        {
           "zh": "7 天内新增 715 次 fork",
           "en": "715 new forks in the window"
-        },
-        {
-          "zh": "新仓库，创建至今仅 198 天",
-          "en": "Young project — only 198 days old"
         }
       ],
       "cons": [],
@@ -349,12 +325,12 @@
         "en": "Gained 3,754 stars over the last 7 days (~536/day, 1.4% of its base), now at 270,922 stars and 40,505 forks. 585 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 100 contributors."
       },
       "intro": {
-        "zh": "「affaan-m/ECC」属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 AI Agent、Anthropic、Claude、Claude Code 等方向；主要使用 JavaScript。",
+        "zh": "「affaan-m/ECC」的仓库自述是 “The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.”；它属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 AI Agent、Anthropic、Claude、Claude Code 等方向；主要使用 JavaScript。",
         "en": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in JavaScript, focused on AI Agents, Anthropic, Claude, Claude Code."
       },
       "cardLine": {
-        "zh": "框架 / SDK 项目，方向：AI Agent、Anthropic、Claude。",
-        "en": "A Framework / SDK project, focused on AI Agents, Anthropic, Claude."
+        "zh": "The agent harness performance optimization system. Skills, instincts, memory, security,…",
+        "en": "The agent harness performance optimization system. Skills, instincts, memory, security,…"
       },
       "highlights": [
         {
@@ -366,16 +342,8 @@
           "en": "5 release(s) in the last 90 days"
         },
         {
-          "zh": "宽松许可证（MIT），商用门槛低",
-          "en": "Permissive license (MIT) — easy commercial use"
-        },
-        {
           "zh": "7 天内新增 585 次 fork",
           "en": "585 new forks in the window"
-        },
-        {
-          "zh": "新仓库，创建至今仅 257 天",
-          "en": "Young project — only 257 days old"
         }
       ],
       "cons": [],
@@ -445,12 +413,12 @@
         "en": "Gained 3,257 stars over the last 7 days (~465/day, 1.7% of its base), now at 187,745 stars and 10,011 forks. 93 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 100 contributors."
       },
       "intro": {
-        "zh": "「firecrawl/firecrawl」属于工具 / 平台，常用来给现有工作流补齐 Agent 与自动化能力；聚焦 ai、AI Agent、ai-crawler、ai-scraping 等方向；主要使用 TypeScript。",
-        "en": "🔥 Supercharge your AI agents with data from the web and beyond. A web data API to search, scrape, and access more sources. A Tool / Platform project for adding agent capability and automation to an existing workflow, mainly written in TypeScript, focused on ai, AI Agents, ai-crawler, ai-scraping."
+        "zh": "「firecrawl/firecrawl」的仓库自述是 “🔥 Supercharge your AI agents with data from the web and beyond. A web data API to search, scrape, and access more sources.”；它属于工具 / 平台，常用来给现有工作流补齐 Agent 与自动化能力；聚焦 AI Agent、网页抓取 等方向；主要使用 TypeScript。",
+        "en": "🔥 Supercharge your AI agents with data from the web and beyond. A web data API to search, scrape, and access more sources. A Tool / Platform project for adding agent capability and automation to an existing workflow, mainly written in TypeScript, focused on AI Agents, Crawler."
       },
       "cardLine": {
-        "zh": "工具 / 平台 项目，方向：ai、AI Agent、ai-crawler。",
-        "en": "A Tool / Platform project, focused on ai, AI Agents, ai-crawler."
+        "zh": "🔥 Supercharge your AI agents with data from the web and beyond. A web data API to…",
+        "en": "🔥 Supercharge your AI agents with data from the web and beyond. A web data API to…"
       },
       "highlights": [
         {
@@ -529,12 +497,12 @@
         "en": "Gained 2,372 stars over the last 7 days (~339/day, 2.7% of its base), now at 87,726 stars and 7,738 forks. 249 new forks in the window; last push 17 day(s) ago; 44 PRs and 66 issues opened in the last 30 days; 36 contributors."
       },
       "intro": {
-        "zh": "「Panniantong/Agent-Reach」属于工具 / 平台，常用来给现有工作流补齐 Agent 与自动化能力；聚焦 agent-infrastructure、AI Agent、ai-search、自动化 等方向；主要使用 Python。",
-        "en": "Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — one CLI, zero API fees. A Tool / Platform project for adding agent capability and automation to an existing workflow, mainly written in Python, focused on agent-infrastructure, AI Agents, ai-search, Automation."
+        "zh": "「Panniantong/Agent-Reach」的仓库自述是 “Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — one CLI, zero API fees.”；它属于工具 / 平台，常用来给现有工作流补齐 Agent 与自动化能力；聚焦 AI Agent、自动化、Claude Code、命令行工具 等方向；主要使用 Python。",
+        "en": "Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — one CLI, zero API fees. A Tool / Platform project for adding agent capability and automation to an existing workflow, mainly written in Python, focused on AI Agents, Automation, Claude Code, CLI."
       },
       "cardLine": {
-        "zh": "工具 / 平台 项目，方向：agent-infrastructure、AI Agent、ai-search。",
-        "en": "A Tool / Platform project, focused on agent-infrastructure, AI Agents, ai-search."
+        "zh": "Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit,…",
+        "en": "Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit,…"
       },
       "highlights": [
         {
@@ -542,16 +510,8 @@
           "en": "36 public contributors"
         },
         {
-          "zh": "宽松许可证（MIT），商用门槛低",
-          "en": "Permissive license (MIT) — easy commercial use"
-        },
-        {
           "zh": "7 天内新增 249 次 fork",
           "en": "249 new forks in the window"
-        },
-        {
-          "zh": "新仓库，创建至今仅 220 天",
-          "en": "Young project — only 220 days old"
         }
       ],
       "cons": [],
@@ -612,12 +572,12 @@
         "en": "Gained 2,293 stars over the last 7 days (~328/day, 2.1% of its base), now at 111,555 stars and 14,155 forks. 272 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 100 contributors."
       },
       "intro": {
-        "zh": "「earendil-works/pi」属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；主要使用 TypeScript。",
+        "zh": "「earendil-works/pi」的仓库自述是 “AI agent toolkit: unified LLM API, agent loop, TUI, coding agent CLI”；它属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；主要使用 TypeScript。",
         "en": "AI agent toolkit: unified LLM API, agent loop, TUI, coding agent CLI. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in TypeScript."
       },
       "cardLine": {
-        "zh": "框架 / SDK 项目，主要使用 TypeScript。",
-        "en": "A Framework / SDK project, in TypeScript."
+        "zh": "AI agent toolkit: unified LLM API, agent loop, TUI, coding agent CLI",
+        "en": "AI agent toolkit: unified LLM API, agent loop, TUI, coding agent CLI"
       },
       "highlights": [
         {
@@ -627,10 +587,6 @@
         {
           "zh": "近 90 天发布 26 个版本",
           "en": "26 release(s) in the last 90 days"
-        },
-        {
-          "zh": "宽松许可证（MIT），商用门槛低",
-          "en": "Permissive license (MIT) — easy commercial use"
         },
         {
           "zh": "7 天内新增 272 次 fork",
@@ -704,12 +660,12 @@
         "en": "Gained 2,185 stars over the last 7 days (~312/day, 3% of its base), now at 72,225 stars and 10,315 forks. 380 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 100 contributors."
       },
       "intro": {
-        "zh": "「diegosouzapw/OmniRoute」属于工具 / 平台，常用来给现有工作流补齐 Agent 与自动化能力；聚焦 a2a、AI Agent、ai-gateway、Anthropic 等方向；主要使用 TypeScript。",
-        "en": "Never stop coding. Free MIT AI gateway: one endpoint, 359 providers (150+ free), 1200+ models Kimi, Claude, GPT, Gemini, GLM, DeepSeek, MiniMax. Works with Claude Code, Codex, Cursor, OpenCode, Cline & Copilot. Quota-aware auto-fallback, RTK+Caveman compression saves 15-95% tokens, MCP/A2A, Desktop/PWA. Built by hundreds of contributors. A Tool / Platform project for adding agent capability and automation to an existing workflow, mainly written in TypeScript, focused on a2a, AI Agents, ai-gateway, Anthropic."
+        "zh": "「diegosouzapw/OmniRoute」的仓库自述是 “Never stop coding. Free MIT AI gateway: one endpoint, 359 providers (150+ free), 1200+ models Kimi, Claude, GPT, Gemini, GLM, DeepSeek, MiniMax. Works with Claude Code, Codex, Cursor, OpenCode, Cline & Copilot. Quota-aware auto-fallback, RTK+Caveman compression saves 15-95% tokens, MCP/A2A, Desktop/PWA. Built by hundreds of contributors”；它属于工具 / 平台，常用来给现有工作流补齐 Agent 与自动化能力；聚焦 AI Agent、Anthropic、Claude、Claude Code 等方向；主要使用 TypeScript。",
+        "en": "Never stop coding. Free MIT AI gateway: one endpoint, 359 providers (150+ free), 1200+ models Kimi, Claude, GPT, Gemini, GLM, DeepSeek, MiniMax. Works with Claude Code, Codex, Cursor, OpenCode, Cline & Copilot. Quota-aware auto-fallback, RTK+Caveman compression saves 15-95% tokens, MCP/A2A, Desktop/PWA. Built by hundreds of contributors. A Tool / Platform project for adding agent capability and automation to an existing workflow, mainly written in TypeScript, focused on AI Agents, Anthropic, Claude, Claude Code."
       },
       "cardLine": {
-        "zh": "工具 / 平台 项目，方向：a2a、AI Agent、ai-gateway。",
-        "en": "A Tool / Platform project, focused on a2a, AI Agents, ai-gateway."
+        "zh": "Never stop coding. Free MIT AI gateway: one endpoint, 359 providers (150+ free), 1200+…",
+        "en": "Never stop coding. Free MIT AI gateway: one endpoint, 359 providers (150+ free), 1200+…"
       },
       "highlights": [
         {
@@ -721,16 +677,8 @@
           "en": "9 release(s) in the last 90 days"
         },
         {
-          "zh": "宽松许可证（MIT），商用门槛低",
-          "en": "Permissive license (MIT) — easy commercial use"
-        },
-        {
           "zh": "7 天内新增 380 次 fork",
           "en": "380 new forks in the window"
-        },
-        {
-          "zh": "新仓库，创建至今仅 231 天",
-          "en": "Young project — only 231 days old"
         }
       ],
       "cons": [],
@@ -800,12 +748,12 @@
         "en": "Gained 1,901 stars over the last 7 days (~272/day, 1.5% of its base), now at 123,194 stars and 11,879 forks. 186 new forks in the window; last push 2 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 100 contributors."
       },
       "intro": {
-        "zh": "「Graphify-Labs/graphify」属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 AI Agent、antigravity、ast、Claude Code 等方向；主要使用 Python。",
-        "en": "Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in Python, focused on AI Agents, antigravity, ast, Claude Code."
+        "zh": "「Graphify-Labs/graphify」的仓库自述是 “Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store.”；它属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 AI Agent、Claude Code、Codex、Cursor 等方向；主要使用 Python。",
+        "en": "Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in Python, focused on AI Agents, Claude Code, Codex, Cursor."
       },
       "cardLine": {
-        "zh": "框架 / SDK 项目，方向：AI Agent、antigravity、ast。",
-        "en": "A Framework / SDK project, focused on AI Agents, antigravity, ast."
+        "zh": "Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable…",
+        "en": "Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable…"
       },
       "highlights": [
         {
@@ -817,16 +765,8 @@
           "en": "30 release(s) in the last 90 days"
         },
         {
-          "zh": "宽松许可证（Apache-2.0），商用门槛低",
-          "en": "Permissive license (Apache-2.0) — easy commercial use"
-        },
-        {
           "zh": "7 天内新增 186 次 fork",
           "en": "186 new forks in the window"
-        },
-        {
-          "zh": "新仓库，创建至今仅 182 天",
-          "en": "Young project — only 182 days old"
         }
       ],
       "cons": [],
@@ -896,12 +836,12 @@
         "en": "Gained 1,865 stars over the last 7 days (~266/day, 0.7% of its base), now at 250,684 stars and 53,693 forks. 986 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 100 contributors."
       },
       "intro": {
-        "zh": "「NousResearch/hermes-agent」是 AI Agent 生态里的通用项目；聚焦 ai、AI Agent、Anthropic、ChatGPT 等方向；主要使用 Python。",
-        "en": "The agent that grows with you. A project in the AI agent ecosystem, mainly written in Python, focused on ai, AI Agents, Anthropic, ChatGPT."
+        "zh": "「NousResearch/hermes-agent」的仓库自述是 “The agent that grows with you”；它是 AI Agent 生态里的通用项目；聚焦 AI Agent、Anthropic、ChatGPT、Claude 等方向；主要使用 Python。",
+        "en": "The agent that grows with you. A project in the AI agent ecosystem, mainly written in Python, focused on AI Agents, Anthropic, ChatGPT, Claude."
       },
       "cardLine": {
-        "zh": "NousResearch/hermes-agent 属于 AI Agent 生态项目，方向：ai、AI Agent、Anthropic。",
-        "en": "NousResearch/hermes-agent — an AI agent ecosystem project: ai, AI Agents, Anthropic."
+        "zh": "The agent that grows with you",
+        "en": "The agent that grows with you"
       },
       "highlights": [
         {
@@ -911,10 +851,6 @@
         {
           "zh": "近 90 天发布 17 个版本",
           "en": "17 release(s) in the last 90 days"
-        },
-        {
-          "zh": "宽松许可证（MIT），商用门槛低",
-          "en": "Permissive license (MIT) — easy commercial use"
         },
         {
           "zh": "7 天内新增 986 次 fork",

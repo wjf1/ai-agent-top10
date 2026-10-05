@@ -7,6 +7,10 @@
  *             已有内容不动，不会把 LLM 写好的介绍覆盖成模板腔。
  *   --llm     抓仓库 README 并调 LLM 生成「项目介绍 / 卡片一行版 / 亮点」。
  *             按仓库去重调用 —— 同一项目连续多天上榜只花一次；why 仍由规则版按当日指标生成。
+ *   --refresh-rules
+ *             只把 interpretationSource === "rules" 的条目按当前模板口径重算一遍
+ *             （改了 interpret.mjs 的文案规则后，用它让已落盘的历史日期跟上）。
+ *             LLM / 人工解读以及缺来源字段的老数据一律不动；与 --llm 互斥。
  *
  * 用法：
  *   node scripts/backfill-interpretations.mjs
@@ -27,6 +31,7 @@ import { createClient, resolveToken, withTimeout } from "./lib/github.mjs";
 import { llmInterpretation } from "./lib/interpret.mjs";
 import { fetchReadmeExcerpt } from "./lib/readme.mjs";
 import { dataPaths, listDailyDates, readJson, saveDaily } from "./lib/persist.mjs";
+import { refreshRuleEntry } from "./lib/refresh.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -78,6 +83,11 @@ async function main() {
   const paths = dataPaths(ROOT);
   const withLlm = process.argv.includes("--llm");
   const withDescriptions = process.argv.includes("--descriptions");
+  const refreshRules = process.argv.includes("--refresh-rules");
+  if (refreshRules && withLlm) {
+    console.error("--refresh-rules 与 --llm 互斥：前者只动规则文案，后者会覆盖非人工条目");
+    process.exit(1);
+  }
   const dryRun = !!process.env.DRY_RUN;
   const dates = listDailyDates(paths).sort();
 
@@ -128,7 +138,7 @@ async function main() {
   }
 
   let daysChanged = 0;
-  let counters = { why: 0, intro: 0, cardLine: 0, highlights: 0, description: 0 };
+  let counters = { why: 0, intro: 0, cardLine: 0, highlights: 0, description: 0, refreshed: 0 };
 
   for (const [date, doc] of docs) {
     let touched = false;
@@ -140,6 +150,14 @@ async function main() {
           counters.description++;
           touched = true;
         }
+      }
+
+      if (refreshRules) {
+        if (refreshRuleEntry(entry, toProject(entry), doc.windowDays ?? 7).changed) {
+          counters.refreshed++;
+          touched = true;
+        }
+        continue;
       }
 
       const rule = ruleBasedInterpretation({ ...toProject(entry), windowDays: doc.windowDays ?? 7 });
@@ -179,7 +197,7 @@ async function main() {
 
   console.log(
     `changed: ${daysChanged} day(s) | why ${counters.why}, intro ${counters.intro}, cardLine ${counters.cardLine}, ` +
-      `highlights ${counters.highlights}, description ${counters.description}` +
+      `highlights ${counters.highlights}, description ${counters.description}, refreshed-rules ${counters.refreshed}` +
       (dryRun ? " (dry run, nothing written)" : "")
   );
 }

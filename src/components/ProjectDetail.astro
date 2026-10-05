@@ -4,6 +4,7 @@ import Base from "../layouts/Base.astro";
 import Radar from "./Radar.astro";
 import TrendChart from "./TrendChart.astro";
 import { categoryLabel } from "../lib/categorize.mjs";
+import { detailLead, highlightsTitle, interpretationTag } from "../lib/display.ts";
 import { dimensionLabels, strings, type Lang } from "../lib/data.ts";
 import { archivePath, categoryPath, comparePath, dayPath } from "../lib/routes.ts";
 
@@ -50,10 +51,10 @@ const sourceLabel =
         ? t.sourceWindow
         : t.sourceSnapshot;
 
-// 头图副标题：中文页用解读文案的首句（GitHub 原始 description 是英文），英文页沿用原描述
-const rawDesc = String(entry.intro?.zh || entry.description || "");
-const firstDot = rawDesc.indexOf("。");
-const brief = lang === "zh" ? (firstDot > 8 ? rawDesc.slice(0, firstDot + 1) : rawDesc) : String(entry.description || "");
+// 头图导语：用「卡片一行版」这个字段，它本就是为一句话定位设计的。
+// 早先取介绍首句，遇到单句式介绍时头图和「它能做什么？」会一字不差地重复同一句。
+const lead = detailLead(entry, lang);
+const interpTag = interpretationTag(entry, t);
 ---
 
 <Base
@@ -71,8 +72,8 @@ const brief = lang === "zh" ? (firstDot > 8 ? rawDesc.slice(0, firstDot + 1) : r
       {entry.full_name}
     </div>
     <h1>{entry.full_name}</h1>
-    {entry.description && (
-      <p class="sub desc">{brief}</p>
+    {lead && (
+      <p class="sub desc">{lead}</p>
     )}
     <div class="tag-row">
       {entry.category && <a class="cat-chip" href={categoryPath(B, lang, entry.category)}>{categoryLabel(entry.category, lang)}</a>}
@@ -124,13 +125,18 @@ const brief = lang === "zh" ? (firstDot > 8 ? rawDesc.slice(0, firstDot + 1) : r
 
     <div class="detail-col">
       <div class="panel">
-        <h2>{t.intro}</h2>
+        <h2>
+          {t.intro}
+          {interpTag && (
+            <span class="src-tag" title={interpTag.note}>{interpTag.label}</span>
+          )}
+        </h2>
         <p class="prose">{entry.intro?.[lang] ?? entry.why[lang]}</p>
       </div>
 
       {entry.highlights?.length > 0 && (
         <div class="panel">
-          <h2>{t.highlights}</h2>
+          <h2>{highlightsTitle(entry, t)}</h2>
           <ul>{entry.highlights.map((h: any) => <li class="good">{h[lang]}</li>)}</ul>
         </div>
       )}
@@ -174,6 +180,11 @@ const brief = lang === "zh" ? (firstDot > 8 ? rawDesc.slice(0, firstDot + 1) : r
     font-weight: 600;
   }
   .topic-chip { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: var(--card-2); color: var(--muted); border: 1px solid var(--line); }
+  .panel h2 .src-tag {
+    margin-left: 8px; font-size: 11px; font-weight: 600; vertical-align: 2px;
+    padding: 1px 8px; border-radius: 999px; border: 1px dashed var(--line);
+    background: var(--card-2); color: var(--muted); cursor: help;
+  }
   .change-chip { align-self: center; font-size: 12px; font-weight: 700; padding: 3px 11px; border-radius: 999px; }
   .change-chip.up { color: var(--good); background: var(--good-soft); }
   .change-chip.down { color: var(--warn); background: var(--warn-soft); }

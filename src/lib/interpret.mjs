@@ -13,7 +13,7 @@
  */
 import { categoryLabel } from "./categorize.mjs";
 import { config } from "./config.mjs";
-import { topicLabels } from "./topic-labels.mjs";
+import { readableTopicLabels } from "./topic-labels.mjs";
 import {
   sanitizeBilingualList,
   sanitizeBilingualText,
@@ -79,20 +79,23 @@ function categoryBits(project) {
     purpose: CATEGORY_PURPOSE[category] ?? CATEGORY_PURPOSE.other,
     name: project.full_name || project.name || "该项目",
     language: project.language && project.language !== "Other" ? project.language : "",
-    zhTopics: topicLabels(project.topics, "zh", 4),
-    enTopics: topicLabels(project.topics, "en", 4),
+    zhTopics: readableTopicLabels(project.topics, "zh", 4),
+    enTopics: readableTopicLabels(project.topics, "en", 4),
   };
 }
 
 /**
- * 规则版项目介绍：分类 + 话题标签拼装。
- * 读不懂 README，所以只能给出这一层颗粒度；LLM 版会用仓库描述补足细节。
+ * 规则版项目介绍：仓库自述 + 分类 + 话题标签拼装。
+ * 读不懂 README，所以只能给出这一层颗粒度；LLM 版会用 README 补足细节。
+ * description 是作者自己的话，信息量高于分类模板，因此中英两版都要引用
+ * （中文页此前直接丢掉它，读者只剩"框架 / SDK 项目，方向：…"这种模板腔）。
  */
 export function ruleIntro(project) {
   const { category, catZh, catEn, purpose, name, language, zhTopics, enTopics } = categoryBits(project);
-  const description = typeof project.description === "string" ? project.description.trim() : "";
+  const description = sanitizeText(project.description);
 
-  const zhHead = category === "other" ? `「${name}」是 AI Agent 生态里的通用项目` : `「${name}」属于${catZh}，${purpose.zh}`;
+  const anchorZh = category === "other" ? `是 AI Agent 生态里的通用项目` : `属于${catZh}，${purpose.zh}`;
+  const zhHead = description ? `「${name}」的仓库自述是 “${description}”；它${anchorZh}` : `「${name}」${anchorZh}`;
   const zhTail = [zhTopics.length ? `聚焦 ${zhTopics.join("、")} 等方向` : "", language ? `主要使用 ${language}` : ""]
     .filter(Boolean)
     .join("；");
@@ -113,32 +116,55 @@ export function ruleIntro(project) {
   return { zh, en };
 }
 
-/** 规则版卡片一行：定位 + 方向，控制在卡片一行的长度内 */
+/** 显示宽度：CJK 与全角记 2 个单位，其余记 1 个 —— 卡片一行约容 90 单位（≈ 45 个汉字） */
+export function textWidth(text) {
+  let units = 0;
+  for (const ch of String(text ?? "")) units += ch.codePointAt(0) > 0x2e80 ? 2 : 1;
+  return units;
+}
+
+/** 压成一行：超宽时回退到最近的空格边界，不把英文单词切一半 */
+export function clipToOneLine(text, maxUnits = 90) {
+  const s = String(text ?? "").trim();
+  if (!s || textWidth(s) <= maxUnits) return s;
+  let units = 0;
+  let cut = 0;
+  for (let i = 0; i < s.length; i++) {
+    const w = s.codePointAt(i) > 0x2e80 ? 2 : 1;
+    if (units + w > maxUnits - 1) break;
+    units += w;
+    cut = i + 1;
+  }
+  let head = s.slice(0, cut);
+  const space = head.lastIndexOf(" ");
+  if (space >= Math.floor(cut / 2)) head = head.slice(0, space);
+  return `${head.trimEnd()}…`;
+}
+
+/**
+ * 规则版卡片一行：卡片上已经有分类 chip、语言标签和增速 chip，
+ * 所以这一行只剩「它是什么、能干什么」这一个位置 —— 优先放仓库自述，
+ * 没有自述时放读得懂的方向标签，都拿不到就明说没有描述，不复述 chip 上的信息。
+ */
 export function ruleCardLine(project) {
-  const { category, catZh, catEn, name, language } = categoryBits(project);
-  const zhTopicsShort = topicLabels(project.topics, "zh", 3);
-  const enTopicsShort = topicLabels(project.topics, "en", 3);
-
-  const zh =
-    category === "other"
-      ? [`${name} 属于 AI Agent 生态项目`, zhTopicsShort.length ? `方向：${zhTopicsShort.join("、")}` : ""]
-          .filter(Boolean)
-          .join("，")
-      : [
-          `${catZh} 项目`,
-          zhTopicsShort.length ? `方向：${zhTopicsShort.join("、")}` : language ? `主要使用 ${language}` : "",
-        ]
-          .filter(Boolean)
-          .join("，");
-
-  const en =
-    category === "other"
-      ? [`${name} — an AI agent ecosystem project`, enTopicsShort.join(", ")].filter(Boolean).join(": ")
-      : [`A ${catEn} project`, enTopicsShort.length ? `focused on ${enTopicsShort.join(", ")}` : language ? `in ${language}` : ""]
-          .filter(Boolean)
-          .join(", ");
-
-  return { zh: `${zh}。`, en: `${en}.` };
+  const { catZh, catEn, language } = categoryBits(project);
+  const description = sanitizeText(project.description);
+  if (description) {
+    return { zh: clipToOneLine(description, 90), en: clipToOneLine(description, 90) };
+  }
+  const zhTopics = readableTopicLabels(project.topics, "zh", 3);
+  const enTopics = readableTopicLabels(project.topics, "en", 3);
+  const zh = zhTopics.length
+    ? `方向：${zhTopics.join("、")}`
+    : language
+      ? `主要使用 ${language}`
+      : `${catZh}，未提供仓库描述`;
+  const en = enTopics.length
+    ? `Focused on ${enTopics.join(", ")}`
+    : language
+      ? `Written in ${language}`
+      : `A ${catEn} project with no repository description`;
+  return { zh, en };
 }
 
 /** 规则版"为什么上榜"：只复述当日客观指标，不做主观推断 */

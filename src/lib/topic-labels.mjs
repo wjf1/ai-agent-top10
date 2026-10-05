@@ -155,3 +155,24 @@ export function topicLabels(list, lang = "zh", limit = 4) {
   }
   return out;
 }
+
+/**
+ * 只取词表收录的标签显示名，供成句的定位文案使用。
+ *
+ * topicLabels 会保留未收录标签的原始 slug（chip 列表里那样是诚实的），但把
+ * ade、ai-search、dsh-plugin 这类原词塞进"聚焦 …等方向"的句子里，读者只会当成
+ * 机器拼装。成句时挑读得懂的，原始标签留给详情页的 #topic chip。
+ */
+export function readableTopicLabels(list, lang = "zh", limit = 4) {
+  const key = lang === "zh" ? "zh" : "en";
+  const out = [];
+  const seen = new Set();
+  for (const item of Array.isArray(list) ? list : []) {
+    const hit = TABLE[String(item ?? "").toLowerCase()];
+    if (!hit || seen.has(hit[key])) continue;
+    seen.add(hit[key]);
+    out.push(hit[key]);
+    if (out.length >= limit) break;
+  }
+  return out;
+}
