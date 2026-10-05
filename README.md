@@ -1,9 +1,13 @@
 # ai-agent-top10
 
 [![daily-update](https://github.com/wjf1/ai-agent-top10/actions/workflows/daily.yml/badge.svg)](https://github.com/wjf1/ai-agent-top10/actions/workflows/daily.yml)
+[![version](https://img.shields.io/badge/version-0.7.0-blue.svg)](package.json)
 
 **每天从 GitHub 上按 star 增速选出最热的 10 个 AI Agent 项目，用 8 个可解释维度打分，并给出中英双语解读。**
 纯静态站点：无后端、无数据库、无运行时 API 调用。
+
+> **数据覆盖范围**：当前已连续收录 23 天（自 2026-09-13 起），聚合 17+ 独立高潜项目，覆盖日榜、周榜与月榜。
+> **Data Coverage**: Currently covering 23 consecutive days (since 2026-09-13) across 17+ unique repositories.
 
 > **Daily top-10 AI Agent projects on GitHub, ranked by real star growth, scored across 8 explainable dimensions, with bilingual commentary.**
 > Fully static: no server, no database, no runtime API calls.
@@ -40,7 +44,10 @@
 | **WCAG 2.1 AA 级无障碍** | 遵循深墨色配对原则（Soft-Ink Pairing），上涨（5.81:1）、下降（6.18:1）与分类标签（6.98:1）实测对比度全量 PASS；全站文字收口至 ≥12px 基线；数字严格等宽对齐；前三名尊享金银铜荣誉色阶。 |
 | **移动端友好与触控优化** | 顶栏导航精简，≤700px 移动视口下支持单行无折行平滑横向滚动；导航链接与主题按钮通过伪元素扩充至 ≥44×44px 规范触控热区。 |
 | **日 / 周 / 月三种周期** | 周榜与月榜在构建期用历史快照聚合，不额外调用任何 API。历史不足一个完整窗口时会显式标注实际覆盖天数，**不做线性外推**。 |
-| **真实增量优先** | star 增量优先取"约 7 天前那一期快照"的真实差值（零 API 成本）；快照缺失才回落到 stargazers 接口；超大仓库在事件流覆盖率不足时**直接跳过**，而不是把稀疏样本放大 20 倍。 |
+| **真实增量优先** | star 增量优先取"约 7 天前那一期快照"的真实差值（零 API 成本）；快照缺失才回落到 stargazers 接口；超大仓库在事件流覆盖不足时改为给出**保守下界**（只用观测到的条数、不做外推）并显式标注，不再直接跳过。 |
+| **解读可靠性与降级可见** | LLM 解读支持**备用 provider 自动切换**与**按 README 哈希缓存**（省 token、降单点失败）；整轮退回模板文案时 CI 输出 `::error` 级注解，不再静默降级。 |
+| **评分口径版本化** | 每份日榜带生成时的 `scoringVersion`；`npm run rescore:safe` 可在规则变更后分批重算历史（自动备份、变动熔断）；周期榜混用多版本时页面给出提示。 |
+| **危险输入分层防御** | 外部文本先经净化层剥离危险块级元素**及其内容**（`script`/`style`/`iframe` 等）并断链伪协议（`javascript:`/`data:text/html`），再由 `validate-data.mjs` 作构建期门禁二次拦截。 |
 | **趋势可视化** | 项目详情页展示 star 历史折线，数据来自每日快照序列。图表全部手写 SVG，不引入任何图表库：首页与详情页**零外部 JS**（仅约 1.7 KB 内联脚本），全站 CSS 9.5 KB，只有对比页加载 4.4 KB 脚本。 |
 | **可交互雷达图** | 维度数量随数据自适应（早期数据 6 维、新数据 8 维共用同一组件），支持 hover 查看分值与该维度的计算口径。 |
 | **按日期归档** | 项目详情页路由为 `/project/<date>/<slug>/`，每个项目每天一个独立页面，历史不会被覆盖；归档页可切换卡片 / 表格两种密度视图。 |
@@ -60,7 +67,10 @@
 - **WCAG 2.1 AA accessibility compliance** — strictly follows soft-ink color pairing (up: 5.81:1, down: 6.18:1, tags: 6.98:1 all pass); minimum 12px font baseline; tabular figures for numbers; gold/silver/bronze honor tiers for top-3 entries.
 - **Mobile & touch ergonomics** — simplified top navigation with single-line horizontal touch scrolling on mobile (≤700px); hit areas expanded to ≥44×44px via invisible pseudo-elements.
 - **Daily / weekly / monthly boards** — weekly and monthly are aggregated at build time from historical snapshots, with **no extra API calls** and **no linear extrapolation** when history is short.
-- **Real deltas first** — star gains come from actual snapshot deltas when available, fall back to the stargazers endpoint, and **skip** large repos whose event-stream coverage is too sparse instead of amplifying noise.
+- **Real deltas first** — star gains come from actual snapshot deltas when available and fall back to the stargazers endpoint; large repos with sparse event-stream coverage now report a **conservative lower bound** (observed count, no extrapolation) clearly flagged in the UI instead of being dropped.
+- **Resilient interpretation** — LLM commentary has an **automatic fallback provider** and a **README-hash cache** (fewer tokens, less single-point failure); a full fallback to template text now raises a CI `::error` annotation instead of degrading silently.
+- **Versioned scoring calibers** — every daily board records the `scoringVersion` that produced it; `npm run rescore:safe` re-scores history in batches (auto backup + drift circuit-breaker); period boards warn when they mix calibers.
+- **Layered input defence** — the sanitiser strips dangerous block elements **together with their contents** (`script`/`style`/`iframe`, …) and defangs pseudo-protocols (`javascript:`, `data:text/html`); `validate-data.mjs` re-blocks them as a build-time gate.
 - **Trend charts & interactive radar** — hand-written SVG, no chart library, no client-side data fetching.
 - **Date-scoped archive** — `/project/<date>/<slug>/` gives every project its own page per day; the archive offers card and table views.
 - **Search, categories, topics, empty states, multi-repo compare, dark mode, open data endpoints** and a **CI data-quality gate** that blocks bad data from ever being committed.
@@ -209,13 +219,48 @@ npm run check        # tests + data validation + build
 所有评分与采集规则集中在 **`config/scoring.json`**：
 
 - `dimensions[]` — 维度定义：`key` / `weight` / 中英名称 / 口径说明 / 公式参数。**加减权重、改阈值不需要动任何代码。**
+- `scoringVersion` — 评分引擎口径版本。权重 / 公式发生不兼容变更时必须递增；日榜会带着生成时的版本号落盘。
 - `window` — 日 / 周 / 月窗口天数与快照最大容忍龄期。
-- `growth` — 快照基线容差、事件流覆盖率下限 `minCoverage`、外推上限 `maxExtrapolationFactor`、周增量合理性上限 `maxWeeklyGainRatio`。
+- `growth` — 快照基线容差、事件流覆盖率下限 `minCoverage`、外推上限 `maxExtrapolationFactor`、周增量合理性上限 `maxWeeklyGainRatio`，以及覆盖率不足时的保守下界策略 `unreliableGainMode` 与地板值 `unreliableMinCoverageFloor`。
 - `api` — 单次运行调用预算、重试次数、退避基数、**请求超时**，以及单个候选的**墙钟上限**（`repoTimeoutMs`，任一环节挂住即跳过该仓库而不是拖死整轮；Node 原生 `fetch` 默认不超时，必须显式设置）。
-- `metrics` — PR / issue 活跃度的翻页深度（决定计数上限，进而决定该维度的区分度）与统计窗口。
+- `metrics` — PR / issue 活跃度的翻页深度、**贡献者翻页深度** `contributorPages`（超过 100 人的仓库需要翻页才能保持区分度）与统计窗口。
 - `sanitize` — 各类外部输入的长度上限与允许的 URL 协议。
 - `categories` — 子分类的正则规则。
-  - `interpretation` — LLM 解读：provider / model / baseUrl / 密钥所在的环境变量名，默认指向本机 Command Code 代理（`http://127.0.0.1:9090/v1`，OpenAI 兼容），也可改回任意兼容服务。**指标类数字不经过 LLM**：它们由 `src/lib/interpret.mjs` 按当日指标生成（数据文件中的 `why` 字段，供卡片文案兜底），模型只负责把 README 读成「它能做什么 / 卡片一行版 / 核心亮点」。
+- `interpretation` — LLM 解读：provider / model / baseUrl / 密钥所在的环境变量名 / 缓存与超时，默认指向本机 Command Code 代理（`http://127.0.0.1:9090/v1`，OpenAI 兼容）；子对象 `fallback` 配置**备用 provider**（主服务失败自动切换）。**指标类数字不经过 LLM**：它们由 `src/lib/interpret.mjs` 按当日指标生成（数据文件中的 `why` 字段，供卡片文案兜底），模型只负责把 README 读成「它能做什么 / 卡片一行版 / 核心亮点」。
+- `interpretations-cache` — 解读缓存落在 `src/data/snapshots/interpret-cache.json`，键为仓库全名，值为 README 摘要哈希 + 解读内容，摘要变化自动失效。
+
+### 口径维护
+
+评分规则变更后，用以下命令让历史数据跟上同一口径（只读本地快照、不调用网络）：
+
+```bash
+npm run rescore:safe                 # 只重算版本落后的日期，带变动熔断
+node scripts/rescore.mjs --since-version=2.1.0
+node scripts/rescore.mjs --dry-run   # 预演，不写盘
+```
+
+重算前会把原文件备份到 `.rescored-backup/`。
+
+### Configuration & caliber maintenance (EN)
+
+All scoring and collection rules live in **`config/scoring.json`**:
+
+- `dimensions[]` — dimension definitions (`key` / `weight` / bilingual names / formula params). **Weights and thresholds can be changed without touching code.**
+- `scoringVersion` — caliber version of the scoring engine; bump it on any incompatible change. Every daily board records the version that produced it.
+- `growth` — baseline tolerance, event-stream coverage floor (`minCoverage`), extrapolation cap, weekly-gain sanity cap, plus the conservative lower-bound policy (`unreliableGainMode`, `unreliableMinCoverageFloor`).
+- `metrics` — paging depth for PR/issue activity and for **contributors** (`contributorPages`; repos with >100 contributors need paging to stay discriminating).
+- `interpretation` — LLM provider/model/baseUrl/key env var, caching and timeout; its `fallback` block defines a **backup provider** used automatically when the primary fails.
+- Commentary cache lives at `src/data/snapshots/interpret-cache.json`, keyed by repo full name with a README-digest hash — changed digests invalidate automatically.
+
+After changing scoring rules, bring history onto the same caliber (local snapshots only, no network):
+
+```bash
+npm run rescore:safe
+node scripts/rescore.mjs --since-version=2.1.0
+node scripts/rescore.mjs --dry-run
+```
+
+Originals are backed up to `.rescored-backup/` before being overwritten.
 
 新增一个评分维度：在 `dimensions` 里加一项，并在 `src/lib/scoring.mjs` 的 `CALCULATORS` 中补一个同名函数即可。
 
@@ -239,7 +284,7 @@ npm run check        # tests + data validation + build
 
 ## 变更记录
 
-见 [CHANGELOG.md](CHANGELOG.md)。当前版本 **0.2.0**。
+见 [CHANGELOG.md](CHANGELOG.md)。当前版本 **0.7.0**。
 
 ---
 

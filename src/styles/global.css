@@ -159,6 +159,13 @@ img, svg { max-width: 100%; }
   margin: 0; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap;
 }
 .list-toolbar .rank-note a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+/* 周期榜聚合了多个评分口径时的提示：克制的中性底，不抢主信息 */
+.caliber-note {
+  display: flex; align-items: flex-start; gap: 6px; margin: 8px 0 0; padding: 8px 12px;
+  background: var(--card-2); border: 1px solid var(--line); border-radius: 10px;
+  color: var(--muted); font-size: 12.5px; line-height: 1.6;
+}
+.caliber-note svg { flex: none; margin-top: 2px; }
 .view-toggle { display: inline-flex; gap: 4px; background: var(--card-2); padding: 3px; border-radius: 8px; border: 1px solid var(--line); }
 .view-btn {
   display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 6px;

@@ -88,15 +88,31 @@ export async function gainViaEvents(client, { fullName, since, now = new Date() 
   const observedMs = sawAny ? Math.max(0, now - oldest) : 0;
   const coverage = targetMs > 0 ? Math.min(1, observedMs / targetMs) : 0;
 
-  // 覆盖率不足：不外推。此前这里用 max(0.05, ...) 兜底，稀疏事件会被放大到 20 倍。
+  // 覆盖率不足：绝不外推（此前用 max(0.05, ...) 兜底，稀疏事件会被放大 20 倍）。
+  // 但也不再整条跳过——超大仓库（stargazers 翻不过 400 页）一旦跳过就永远进不了榜。
+  // 改为「保守下界」：直接用观测到的真实条数，不做任何放大，并标记 unreliable，
+  // 由页面显式说明这是下界，读者知道真实增量只会更高。
   if (coverage < minCoverage) {
+    const floor = cfg.unreliableMinCoverageFloor ?? 0.05;
+    if (coverage >= floor && recent > 0) {
+      return {
+        gain: recent,
+        coverage,
+        exact: false,
+        estimated: true,
+        source: "events",
+        unreliable: true,
+        lowerBound: true,
+        reason: `event coverage low (${(coverage * 100).toFixed(1)}%), using observed count as lower bound`,
+      };
+    }
     return {
       gain: null,
       coverage,
       exact: false,
       source: "events",
       unreliable: true,
-      reason: `event coverage too low (${(coverage * 100).toFixed(1)}% < ${(minCoverage * 100).toFixed(0)}%)`,
+      reason: `event coverage too low (${(coverage * 100).toFixed(1)}% < ${(floor * 100).toFixed(0)}%)`,
     };
   }
 
@@ -134,6 +150,8 @@ export async function resolveStarGrowth(client, { fullName, stars, snapshots, sn
   let source = null;
   let exact = false;
   let coverage = null;
+  let unreliable = false;
+  let lowerBound = false;
 
   if (fromSnap) {
     observed = fromSnap.gain;
@@ -148,15 +166,20 @@ export async function resolveStarGrowth(client, { fullName, stars, snapshots, sn
         ? await gainViaEvents(client, { fullName, since: since7d, now })
         : await gainViaStargazers(client, { fullName, stars, since: since7d });
 
-      if (via.unreliable || via.gain == null) {
+      if (via.gain == null) {
         log(`  ~ ${fullName}: skipped (${via.reason ?? "no reliable growth signal"})`);
         return null;
+      }
+      if (via.unreliable) {
+        log(`  ~ ${fullName}: unreliable growth (${via.reason ?? "low coverage"}), keeping observed lower bound`);
       }
       observed = via.gain;
       observedDays = via.exact ? (growthCfg().baselineTargetDays ?? 7) : 7;
       source = via.source;
       exact = !!via.exact;
       coverage = via.coverage ?? null;
+      unreliable = !!via.unreliable;
+      lowerBound = !!via.lowerBound;
     } catch (e) {
       log(`  ~ ${fullName}: skipped (${e.message})`);
       return null;
@@ -167,7 +190,7 @@ export async function resolveStarGrowth(client, { fullName, stars, snapshots, sn
   const normalized = Math.round((observed * targetDays) / Math.max(1, observedDays));
   const { weeklyGain, capped } = capWeeklyGain(normalized, stars);
 
-  return { weeklyGain, observedGain: observed, observedDays, source, exact, coverage, capped };
+  return { weeklyGain, observedGain: observed, observedDays, source, exact, coverage, capped, unreliable, lowerBound };
 }
 
 /** fork 增速：与 star 同源，从快照序列取差 */

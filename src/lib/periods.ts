@@ -44,6 +44,9 @@ export interface PeriodBoard {
   entries: Entry[];
   poolSize: number;
   metricsComplete: boolean;
+  /** 窗口内聚合了多个评分引擎版本，综合分不同口径，页面应提示 */
+  scoringMixed?: boolean;
+  scoringVersions?: string[];
 }
 
 function emptyBoard(kind: PeriodKind, endDate: string, requestedDays: number, reason: string): PeriodBoard {
@@ -189,6 +192,13 @@ export async function buildPeriodBoard(
     .sort((a, b) => b.weeklyGain - a.weeklyGain || b.growthRate - a.growthRate)
     .slice(0, topN);
 
+  // 口径一致性：一个周期榜可能聚合多天数据，若这些天的评分引擎版本不同，
+  // 综合分就不是同一把尺子量出来的，页面需要显式提示（T1.8）。
+  const versionsInWindow = new Set(
+    records.map((r) => r.entry?.scoringVersion).filter((v: unknown) => typeof v === "string")
+  );
+  const scoringMixed = versionsInWindow.size > 1;
+
   const entries: Entry[] = ranked.map((r, i) => {
     const e = r.entry;
     const interpretation = ruleBasedInterpretation(
@@ -233,6 +243,7 @@ export async function buildPeriodBoard(
       quickstart: interpretation.quickstart,
       interpretationSource: "rules",
       firstSeen: firstSeenDate(e.slug),
+      scoringVersion: e.scoringVersion,
       // 详情页链接必须落在该项目实际出现过的日期上
       lastSeenDate: r.lastSeenDate,
     };
@@ -248,6 +259,8 @@ export async function buildPeriodBoard(
     entries,
     poolSize: records.length,
     metricsComplete: anyComplete,
+    scoringMixed,
+    scoringVersions: [...versionsInWindow].sort(),
   };
 }
 

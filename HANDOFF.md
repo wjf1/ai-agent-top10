@@ -10,10 +10,11 @@
 - **仓库地址**：<https://github.com/wjf1/ai-agent-top10>
 - **线上站点**：<https://wjf1.github.io/ai-agent-top10/>（双语支持：英文根路由 `/en/`）
 - **项目定位**：每天按 GitHub star 真实增量筛选 Top 10 AI Agent 开源项目，基于 8 个可解释维度加权打分，并生成中英双语通俗定位解读与数据报表。
-- **当前发布版本**：`v0.6.0`（2026-10-05 发布）
+- **当前发布版本**：`v0.7.0`（2026-10-05 发布，Phase 1 止血与可信度）
 - **当前 Git 分支**：`main`（与远端 `origin/main` 保持同步，工作区 Clean）
-- **最新 Release**：[GitHub Release v0.6.0](https://github.com/wjf1/ai-agent-top10/releases/tag/v0.6.0)
+- **最新 Release**：[GitHub Release v0.7.0](https://github.com/wjf1/ai-agent-top10/releases/tag/v0.7.0)
 - **CI/CD 状态**：GitHub Actions `daily-update` 工作流自动化运行通过（构建耗时 ~25s，全自动部署至 GitHub Pages）。
+- **进行中的计划**：《ai-agent-top10 优化开发方案及实施计划》共 3 个 Phase、33 项任务；**Phase 1（T1.1–T1.8）已完成并发布**，Phase 2（T2.1–T2.14）与 Phase 3（T3.1–T3.11）待推进。
 
 ---
 
@@ -27,7 +28,8 @@
 | **样式体系** | **纯原生 CSS 自定义属性 (CSS Tokens)** | 零 Tailwind / Sass 外部编译器依赖，全站全局 CSS 仅 9.5 KB |
 | **图表可视化** | **手写内联 SVG** | 零外部图表库依赖（无 ECharts/D3/Chart.js），首屏 JS 几乎为零 |
 | **图标系统** | **零依赖矢量 SVG 组件 (`Icon.astro`)** | 16×16 纯矢量描边，替代全站 Emoji |
-| **测试框架** | **Node.js 原生 Test Runner (`node --test`)** | 无需安装 Jest/Vitest，回归测试集运行极快（~150ms） |
+| **测试框架** | **Node.js 原生 Test Runner (`node --test`)** | 无需安装 Jest/Vitest，回归测试集运行极快（~200ms，当前 77 项） |
+| **评分口径** | **`config.scoringVersion`（当前 2.1.0）** | 日榜与条目均落盘生成时的版本号，读侧据此判断跨期可比性 |
 
 ### 常用核心命令速查
 
@@ -38,7 +40,7 @@ npm install
 # 2. 本地开发服务器 (默认端口 http://localhost:4321)
 npm run dev
 
-# 3. 运行全量单元测试与流水线回归测试 (62 个测试项)
+# 3. 运行全量单元测试与流水线回归测试 (当前 77 个测试项)
 npm test
 
 # 4. 执行数据结构完整性与安全门禁校验
@@ -52,6 +54,9 @@ npm run preview
 
 # 7. 全流程质量门禁 (测试 + 数据校验 + 全站构建，推送前必跑)
 npm run check
+
+# 8. 评分口径重算（只读本地快照，不调用网络；写盘前自动备份）
+npm run rescore:safe
 ```
 
 ---
@@ -80,11 +85,12 @@ ai-agent-top10
 |-- config/
 |   `-- scoring.json            # [单一事实来源 SSOT] 权重、阈值、关键词、时间窗口与抓取参数
 |-- scripts/
-|   |-- fetch-daily.mjs         # 每日抓取编排主入口
-|   |-- validate-data.mjs       # 数据完整性与 XSS/注入防范质量门禁
+|   |-- fetch-daily.mjs         # 每日抓取编排主入口（落盘带 scoringVersion）
+|   |-- validate-data.mjs       # 数据完整性与 XSS/注入/伪协议质量门禁
 |   |-- backfill-interpretations.mjs # 历史解读回填工具 (--since, --refresh-rules)
-|   |-- rescore.mjs             # 规则变更离线重算脚本
-|   `-- lib/                    # 抓取子模块 (github, growth, metrics, interpret, persist)
+|   |-- rescore.mjs             # [v0.7.0 增强] 规则变更离线重算 (--safe, --since-version)
+|   `-- lib/                    # 抓取子模块 (github, growth, metrics, interpret, persist, status, interpret-cache)
+|-- .rescored-backup/           # [v0.7.0 新增] rescore 写盘前的原文件备份（已 gitignore）
 |-- src/
 |   |-- components/
 |   |   |-- RankingPage.astro   # 榜单核心容器 (list-toolbar、说明文案、卡片/表格双视图)
@@ -110,43 +116,51 @@ ai-agent-top10
 
 ---
 
-## 四、最近一轮变更与交付成果 (v0.6.0)
+## 四、最近一轮变更与交付成果 (v0.7.0 · Phase 1：止血与可信度)
 
-本轮开发严格依据《AgentTop10-UI设计提升方案》审查报告（18 项改进）实施，全面完成并成功部署上线：
+本轮严格依据《ai-agent-top10 优化开发方案及实施计划》**Phase 1（T1.1–T1.8，8 项 P0）**实施，全部完成并通过门禁：
 
-1. **P0 阻塞级缺陷修复**：
-   - **色彩对比度**：引入 `--good-ink: #036c50` 与 `--warn-ink: #8a4b06`，上涨徽章提升至 5.81:1，下降徽章提升至 6.18:1，分类标签提升至 6.98:1，全量达到 WCAG 2.1 AA 标准（≥4.5:1）；
-   - **持平语义闭环**：`.rank-change.same` 切换为中性灰底（`card-2`），消除品牌紫底误导；
-   - **字号基线收口**：清除散落的 10.5/11/11.5px 小字，正文文字最低基线统一定为 12px；
-   - **排版防断裂**：全局注入 `tabular-nums` 实现数字等宽对齐；长数字与仓库名优化折行规则（`overflow-wrap: anywhere`）。
-2. **P1 核心交互与信息架构改造**：
-   - **列表工具栏（List Toolbar）**：在榜单上方增加显性说明，明确“近 N 天增量排名”与“8 维综合评分”各自独立，消除首次访问者的认知困惑；
-   - **双视图切换**：工具栏支持“卡片视图 / 表格视图”即时切换，借助 `localStorage` 记住用户偏好；
-   - **Sparkline 趋势线替代雷达图**：榜单卡片引入近 21 天 Star 增量折线图，卡片高度压减至约 110px，首屏信息容量提升 35% 以上；雷达图完整收敛至详情页；
-   - **矢量图标系统（`Icon.astro`）**：封装 16×16 统一矢量描边图标替代全站 Emoji，提升无障碍兼容性与多端一致性；
-   - **移动端单行横滚导航**：顶栏剥离日/周/月重复链接；≤700px 视口下实现单行无折行平滑轻触滚动；
-   - **触控热区补齐**：通过伪元素扩展点击区域至 ≥44×44px（WCAG 2.5.8 触控标准）；
-   - **Hero 指标去重**：第 3 项指标改为全周期“平均单项目增量”。
-3. **P2 设计系统规范与细节质感**：
-   - **Tokens 标尺收敛**：规范 4 档圆角（`--radius-sm` 至 `--radius-full`）、4px 间距阶梯与全局焦点环 `--focus-ring`；
-   - **数据色彩解耦**：拆分 `--data-primary`（#6366f1 / #818cf8）专用于图表曲线与顶点；
-   - **Top 3 荣誉塑形**：前三名赋予微描边高亮与高对比度金银铜牌标，去除斜体保证数字端正；
-   - **原生 HTML Popover 提示**：差值计算口径使用原生 HTML Popover 替换原生 `title`，兼顾触屏点击与键盘 Tab+Enter 激活；
-   - **检索页空态设计**：检索无匹配时展示矢量图标、引导提示与一键清除筛选条件按钮。
-4. **验证结论**：`npm run check` 门禁 100% 通过（62/62 测试通过，574 个静态页面构建成功）。
+| 任务 | 内容 | 关键改动文件 |
+|---|---|---|
+| **T1.1** | README 版本号由 `0.2.0` 修正为当前版本，新增 shields.io 徽章与数据覆盖范围说明；配置文档同步 | `README.md` |
+| **T1.2** | `ruleCons` 实际判定 `hasHomepage`/`hasDocs`，不再误报「缺少官网」；`fitFor` 改为 category + topics 双重映射（8 类话题定向，重叠率 <30%） | `src/lib/interpret.mjs`、`scripts/lib/metrics.mjs` |
+| **T1.3** | LLM 解读新增备用 provider 自动切换 + README 哈希缓存（`interpret-cache.mjs`）+ 整轮降级 `::error` 注解 | `scripts/lib/interpret.mjs`、`scripts/lib/interpret-cache.mjs`、`scripts/lib/status.mjs`、`.github/workflows/daily.yml` |
+| **T1.4** | contributors 改为分页采集（`contributorPages` 默认 2 页/上限 200），区分「数完 / 截断」（`contributorsCapped`），不可测时返回 `null` 而非 `0` | `scripts/lib/metrics.mjs`、`config/scoring.json` |
+| **T1.5** | `writeJson` 改为「同目录临时文件 + renameSync」原子写，异常清理临时文件 | `scripts/lib/persist.mjs` |
+| **T1.6** | 危险块级元素（script/style/iframe/svg/math/form…）**连同内容整块剥离**；文本层伪协议断链；`validate-data.mjs` 增加伪协议拦截并扩展检查字段 | `src/lib/sanitize.mjs`、`scripts/validate-data.mjs` |
+| **T1.7** | 超大仓库增速不再直接跳过：覆盖率不足时给出**保守下界**（观测条数、不外推）并标记 `gainUnreliable`/`gainLowerBound`，UI 显示「保守下界」 | `scripts/lib/growth.mjs`、`src/lib/display.ts`、`src/lib/data.ts`、`scripts/lib/schema.mjs` |
+| **T1.8** | 新增 `config.scoringVersion`（2.1.0），日榜/条目落盘版本号；`rescore --safe` / `--since-version` + `.rescored-backup/` 备份 + 变动熔断；周期榜混用多版本时页面提示 | `config/scoring.json`、`scripts/rescore.mjs`、`src/lib/periods.ts`、`src/components/RankingPage.astro` |
+
+**验证结论**：`npm run check` 门禁 100% 通过（**77/77 测试通过**，较上轮新增 15 项回归；数据校验 23 天通过；598 个静态页面构建成功）。
 
 ---
 
 ## 五、接力开发指引与后续演进建议 (Next Steps)
 
-若后续会话接手本项目，可优先从以下几个方向推进：
+依据《ai-agent-top10 优化开发方案及实施计划》，Phase 1 已交付，后续按下列顺序推进（详见 PDF 与仓库内计划）：
 
-| 优先级 | 优化方向 | 建议实现路径与切入点 |
+### Phase 2（T2.1–T2.14，P1）
+| 任务 | 内容 | 关键切入点 |
 |---|---|---|
-| **P1** | **表格视图客户端动态排序** | 在 `ProjectTable.astro` 中注入约 1 KB 的轻量原生脚本，监听 `th` 点击，允许用户按 Stars、7d 增量、上榜次数进行升/降序重排，进一步增强表格视图的分析生产力。 |
-| **P2** | **Astro View Transitions 过渡** | 在 `Base.astro` 中引入 Astro 5 官方 `<ClientRouter />`，实现页面跳转间的无刷新平滑过渡与主题状态无缝衔接。 |
-| **P2** | **对比工具（ComparePanel）窄屏优化** | 优化 `ComparePanel.astro` 左侧仓库勾选列表在移动端的触控体验，增加搜索过滤输入框，减少长列表滚动摩擦。 |
-| **P3** | **自动化无障碍回归测试** | 在 GitHub Actions 中引入 Axe DevTools CLI 或 Lighthouse CI，将 WCAG 2.1 AA 对比度与触控目标尺寸纳入 CI 自动阻断门禁。 |
+| **T2.1** | 对比工具（ComparePanel）移动端体验：勾选列表搜索过滤 + 指标对比维度扩展 | `src/components/ComparePanel.astro`、`src/pages/[...lang]/compare.astro` |
+| **T2.2** | 榜单新鲜度标记：NEW 徽标、窗口内 N 期上榜次数 | `EntryCard.astro`、`RankingPage.astro`、`display.ts` |
+| **T2.3** | 详情页「同类项目」推荐：category + topics 相似度 | `ProjectDetail.astro`、`src/lib/aggregate.ts` |
+| **T2.4** | OG 社交分享图自动生成（SVG→PNG）+ meta 标签 | `Base.astro`、`scripts/generate-og.mjs`、`astro.config.mjs` |
+| **T2.5** | GitHub API 韧性：多 token 轮换、候选池分页、GraphQL 批量查询 + REST fallback | `scripts/lib/github.mjs`、新增 `graphql.mjs` |
+| **T2.6** | 快照分片存储（metrics / stars 按仓库或月份拆分） | `persist.mjs`、新增 `migrate-snapshots.mjs` |
+| **T2.7** | `metricsComplete` 从 any 改为 every | `src/lib/periods.ts:212` |
+| **T2.8** | backfill 的 `toProject()` 补齐 metrics 字段 | `scripts/backfill-interpretations.mjs` |
+| **T2.9** | `dailyGain` 按 coverageDays 归一 | `src/lib/periods.ts:189-190` |
+| **T2.10** | Search API 独立限流余量检测（`searchRemaining`） | `scripts/lib/github.mjs:96` |
+| **T2.11** | validate 校验快照数值类型 | `scripts/validate-data.mjs:84-96` |
+| **T2.12** | 拆分测试为 `tests/growth.test.mjs` / `metrics.test.mjs` / `periods.test.mjs` | `tests/` |
+| **T2.13** | `growthRate` 基线改用真实 baselineStars | `src/lib/periods.ts:180` |
+| **T2.14** | LLM 返回结构容错（entries 缺失/异常时不崩） | `scripts/lib/interpret.mjs:82-85` |
+
+### Phase 3（T3.1–T3.11，P1/P2）
+检索页增强与 JS 体积治理（T3.1）、详情页趋势/雷达增强（T3.2）、Base 布局与 ISSUE_TEMPLATE（T3.3）、daily 归档分层压缩（T3.4）、归档页 404 fallback（T3.5）、数据导出增强（T3.6）、`saveIndex` 增量优化（T3.7）、periods 导入瘦身（T3.8）、`buildPoolContext` 性能（T3.9）、日志分级（T3.10）、`capWeeklyGain` 小仓库特例（T3.11）。
+
+> **建议切入点**：Phase 2 的 T2.5 / T2.6 属于架构性改动且相互耦合（GraphQL 与快照分片都影响 `persist` / `metrics`），建议同一会话内连续推进；T2.12 的测试拆分可最先做，为后续改动提供更细的回归保护。
 
 ---
 

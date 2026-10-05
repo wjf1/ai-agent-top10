@@ -84,7 +84,12 @@ export function gainSourceTag(entry: any, t: Strings): InterpretationTag {
       : entry?.gainSource === "snapshot-window"
         ? t.sourceWindow
         : t.sourceSnapshot;
-  return { label: exact ? t.sourceExactLabel : t.sourceEstimateLabel, note: `${t.gainSource}：${term}。${t.gainSourceNote}` };
+  const note = `${t.gainSource}：${term}。${t.gainSourceNote}`;
+  // 覆盖率不足的事件流估算只是保守下界，必须显式说明，避免读者当成精确增量
+  if (entry?.gainUnreliable && entry?.gainLowerBound) {
+    return { label: t.sourceLowerBoundLabel, note: `${note} ${t.sourceLowerBoundNote}` };
+  }
+  return { label: exact ? t.sourceExactLabel : t.sourceEstimateLabel, note };
 }
 
 /** 连续在榜期数：从当期往前数，中间断一期就重新计 */

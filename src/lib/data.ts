@@ -101,7 +101,11 @@ export const L = {
     forkAnomalyNote: (pct: number) => `fork / star 比 ${pct}%，明显高于常见区间：多为课程作业、批量二次开发或刷量，不能当成热度信号`,
     sourceExactLabel: "精确差值",
     sourceEstimateLabel: "估算",
+    sourceLowerBoundLabel: "保守下界",
     gainSourceNote: "精确差值＝两次快照直接相减；估算＝按事件流样本外推，可能有偏差",
+    sourceLowerBoundNote: "事件流覆盖率不足，此处直接采用观测到的条数、不做外推，真实增量只会更高。",
+    scoringMixedNote: (versions: string) =>
+      `本周期聚合了多天数据，其中评分口径存在差异（${versions}），综合分之间的可比性有限。`,
     growthRateNote: (days: number) => `增速＝近 ${days} 天新增 star ÷ 当前 star 总量`,
     sourceSnapshot: "快照差值",
     sourceStargazers: "stargazers 精确统计",
@@ -237,7 +241,11 @@ export const L = {
     forkAnomalyNote: (pct: number) => `fork / star ratio of ${pct}% is far above the usual range — typically coursework, bulk forks or gaming, not a popularity signal`,
     sourceExactLabel: "Exact delta",
     sourceEstimateLabel: "Estimated",
+    sourceLowerBoundLabel: "Lower bound",
     gainSourceNote: "Exact = two snapshots subtracted; estimated = extrapolated from an event-stream sample",
+    sourceLowerBoundNote: "Event-stream coverage is too low, so the raw observed count is used without extrapolation — the real gain can only be higher.",
+    scoringMixedNote: (versions: string) =>
+      `This period aggregates multiple days whose scoring calibers differ (${versions}); overall scores are only loosely comparable.`,
     growthRateNote: (days: number) => `Growth = star gain over the last ${days} days ÷ current star total`,
     sourceSnapshot: "snapshot delta",
     sourceStargazers: "exact stargazers count",

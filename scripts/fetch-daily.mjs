@@ -25,7 +25,7 @@ import path from "node:path";
 import { appendFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-import { config } from "../src/lib/config.mjs";
+import { config, scoringVersion } from "../src/lib/config.mjs";
 import { categorize } from "../src/lib/categorize.mjs";
 import { sanitizeSlug, sanitizeText, sanitizeUrl, sanitizeTopics } from "../src/lib/sanitize.mjs";
 import { buildPoolContext, scoreProject } from "../src/lib/scoring.mjs";
@@ -36,7 +36,7 @@ import { resolveForkGrowth, resolveStarGrowth } from "./lib/growth.mjs";
 import { collectMetrics } from "./lib/metrics.mjs";
 import { llmInterpretation, normalizeInterpretation, ruleBasedInterpretation } from "./lib/interpret.mjs";
 import { excerptFromMarkdown, extractInstallSnippet, fetchReadmeMarkdown } from "./lib/readme.mjs";
-import { ciWarningLine, interpretationStatus, stepSummary } from "./lib/status.mjs";
+import { ciErrorLine, ciWarningLine, interpretationStatus, stepSummary } from "./lib/status.mjs";
 import {
   dataPaths,
   listDailyDates,
@@ -229,6 +229,8 @@ async function main() {
       forksGrowthRate: p.forksGrowthRate,
       gainSource: p.source,
       gainExact: p.exact,
+      gainUnreliable: p.unreliable === true,
+      gainLowerBound: p.lowerBound === true,
       rankChange: typeof before === "number" ? before - rank : null,
       scores: p.scores,
       why,
@@ -251,6 +253,8 @@ async function main() {
   console.log(interpLine);
   const interpWarning = ciWarningLine(interpStatus);
   if (interpWarning) console.log(interpWarning);
+  const interpError = ciErrorLine(interpStatus);
+  if (interpError) console.log(interpError);
   if (process.env.GITHUB_STEP_SUMMARY) {
     try {
       appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${interpLine}\n`);
@@ -265,7 +269,9 @@ async function main() {
     generatedAt: now.toISOString(),
     windowDays: WINDOW,
     poolSize: records.length,
-    entries,
+    // 记录生成这批分数所用的评分引擎版本，读侧据此判断历史数据是否同一口径
+    scoringVersion: scoringVersion(),
+    entries: entries.map((e) => ({ ...e, scoringVersion: scoringVersion() })),
   };
 
   const { ok, errors } = checkDailyFile(doc, { expectedDate: date, topN });

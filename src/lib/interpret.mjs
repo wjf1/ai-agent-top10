@@ -46,10 +46,92 @@ export function fitForCategory(category) {
         { zh: "要给 Agent 做自动化回归评测的工程团队", en: "Engineering teams adding automated regression evaluation for agents" },
       ];
     default:
-      return [
-        { zh: "关注 AI Agent 生态、想快速了解新项目的从业者", en: "Practitioners tracking the AI agent ecosystem" },
-      ];
+      return [];
   }
+}
+
+const TOPIC_FIT_MAPPINGS = [
+  {
+    regex: /rag|retriev|vector|embed|search/i,
+    item: {
+      zh: "需要搭建知识库、文档问答或 RAG 检索链路的团队",
+      en: "Teams building knowledge bases, doc Q&A, or RAG retrieval pipelines",
+    },
+  },
+  {
+    regex: /multi-agent|swarm|orchestrat|workflow|crew|autogen/i,
+    item: {
+      zh: "探索多智能体协作、角色分工与复杂流水线编排的架构师",
+      en: "Architects exploring multi-agent collaboration, role assignments, and pipeline orchestration",
+    },
+  },
+  {
+    regex: /coding|developer-tools|programming|ide|copilot|code-generation/i,
+    item: {
+      zh: "希望借助 AI 辅助编程、自动化代码审查或工程提效的开发团队",
+      en: "Development teams implementing AI coding assistants, automated code review, or dev productivity",
+    },
+  },
+  {
+    regex: /browser|automation|scrap|playwright|selenium|crawl/i,
+    item: {
+      zh: "需要网页自动化操作、跨系统流程 RPA 或数据采集的工程师",
+      en: "Engineers requiring web browser automation, cross-system RPA, or web data extraction",
+    },
+  },
+  {
+    regex: /eval|benchmark|test|quality|metric/i,
+    item: {
+      zh: "需要对 Agent 表现进行标准化基准评测与质量回归的工程师",
+      en: "Engineers needing standardized benchmarking and quality regression testing for agents",
+    },
+  },
+  {
+    regex: /cli|terminal|command-line|shell/i,
+    item: {
+      zh: "偏好极简终端体验、需要嵌入命令行自动化脚本的极客开发者",
+      en: "Geek developers preferring terminal interfaces and lightweight CLI workflow automation",
+    },
+  },
+  {
+    regex: /local|ollama|privacy|offline|edge/i,
+    item: {
+      zh: "注重私密性与数据安全、需要在离线或本地环境部署的工程团队",
+      en: "Teams prioritizing privacy and data security requiring local or offline deployments",
+    },
+  },
+  {
+    regex: /voice|audio|speech|vision|multimodal|video/i,
+    item: {
+      zh: "探索多模态交互、端到端语音与视觉感知代理的前沿创新团队",
+      en: "Innovative teams exploring multimodal interactions, end-to-end voice, and vision agents",
+    },
+  },
+];
+
+/** 结合 category 与 topics 产出差异化适用群体 */
+export function ruleFitFor(project) {
+  const topics = Array.isArray(project.topics) ? project.topics : [];
+  const results = [];
+  const added = new Set();
+
+  for (const mapping of TOPIC_FIT_MAPPINGS) {
+    if (topics.some((t) => mapping.regex.test(t))) {
+      results.push(mapping.item);
+      added.add(mapping.item.zh);
+      if (results.length >= 2) break;
+    }
+  }
+
+  const catItems = fitForCategory(project.category);
+  for (const item of catItems) {
+    if (!added.has(item.zh) && results.length < 3) {
+      results.push(item);
+      added.add(item.zh);
+    }
+  }
+
+  return results;
 }
 
 /** 分类对应的"这个项目拿来实现什么"，用于规则版的项目介绍 */
@@ -223,15 +305,27 @@ export function ruleHighlights(project) {
 export function ruleCons(project) {
   const m = project.metrics ?? {};
   const cons = [];
-  if (m.pushDaysAgo > 30) cons.push({ zh: `最近 ${m.pushDaysAgo} 天没有提交，维护可能停滞`, en: `No commits for ${m.pushDaysAgo} days — maintenance may have stalled` });
-  if (!m.license) cons.push({ zh: "未声明开源许可证，商用存在法务不确定性", en: "No open-source license declared — legal uncertainty for commercial use" });
-  if (m.stars > 0 && m.openIssues / m.stars > 0.02) {
+  if (typeof m.pushDaysAgo === "number" && m.pushDaysAgo > 30) {
+    cons.push({ zh: `最近 ${m.pushDaysAgo} 天没有提交，维护可能停滞`, en: `No commits for ${m.pushDaysAgo} days — maintenance may have stalled` });
+  }
+  if (m.license === null) {
+    cons.push({ zh: "未声明开源许可证，商用存在法务不确定性", en: "No open-source license declared — legal uncertainty for commercial use" });
+  }
+  if (m.stars > 0 && typeof m.openIssues === "number" && m.openIssues / m.stars > 0.025) {
     cons.push({ zh: `开放 issue ${fmt(m.openIssues)} 个，相对 star 规模偏高`, en: `${fmt(m.openIssues)} open issues — high relative to its star count` });
   }
-  if (m.contributors != null && m.contributors <= 3) {
-    cons.push({ zh: `贡献者仅 ${m.contributors} 人，存在单点依赖风险`, en: `Only ${m.contributors} contributor(s) — bus-factor risk` });
+  if (typeof m.contributors === "number" && m.contributors > 0 && m.contributors <= 3) {
+    cons.push({ zh: `公开贡献者仅 ${m.contributors} 人，存在单点依赖风险`, en: `Only ${m.contributors} contributor(s) — bus-factor risk` });
   }
-  if (!m.hasHomepage && !m.hasDocs) cons.push({ zh: "缺少官网与文档入口，上手成本较高", en: "No homepage or docs site — steeper onboarding" });
+  // 严格区分 hasHomepage 与 hasDocs，避免错误标注「缺少官网」
+  if (m.hasHomepage === false && m.hasDocs === false && typeof m.stars === "number") {
+    cons.push({ zh: "缺少独立官网与文档门户，上手成本较高", en: "No dedicated homepage or documentation portal — steeper onboarding" });
+  } else if (m.hasDocs === false && m.hasHomepage === true && (m.stars ?? 0) > 2000) {
+    cons.push({ zh: "暂无独立文档系统（如 Wiki/Docs），查阅细节可能需通读 README", en: "No dedicated docs portal — onboarding relies primarily on README" });
+  }
+  if (typeof m.releases90d === "number" && m.releases90d === 0 && (m.ageDays ?? 0) > 90) {
+    cons.push({ zh: "近 90 天未发布正式 Release 版本", en: "No formal releases in the last 90 days" });
+  }
   return cons;
 }
 
@@ -253,7 +347,7 @@ export function ruleBasedInterpretation(project, { lang = "zh" } = {}) {
     cardLine: ruleCardLine(project),
     highlights: ruleHighlights(project),
     cons: ruleCons(project),
-    fitFor: fitForCategory(project.category),
+    fitFor: ruleFitFor(project),
     quickstart,
     source: "rules",
   };

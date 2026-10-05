@@ -26,7 +26,21 @@ export function ciWarningLine(status) {
     `::warning title=解读退回模板文案::${status.rules}/${status.total} 条没有拿到 LLM 解读` +
     `${whole ? "（整轮降级）" : ""}，页面上的项目介绍是分类与话题标签拼装的。` +
     `检查 secrets.LLM_API_KEY 与 vars.LLM_BASE_URL / vars.LLM_MODEL —— ` +
-    `config 里默认的 baseUrl 是本机网关，GitHub runner 访问不到。`
+    `config 里默认的 baseUrl 是本机网关，GitHub runner 访问不到。` +
+    `可另配 secrets.LLM_FALLBACK_API_KEY 与 vars.LLM_FALLBACK_BASE_URL / vars.LLM_FALLBACK_MODEL 作为备用服务。`
+  );
+}
+
+/**
+ * 整轮降级升格为 error 级注解：全部条目都是模板文案时，站点的核心卖点（读 README 的
+ * 白话解读）当天完全失效，值得在 Actions 上标红而不只是黄条（T1.3）。
+ * 注意：注解本身不会让 job 失败，只是提高可见度。
+ */
+export function ciErrorLine(status) {
+  if (!status?.total || status.rules !== status.total) return "";
+  return (
+    `::error title=解读整轮降级::${status.total} 条全部退回规则模板文案，当天站点没有任何 AI 解读。` +
+    `请检查解读服务配置（LLM_API_KEY / LLM_BASE_URL / LLM_MODEL 及备用 provider）。`
   );
 }
 

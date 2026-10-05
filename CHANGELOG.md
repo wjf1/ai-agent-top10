@@ -4,6 +4,44 @@
 
 ---
 
+## [0.7.0] — 2026-10-05
+
+依据《ai-agent-top10 优化开发方案及实施计划》Phase 1（T1.1–T1.8，8 项 P0）实施。本轮聚焦「止血与可信度」：修复会让数据静默失真或页面错误的阻塞级缺陷，让流水线在异常时降级可解释、可回滚，并为评分口径建立版本化管理。
+
+### 修复（阻塞级 · 数据可信度）
+
+- **危险块级标签只删标签、内容残留（P0-C3）**：`sanitizeText` / `sanitizeMultiline` 此前仅剥离标签本身，`<script>alert(1)</script>` 会留下 `alert(1)`。现对 `script` / `style` / `iframe` / `svg` / `math` / `form` 等危险元素**连同内容整块剥离**（含未闭合形态），普通标签（如 `<b>`）仍只删标签、保留文字。同时新增**伪协议断链**：文本中的 `javascript:` / `vbscript:` / `data:text/html` 一律改写成 `javascript :` 形式，使任何解析器都不再识别为可执行 scheme。
+- **JSON 非原子写入（P0-C2）**：`writeJson` 直接 `writeFileSync`，写到一半被中断会留下半截 JSON，而日榜文件是构建输入，会导致整轮 build 失败。现改为**同目录临时文件 + `renameSync` 原子替换**，并在异常时清理临时文件；interpret-cache 同步改用该实现。
+- **超大仓库增速直接跳过（P0-C4）**：事件流覆盖率低于阈值时 `resolveStarGrowth` 返回 `null`，超大仓库（stargazers 翻不过 400 页）永远进不了榜。现改为**保守下界**：覆盖率低于 `minCoverage` 但高于新配置 `unreliableMinCoverageFloor`（默认 5%）时，直接采用**观测到的真实条数、不做任何外推**，标记 `gainUnreliable` / `gainLowerBound` 后照常参与排名；覆盖率低于地板值才放弃出数。
+- **contributors 采集截断（P0-C1）**：贡献者接口只取第 1 页，超过 100 人的仓库全部被截断成同一个数，社区 / 创新维度失去区分度。现按 `metrics.contributorPages`（默认 2 页，上限 200）**分页采集**，并区分「数完」与「翻到上限被截断」（`contributorsCapped`）；接口不可用时返回 `null`（"测不到"）而非 `0`（"没有贡献者"），避免错误扣分。
+- **规则解读给出错误的「缺少官网」结论（P0）**：`ruleCons` 此前未实际判定 `hasHomepage` / `hasDocs`。现严格区分两者，仅在官网与文档门户均缺失时才提示；有官网但缺文档、且规模较大时给出更准确的措辞。
+- **`fitFor` 适用群体千篇一律（P0）**：改为 **category + topics 双重映射**，新增 RAG / 多智能体 / 编程辅助 / 浏览器自动化 / 评测 / CLI / 本地部署 / 多模态八类话题定向，跨项目重叠率低于 30%。
+
+### 新增（可靠性与口径管理）
+
+- **LLM 解读备用 provider（T1.3）**：主服务超时、报错或返回空时自动切换备用 provider（`config.interpretation.fallback`，可用 `LLM_FALLBACK_BASE_URL` / `LLM_FALLBACK_MODEL` / `LLM_FALLBACK_API_KEY` 覆盖）。
+- **解读缓存（T1.3）**：新增 `scripts/lib/interpret-cache.mjs`，按「仓库全名 + README 摘要哈希」缓存 LLM 解读至 `src/data/snapshots/interpret-cache.json`。README 摘要未变的仓库直接复用，既省 token 又降低单点失败概率；摘要变化即自动失效。
+- **解读降级信号分级（T1.3）**：整轮退回模板文案时输出 `::error` 级 Actions 注解，部分降级维持 `::warning`，并把来源构成写入 step summary。
+- **评分引擎版本化（T1.8）**：新增 `config.scoringVersion`（当前 `2.1.0`）。日榜文档与每个条目在生成时落盘 `scoringVersion`，读侧据此判断历史数据是否同一口径。
+- **`rescore --safe` 与口径熔断（T1.8）**：重算脚本新增 `--safe`（跳过已是当前版本的日期）与 `--since-version=N`（只重算低于 N 的版本）；重算前自动备份原文件到 `.rescored-backup/`；若某天平均 `|Δoverall|` 超过 25 分，视为配置写错，**拒绝写盘**并列入人工复核。新增 `npm run rescore` / `npm run rescore:safe`。
+- **跨口径提示（T1.8）**：周榜 / 月榜聚合若混用多个评分引擎版本，榜单顶部展示中性色口径提示。
+
+### 优化（CI 与校验）
+
+- **数据校验门禁增强（T1.6）**：`validate-data.mjs` 新增**伪协议拦截**（`javascript:` / `vbscript:` / `data:text/html`），并把检查范围从 description / why / 亮点 / 缺点扩展到 `intro` / `cardLine` / `fitFor`。
+- **CI 环境变量补齐（T1.3）**：`daily.yml` 透传备用 provider 的三个变量。
+
+### 文档（T1.1）
+
+- **README 版本号修正**：`README.md` 尾部版本号由过期的 `0.2.0` 修正为当前版本，并在顶部增加 `shields.io` 版本徽章与**数据覆盖范围**说明（当前已连续收录 23 天、聚合 17+ 独立项目）。
+- **配置项文档同步**：README 补充 `contributorPages`、`growth.unreliableGainMode`、`scoringVersion` 与 `interpretation.fallback` 的说明。
+
+### 测试
+
+- 新增 15 项回归测试（62 → 77），覆盖：危险块级标签内容剥离、伪协议断链、contributors 分页与截断标记、原子写入无残留、缓存命中与损坏降级、备用 provider 切换、事件流保守下界、评分版本校验与 error 级降级信号。
+
+---
+
 ## [0.6.0] — 2026-10-05
 
 依据《AgentTop10-UI设计提升方案》对全站 UI/UX 进行系统级规范化重构，并整合解读文案与归因增强。重点解决 WCAG 2.1 AA 对比度违规阻塞项、收敛字体排版基线、化解排名与综合分认知冲突、优化首屏信息密度，并建立完整轻量无依赖的设计系统规范。

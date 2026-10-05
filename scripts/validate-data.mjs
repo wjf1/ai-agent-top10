@@ -40,12 +40,21 @@ for (const date of dates) {
       entry.description ?? "",
       entry.why?.zh ?? "",
       entry.why?.en ?? "",
+      entry.intro?.zh ?? "",
+      entry.intro?.en ?? "",
+      entry.cardLine?.zh ?? "",
+      entry.cardLine?.en ?? "",
       ...(entry.highlights ?? []).flatMap((h) => [h.zh ?? "", h.en ?? ""]),
       ...(entry.cons ?? []).flatMap((c) => [c.zh ?? "", c.en ?? ""]),
+      ...(entry.fitFor ?? []).flatMap((f) => [f.zh ?? "", f.en ?? ""]),
     ];
     for (const text of texts) {
-      if (/<\s*(script|iframe|img|svg|object|embed)\b/i.test(text)) {
+      if (/<\s*(script|iframe|img|svg|object|embed|style)\b/i.test(text)) {
         add(problems, `${date}/${entry.full_name}: raw HTML markup in text field`);
+      }
+      // 伪协议：净化层应已断链，若仍出现说明有旁路写入，CI 必须拦住（T1.6）
+      if (/\b(?:javascript|vbscript|livescript)\s*:/i.test(text) || /\bdata\s*:\s*text\/html/i.test(text)) {
+        add(problems, `${date}/${entry.full_name}: pseudo-protocol URL in text field`);
       }
       if (/\bon[a-z]+\s*=/i.test(text)) {
         add(warnings, `${date}/${entry.full_name}: suspicious inline event handler text`);

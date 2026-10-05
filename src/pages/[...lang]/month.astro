@@ -27,6 +27,8 @@ const nav = periodNeighbours("monthly", board.endDate);
   poolSize={board.poolSize}
   unavailableReason={board.reason ?? null}
   partialMetrics={!board.metricsComplete}
+  scoringMixed={board.scoringMixed}
+  scoringVersions={board.scoringVersions}
   archiveHref={archivePath(B, lang)}
   langHref={monthPath(B, lang === "en" ? "zh" : "en")}
   prevHref={nav.prev ? monthPath(B, lang, nav.prev) : null}

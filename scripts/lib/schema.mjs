@@ -39,6 +39,9 @@ export function validateEntry(entry, { index = 0, errors = [] } = {}) {
     if (!isNum(entry.scores.overall)) errors.push(`${at}.scores.overall: missing`);
   }
   if (!Array.isArray(entry.topics)) errors.push(`${at}.topics: must be an array`);
+  if (entry.gainUnreliable !== undefined && typeof entry.gainUnreliable !== "boolean") {
+    errors.push(`${at}.gainUnreliable: must be a boolean when present`);
+  }
   if (typeof entry.url === "string" && !/^https?:\/\//.test(entry.url)) {
     errors.push(`${at}.url: must be http(s)`);
   }

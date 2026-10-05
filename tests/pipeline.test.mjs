@@ -6,6 +6,9 @@
  *   - 事件流覆盖率下限被写成 0.05，稀疏事件会被外推放大 20 倍（P0-C4）
  */
 import assert from "node:assert/strict";
+import { mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import test from "node:test";
 
 import { categorize } from "../src/lib/categorize.mjs";
@@ -21,7 +24,7 @@ import {
   streakLength,
 } from "../src/lib/display.ts";
 import { strings } from "../src/lib/data.ts";
-import { normalizeInterpretation, ruleBasedInterpretation, ruleCardLine, ruleIntro, textWidth } from "../src/lib/interpret.mjs";
+import { normalizeInterpretation, ruleBasedInterpretation, ruleCardLine, ruleCons, ruleFitFor, ruleIntro, textWidth } from "../src/lib/interpret.mjs";
 import { topicLabel, topicLabels } from "../src/lib/topic-labels.mjs";
 import { toCsv, csvCell } from "../src/lib/csv.ts";
 import { buildPoolContext, clamp, log01, log100, percentile, recomputeOverall, scoreProject } from "../src/lib/scoring.mjs";
@@ -35,9 +38,19 @@ import {
   sanitizeUrl,
 } from "../src/lib/sanitize.mjs";
 import { validateDailyDoc } from "../scripts/lib/schema.mjs";
+import {
+  computeHash,
+  getCachedInterpretation,
+  loadInterpretCache,
+  saveInterpretCache,
+  setCachedInterpretation,
+} from "../scripts/lib/interpret-cache.mjs";
+import { llmInterpretation } from "../scripts/lib/interpret.mjs";
+import { countContributors } from "../scripts/lib/metrics.mjs";
+import { readJson, writeJson } from "../scripts/lib/persist.mjs";
 import { refreshRuleEntry, selectDates } from "../scripts/lib/refresh.mjs";
-import { ciWarningLine, interpretationStatus, stepSummary } from "../scripts/lib/status.mjs";
-import { capWeeklyGain, gainFromSnapshots, windowDaysBetween } from "../scripts/lib/growth.mjs";
+import { ciErrorLine, ciWarningLine, interpretationStatus, stepSummary } from "../scripts/lib/status.mjs";
+import { capWeeklyGain, gainFromSnapshots, gainViaEvents, resolveStarGrowth, windowDaysBetween } from "../scripts/lib/growth.mjs";
 import { pickBaselineForWindow } from "../src/lib/timewindow.mjs";
 import { extractInstallSnippet } from "../scripts/lib/readme.mjs";
 
@@ -243,6 +256,74 @@ test("P0-C4 回归：异常高的周增量必须被上限截断", () => {
   assert.equal(normal.weeklyGain, 120);
 });
 
+test("T1.7: 事件流覆盖率偏低时返回保守下界而非跳过，且不做外推放大", async () => {
+  const now = new Date("2026-10-05T00:00:00Z");
+  const since = new Date(now.getTime() - 7 * 864e5);
+  // 只覆盖约 1 天（1/7 ≈ 14%），低于 minCoverage(0.3) 但高于下界地板(0.05)
+  const eventClient = (pageItems) => ({
+    async gh(url) {
+      const page = Number(new URL(url, "https://x").searchParams.get("page") ?? 1);
+      return pageItems[page - 1] ?? [];
+    },
+  });
+  const dayAgo = new Date(now.getTime() - 864e5).toISOString();
+  // 事件列表按时间倒序：整页都落在最近 1 天内 → 观测窗口 ≈1 天，覆盖率 ≈1/7 ≈ 14%
+  const firstPage = [
+    { type: "WatchEvent", created_at: dayAgo },
+    { type: "WatchEvent", created_at: dayAgo },
+    { type: "WatchEvent", created_at: dayAgo },
+    { type: "PushEvent", created_at: dayAgo },
+  ];
+  const res = await gainViaEvents(eventClient([firstPage, []]), { fullName: "acme/huge", since, now });
+  assert.equal(res.gain, 3, "只取观测到的真实条数，不做任何外推");
+  assert.equal(res.unreliable, true, "必须标记不可靠");
+  assert.equal(res.lowerBound, true, "必须标记为保守下界");
+  assert.ok(res.coverage < 0.3, `覆盖率应低于阈值，实际 ${res.coverage}`);
+});
+
+test("T1.7: 覆盖率低于下界地板时仍跳过，避免把噪声当信号", async () => {
+  const now = new Date("2026-10-05T00:00:00Z");
+  const since = new Date(now.getTime() - 7 * 864e5);
+  const eventClient = (items) => ({ async gh() { return items; } });
+  // 仅覆盖最近 4 小时 → 覆盖率 ≈ 4/24/7 ≈ 2.4%，低于下界地板 5%
+  const hoursAgo = new Date(now.getTime() - 4 * 3600e3).toISOString();
+  const res = await gainViaEvents(eventClient([{ type: "WatchEvent", created_at: hoursAgo }]), {
+    fullName: "acme/huge",
+    since,
+    now,
+  });
+  assert.equal(res.gain, null, "覆盖率过低时必须放弃出数");
+  assert.equal(res.unreliable, true);
+});
+
+test("resolveStarGrowth 传播 unreliable / lowerBound 标记", async () => {
+  const now = new Date("2026-10-05T00:00:00Z");
+  const since7d = new Date(now.getTime() - 7 * 864e5);
+  const dayAgo = new Date(now.getTime() - 864e5).toISOString();
+  const client = {
+    async gh(url) {
+      if (url.includes("/events")) {
+        const page = Number(new URL(url, "https://x").searchParams.get("page") ?? 1);
+        return page === 1 ? [{ type: "WatchEvent", created_at: dayAgo }] : [];
+      }
+      return [];
+    },
+  };
+  const out = await resolveStarGrowth(client, {
+    fullName: "acme/huge",
+    stars: 50000,
+    snapshots: {},
+    snapshotDates: [],
+    now,
+    since7d,
+    log: () => {},
+  });
+  assert.ok(out, "超大仓库不应再被直接跳过");
+  assert.equal(out.unreliable, true);
+  assert.equal(out.lowerBound, true);
+  assert.ok(out.weeklyGain > 0);
+});
+
 test("快照增量只在基线里存在该项目时给出结果", () => {
   const snap = { "2026-09-16": { "acme/agent": 900 } };
   assert.deepEqual(gainFromSnapshots(snap, "2026-09-16", "acme/agent", 1000), {
@@ -273,12 +354,35 @@ test("基线日期只在容差范围内选取", () => {
 // ---------------------------------------------------------------- 净化（安全）
 
 test("sanitizeText 剥离标签、注释与不可见字符", () => {
-  assert.equal(sanitizeText("<script>alert(1)</script>hi"), "alert(1) hi");
+  // T1.6：危险块级元素要连内容一起剥离，不能只删标签把脚本体留下
+  assert.equal(sanitizeText("<script>alert(1)</script>hi"), "hi");
+  assert.equal(sanitizeText("<style>body{}</style>ok"), "ok");
   assert.equal(sanitizeText("a<!-- hidden -->b"), "a b");
   assert.equal(sanitizeText("safe\u202Egnp.exe"), "safegnp.exe", "剥除双向控制符");
   assert.equal(sanitizeText("x".repeat(500)).length, 400);
   assert.ok(sanitizeText("完成\u2026").endsWith("…") || true);
 });
+
+test("T1.6: 危险块级标签剥离内容，普通标签只删标签保留文字", () => {
+  assert.equal(sanitizeText("<iframe src=x>inner</iframe>tail"), "tail");
+  assert.equal(sanitizeText("<svg><script>x</script></svg>done"), "done");
+  assert.equal(sanitizeText("<b>粗体</b> 正常"), "粗体 正常", "非危险标签应保留其文字内容");
+  assert.equal(sanitizeText("<script>var a=1"), "var a=1", "未闭合危险标签至少删掉标签本身");
+  assert.equal(sanitizeMultiline("<script>\nbad()\n</script>\nkeep"), "keep");
+});
+
+test("T1.6: 伪协议在文本层被断链，不再形成可执行 URL", () => {
+  const out = sanitizeText("点击 javascript:alert(1) 试试");
+  assert.ok(!/\bjavascript:/.test(out), `伪协议必须被断链：${out}`);
+  assert.ok(out.includes("alert(1)"), "只断链 scheme，正文保留");
+
+  const dataUrl = sanitizeText("data:text/html;base64,PHNjcmlwdD4=");
+  assert.ok(!/\bdata:text\/html/.test(dataUrl), `data:text/html 必须被断链：${dataUrl}`);
+
+  // 正常含 "data:" 的句子不该被误伤
+  assert.equal(sanitizeText("data: 1000 rows parsed"), "data: 1000 rows parsed");
+});
+
 
 test("sanitizeUrl 只放行 http / https", () => {
   assert.equal(sanitizeUrl("https://github.com/a/b"), "https://github.com/a/b");
@@ -507,6 +611,18 @@ test("LLM 全部生效时不产生告警，但摘要仍要写清来源构成", (
   assert.equal(ciWarningLine(ok), "");
   assert.equal(ok.rules, 0);
   assert.match(stepSummary(ok, "2026-10-05"), /llm 1 · manual 1 · rules 0/);
+});
+
+test("T1.3: 整轮降级升格为 ::error，部分降级只在 ::warning", () => {
+  const whole = interpretationStatus([{ interpretationSource: "rules" }, { interpretationSource: "rules" }]);
+  assert.ok(ciErrorLine(whole).startsWith("::error"), "整轮降级必须是 error 级注解");
+  assert.ok(ciWarningLine(whole).startsWith("::warning"));
+
+  const mixed = interpretationStatus([{ interpretationSource: "llm" }, { interpretationSource: "rules" }]);
+  assert.equal(ciErrorLine(mixed), "", "部分降级不应升格为 error");
+  assert.ok(ciWarningLine(mixed).startsWith("::warning"));
+
+  assert.equal(ciErrorLine(interpretationStatus([{ interpretationSource: "llm" }])), "");
 });
 
 // ----------------------------------------------------------- 快速上手（README 安装段）
@@ -810,3 +926,182 @@ test("话题标签：收录的用双语显示名，未收录的保留原始 slug
   assert.deepEqual(topicLabels(["ai-agents", "ai-agent", "unknown-x"], "zh", 4), ["AI Agent", "unknown-x"]);
   assert.deepEqual(topicLabels(["a", "b", "c", "d", "e"], "zh", 2), ["a", "b"]);
 });
+
+test("T1.2: ruleCons 增加 hasHomepage / hasDocs 实际判定，避免错误标注「缺少官网」", () => {
+  const withHome = {
+    metrics: { hasHomepage: true, hasDocs: true, stars: 1000, contributors: 10, openIssues: 5, pushDaysAgo: 2, license: "MIT" },
+  };
+  const consHome = ruleCons(withHome);
+  assert.ok(!consHome.some((c) => c.zh.includes("缺少独立官网") || c.zh.includes("缺少官网")), "有官网和文档时不应标注缺少官网");
+
+  const noHome = {
+    metrics: { hasHomepage: false, hasDocs: false, stars: 1000, contributors: 10, openIssues: 5, pushDaysAgo: 2, license: "MIT" },
+  };
+  const consNoHome = ruleCons(noHome);
+  assert.ok(consNoHome.some((c) => c.zh.includes("缺少独立官网与文档门户")), "两者均缺失时才准确提示");
+});
+
+test("T1.2: ruleFitFor 按 category + topics 做差异化映射，且重叠率低于 30%", () => {
+  const proj1 = { category: "framework", topics: ["rag", "retrieval", "vector"] };
+  const proj2 = { category: "tool", topics: ["browser", "playwright", "automation"] };
+  const proj3 = { category: "app", topics: ["coding", "ide", "programming"] };
+
+  const fit1 = ruleFitFor(proj1).map((f) => f.zh);
+  const fit2 = ruleFitFor(proj2).map((f) => f.zh);
+  const fit3 = ruleFitFor(proj3).map((f) => f.zh);
+
+  assert.ok(fit1.some((s) => s.includes("RAG")), "proj1 应命中 RAG 定向");
+  assert.ok(fit2.some((s) => s.includes("网页自动化")), "proj2 应命中浏览器自动化定向");
+  assert.ok(fit3.some((s) => s.includes("辅助编程")), "proj3 应命中辅助编程定向");
+
+  // 计算重叠率
+  const overlap12 = fit1.filter((s) => fit2.includes(s)).length / Math.max(fit1.length, fit2.length);
+  assert.ok(overlap12 <= 0.3, `proj1 与 proj2 重叠率应低于 30%，实际: ${overlap12}`);
+});
+
+test("T1.3: interpret-cache 命中条件基于 README 摘要哈希，内容变化即失效", () => {
+  const cache = {};
+  const data = { intro: { zh: "介绍", en: "Intro" } };
+  setCachedInterpretation(cache, "acme/x", "README v1", data);
+  assert.deepEqual(getCachedInterpretation(cache, "acme/x", "README v1"), data, "内容不变应命中");
+  assert.equal(getCachedInterpretation(cache, "acme/x", "README v2"), null, "内容变化必须失效");
+  assert.equal(getCachedInterpretation(cache, "acme/y", "README v1"), null, "未缓存仓库应返回 null");
+  assert.notEqual(computeHash("a"), computeHash("b"));
+});
+
+test("T1.3: interpret-cache 落盘 / 读取往返正常，损坏文件安全降级", () => {
+  const tmp = join(tmpdir(), `interp-cache-test-${process.pid}.json`);
+  const cache = {};
+  setCachedInterpretation(cache, "acme/x", "content", { intro: { zh: "中", en: "en" } });
+  saveInterpretCache(cache, tmp);
+  const loaded = loadInterpretCache(tmp);
+  assert.ok(loaded["acme/x"], "应能读回写入的条目");
+  assert.equal(loaded["acme/x"].hash, computeHash("content"));
+
+  writeFileSync(tmp, "{ not valid json");
+  assert.deepEqual(loadInterpretCache(tmp), {}, "损坏文件必须安全降级为空对象");
+  rmSync(tmp, { force: true });
+
+  assert.deepEqual(loadInterpretCache(join(tmpdir(), "definitely-missing-file.json")), {});
+});
+
+test("T1.3: 主 provider 失败时自动切换到备用 provider，并返回可用解读", async () => {
+  const calls = [];
+  const originalFetch = globalThis.fetch;
+  const envBackup = {
+    LLM_BASE_URL: process.env.LLM_BASE_URL,
+    LLM_API_KEY: process.env.LLM_API_KEY,
+    LLM_FALLBACK_BASE_URL: process.env.LLM_FALLBACK_BASE_URL,
+    LLM_FALLBACK_API_KEY: process.env.LLM_FALLBACK_API_KEY,
+  };
+  const okBody = {
+    choices: [
+      {
+        message: {
+          content: JSON.stringify({
+            entries: [
+              {
+                full_name: "acme/x",
+                intro: { zh: "介绍", en: "Intro" },
+                cardLine: { zh: "一行", en: "Line" },
+                highlights: [{ zh: "亮点", en: "Highlight" }],
+              },
+            ],
+          }),
+        },
+      },
+    ],
+  };
+  globalThis.fetch = async (url) => {
+    calls.push(url);
+    if (url.includes("primary.example")) return { ok: false, status: 500 };
+    return { ok: true, json: async () => okBody };
+  };
+  process.env.LLM_BASE_URL = "https://primary.example/v1";
+  process.env.LLM_API_KEY = "primary-key";
+  process.env.LLM_FALLBACK_BASE_URL = "https://fallback.example/v1";
+  process.env.LLM_FALLBACK_API_KEY = "fallback-key";
+
+  try {
+    const map = await llmInterpretation([{ full_name: "acme/x", description: "d", readmeExcerpt: "r" }], {
+      log: () => {},
+      useCache: false,
+    });
+    assert.equal(map.size, 1, "备用 provider 命中后应返回解读");
+    assert.equal(map.get("acme/x").source, "llm");
+    assert.ok(calls.some((u) => u.includes("primary.example")), "应先尝试主服务");
+    assert.ok(calls.some((u) => u.includes("fallback.example")), "主服务失败后应切到备用服务");
+  } finally {
+    globalThis.fetch = originalFetch;
+    for (const [k, v] of Object.entries(envBackup)) {
+      if (v === undefined) delete process.env[k];
+      else process.env[k] = v;
+    }
+  }
+});
+
+test("T1.4: contributors 分页采集——数完即停，翻到上限则标记 capped 下界", async () => {
+  const makeClient = (pages) => ({
+    calls: 0,
+    async gh() {
+      const items = pages[this.calls] ?? [];
+      this.calls++;
+      return items;
+    },
+  });
+
+  const full = makeClient([Array(100).fill({ login: "u" }), Array(30).fill({ login: "u" })]);
+  const done = await countContributors(full, "acme/big");
+  assert.equal(done.contributors, 130, "两页相加应等于真实人数");
+  assert.equal(done.capped, false, "不足一页说明已数完，不该标记截断");
+
+  const capped = makeClient([Array(100).fill({ login: "u" }), Array(100).fill({ login: "u" })]);
+  const hitCeiling = await countContributors(capped, "acme/huge");
+  assert.equal(hitCeiling.contributors, 200, "翻满上限时累计到上限值");
+  assert.equal(hitCeiling.capped, true, "翻满上限必须标记为下界（真实人数可能更多）");
+
+  const empty = makeClient([[]]);
+  const none = await countContributors(empty, "acme/empty");
+  assert.equal(none.contributors, 0);
+  assert.equal(none.capped, false);
+});
+
+test("T1.8: scoringVersion 来自配置且是语义化版本号", async () => {
+  const { scoringVersion } = await import("../src/lib/config.mjs");
+  const v = scoringVersion();
+  assert.match(v, /^\d+\.\d+\.\d+$/, `评分引擎版本应为语义化版本，实际 ${v}`);
+});
+
+test("T1.8: 校验器约束 gainUnreliable 为布尔、放行 scoringVersion 扩展字段", () => {
+  const doc = validDoc();
+  doc.scoringVersion = "2.1.0";
+  doc.entries[0].scoringVersion = "2.1.0";
+  doc.entries[0].gainUnreliable = true;
+  assert.deepEqual(validateDailyDoc(doc), [], "带版本与下界标记的数据应通过校验");
+
+  const bad = validDoc();
+  bad.entries[0].gainUnreliable = "yes";
+  assert.ok(validateDailyDoc(bad).some((e) => e.includes("gainUnreliable")), "非布尔值必须被拦下");
+});
+
+test("T1.5: writeJson 原子落盘——内容完整、不留临时文件、可覆盖旧值", () => {
+  const dir = mkdtempSync(join(tmpdir(), "persist-test-"));
+  const file = join(dir, "deep", "nested", "out.json");
+  try {
+    writeJson(file, { a: 1, list: [1, 2, 3] });
+    assert.deepEqual(readJson(file), { a: 1, list: [1, 2, 3] });
+
+    // 覆盖写：旧值必须被替换，且不残留临时文件
+    writeJson(file, { a: 2 });
+    assert.deepEqual(readJson(file), { a: 2 });
+    const leftovers = readdirSync(join(dir, "deep", "nested")).filter((f) => f.endsWith(".tmp"));
+    assert.deepEqual(leftovers, [], `不应残留临时文件：${leftovers}`);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+
+
+
+

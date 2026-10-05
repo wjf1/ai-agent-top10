@@ -65,6 +65,11 @@ export interface Entry {
   forksGrowthRate?: number | null;
   gainSource?: string;
   gainExact?: boolean;
+  /** 增速不可靠（事件流覆盖率不足）：数值为观测到的保守下界，真实增量只会更高 */
+  gainUnreliable?: boolean;
+  gainLowerBound?: boolean;
+  /** 生成该条评分所用的评分引擎版本（用于跨期口径一致性判断） */
+  scoringVersion?: string;
   rankChange?: number | null;
   scores: ScoreSet;
   /** 为什么上榜：按当日指标生成，只陈述客观数据 */

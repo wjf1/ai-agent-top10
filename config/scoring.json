@@ -6,6 +6,8 @@
   ],
 
   "version": 2,
+  "scoringVersion": "2.1.0",
+  "scoringVersion_comment": "评分口径版本。规则权重 / 公式发生不兼容变更时递增；历史数据保留生成时的该版本号（entry.scoringVersion），避免跨口径直接比较。",
 
   "window": {
     "daily": 1,
@@ -49,7 +51,10 @@
     "eventPageBudget": 3,
     "minCoverage": 0.3,
     "maxExtrapolationFactor": 3,
-    "maxWeeklyGainRatio": 0.08
+    "maxWeeklyGainRatio": 0.08,
+    "unreliableGainMode": "lower-bound",
+    "unreliableGainMode_comment": "事件流覆盖率不足时的策略：lower-bound 用观测到的增量作为保守下界（仍参与排名，但标记 gainUnreliable），不再整条跳过。",
+    "unreliableMinCoverageFloor": 0.05
   },
 
   "metrics": {
@@ -57,6 +62,8 @@
     "activityPages": 2,
     "activityWindowDays": 30,
     "contributorPageSize": 100,
+    "contributorPages": 2,
+    "contributorPages_comment": "contributors 接口分页深度。只取 1 页时超过 100 人的仓库会被截断成同一个数，失去区分度；默认 2 页（上限 200）。",
     "releasePageSize": 30
   },
 
@@ -266,6 +273,14 @@
     "timeoutMs": 120000,
     "maxEntries": 10,
     "temperature": 0.4,
-    "readmeExcerptLength": 2600
+    "readmeExcerptLength": 2600,
+    "fallback": {
+      "$comment": "备用 provider：主服务超时 / 报错 / 返回空时自动切换。可用 LLM_FALLBACK_BASE_URL / LLM_FALLBACK_MODEL / LLM_FALLBACK_API_KEY 环境变量覆盖；未配置 baseUrl 则跳过。",
+      "provider": "openai",
+      "model": "",
+      "baseUrl": "",
+      "apiKeyEnv": "LLM_FALLBACK_API_KEY",
+      "timeoutMs": 60000
+    }
   }
 }

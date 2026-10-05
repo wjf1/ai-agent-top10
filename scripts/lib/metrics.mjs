@@ -35,6 +35,26 @@ async function countRecent(client, url, { since }) {
 }
 
 /**
+ * 贡献者人数：分页采集并区分「数完」与「翻到上限被截断」。
+ * 只取 1 页时超过 100 人的仓库会被截断成同一个数，该维度失去区分度；
+ * 因此默认翻 contributorPages 页。返回 capped 让调用方知道这是下界而非精确值。
+ */
+export async function countContributors(client, fullName) {
+  const pageSize = metricCfg().contributorPageSize ?? 100;
+  const maxPages = metricCfg().contributorPages ?? 1;
+  let total = 0;
+  for (let page = 1; page <= maxPages; page++) {
+    const items = await client.gh(
+      `/repos/${fullName}/contributors?per_page=${pageSize}&anon=false&page=${page}`
+    );
+    if (!Array.isArray(items) || items.length === 0) return { contributors: total, capped: false };
+    total += items.length;
+    if (items.length < pageSize) return { contributors: total, capped: false };
+  }
+  return { contributors: total, capped: true };
+}
+
+/**
  * @param {object} client  GitHub 客户端
  * @param {object} repo    Search API 返回的仓库对象
  * @returns {Promise<object>} 指标对象（不含身份字段，身份字段由日榜条目承载）
@@ -46,10 +66,14 @@ export async function collectMetrics(client, repo, { now = new Date(), log = () 
   const permissive = permissiveLicenses();
   const kw = keywords();
 
-  let contributors = 0;
+  // contributors 采集不到时返回 null（"测不到"），而不是 0（"没有贡献者"）——
+  // 后者会让社区 / 创新维度把仓库当成冷清项目错误扣分。
+  let contributors = null;
+  let contributorsCapped = false;
   try {
-    const c = await client.gh(`/repos/${fullName}/contributors?per_page=${metricCfg().contributorPageSize ?? 100}&anon=false`);
-    contributors = Array.isArray(c) ? c.length : 0;
+    const c = await countContributors(client, fullName);
+    contributors = c.contributors;
+    contributorsCapped = c.capped;
   } catch (e) {
     log(`  ~ ${fullName}: contributors unavailable (${e.status ?? "err"})`);
   }
@@ -102,8 +126,12 @@ export async function collectMetrics(client, repo, { now = new Date(), log = () 
     openIssues: repo.open_issues_count,
     license: spdx && spdx !== "NOASSERTION" ? spdx : null,
     licensePermissive: spdx ? permissive.has(spdx) : false,
-    hasDocs: !!repo.has_wiki || new RegExp(kw.docsHomepage ?? "docs", "i").test(homepage),
-    hasHomepage: !!homepage,
+    hasDocs:
+      !!repo.has_wiki ||
+      !!repo.has_pages ||
+      (typeof homepage === "string" && new RegExp(kw.docsHomepage ?? "docs|documentation|wiki", "i").test(homepage)) ||
+      topics.some((t) => /doc|documentation|wiki/i.test(t)),
+    hasHomepage: typeof homepage === "string" && homepage.trim().length > 0 && /^https?:\/\//i.test(homepage.trim()),
     hasExamples:
       !!repo.has_pages ||
       topics.some((t) => new RegExp(kw.examples ?? "example", "i").test(t)) ||
@@ -111,6 +139,7 @@ export async function collectMetrics(client, repo, { now = new Date(), log = () 
     ageDays: Math.round((now - new Date(repo.created_at)) / DAY),
     pushDaysAgo: Math.round((now - new Date(repo.pushed_at)) / DAY),
     contributors,
+    contributorsCapped,
     releases90d,
     prActivity,
     issueActivity,

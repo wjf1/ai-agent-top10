@@ -17,12 +17,41 @@ const INVISIBLE = /[\u200B-\u200F\u202A-\u202E\u2060-\u2064\u206A-\u206F\uFEFF]/
 const TAGS = /<\/?[a-z][^>]*>/gi;
 const HTML_COMMENT = /<!--[\s\S]*?-->/g;
 
+// 危险块级元素：必须连同"内容"一起剥离，只删标签会把脚本体留在文本里。
+// 之前 `TAGS` 只吃标签本身，`<script>alert(1)</script>` 会留下 `alert(1)`。
+const DANGEROUS_BLOCK =
+  /<(script|style|iframe|object|embed|template|noscript|svg|math|form|applet|frame|frameset)\b[^>]*>[\s\S]*?<\/\1\s*>/gi;
+// 未闭合 / 自闭合形态的危险元素开标签（无配套闭标签时也要删掉标签本身）
+const DANGEROUS_OPEN =
+  /<\/?(?:script|style|iframe|object|embed|template|noscript|svg|math|form|applet|frame|frameset)\b[^>]*\/?>/gi;
+
+// 伪协议：出现在文本里虽会被框架转义，但作为纵深防御一律断链，
+// 让任何解析器都不再把它识别成 scheme（`javascript:` -> `javascript :`）。
+const PSEUDO_SCHEME = /\b(javascript|vbscript|livescript|mocha)\s*:/gi;
+const DATA_HTML_SCHEME = /\bdata\s*:\s*(?:text\/html|application\/xhtml\+xml|image\/svg\+xml)/gi;
+
+/** 断链伪协议，避免文本被下游当作可执行 URL 使用 */
+function defangSchemes(text) {
+  return text
+    .replace(PSEUDO_SCHEME, (_m, scheme) => `${scheme} :`)
+    .replace(DATA_HTML_SCHEME, (m) => m.replace(":", " :"));
+}
+
+/** 剥离危险块级元素（含内容）、注释、标签与伪协议 */
+function stripDangerous(text) {
+  return defangSchemes(
+    text
+      .replace(HTML_COMMENT, " ")
+      .replace(DANGEROUS_BLOCK, " ")
+      .replace(DANGEROUS_OPEN, " ")
+      .replace(TAGS, " ")
+  );
+}
+
 /** 通用文本净化：去标签、去不可见字符、归一空白、限长 */
 export function sanitizeText(value, maxLength = S.maxDescriptionLength ?? 400) {
   if (typeof value !== "string") return "";
-  let out = value
-    .replace(HTML_COMMENT, " ")
-    .replace(TAGS, " ")
+  let out = stripDangerous(value)
     .replace(INVISIBLE, "")
     // 控制字符（保留换行与制表，后面会归一成空格）
     .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, " ")
@@ -35,9 +64,7 @@ export function sanitizeText(value, maxLength = S.maxDescriptionLength ?? 400) {
 /** 多行文本（解读里的 quickstart 等）：保留换行，但仍剥离标签与控制字符 */
 export function sanitizeMultiline(value, maxLength = S.maxQuickstartLength ?? 1200) {
   if (typeof value !== "string") return "";
-  const out = value
-    .replace(HTML_COMMENT, "")
-    .replace(TAGS, "")
+  const out = stripDangerous(value)
     .replace(INVISIBLE, "")
     .replace(/\r\n?/g, "\n")
     .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "")

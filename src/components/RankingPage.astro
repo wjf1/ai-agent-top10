@@ -27,6 +27,9 @@ interface Props {
   unavailableReason?: string | null;
   /** 窗口内指标快照不完整时提示维度被剔除 */
   partialMetrics?: boolean;
+  /** 周期窗口内聚合了多个评分引擎版本时给出提示 */
+  scoringMixed?: boolean;
+  scoringVersions?: string[];
 }
 
 const {
@@ -44,6 +47,8 @@ const {
   langHref,
   unavailableReason = null,
   partialMetrics = false,
+  scoringMixed = false,
+  scoringVersions = [],
 } = Astro.props;
 
 const t = strings(lang);
@@ -150,6 +155,13 @@ const activeNav = period === "daily" ? "home" : period === "weekly" ? "week" : "
           </button>
         </div>
       </div>
+
+      {scoringMixed && (
+        <p class="caliber-note" role="note">
+          <Icon name="info" size={14} />
+          <span>{t.scoringMixedNote(scoringVersions.join(" · ") || "—")}</span>
+        </p>
+      )}
 
       <section class="entry-list" id="card-view-container">
         {entries.map((e) => (

@@ -32,9 +32,27 @@ export function readJson(file, fallback = null) {
   }
 }
 
+/**
+ * 原子写 JSON：先写同目录临时文件再 rename。
+ * 直接 writeFileSync 在写到一半时被杀（CI 超时、runner 回收、磁盘满）会留下
+ * 半截 JSON；而日榜文件是构建的输入，半截文件会让整轮 build 失败。rename 在同一
+ * 文件系统内是原子操作，读者要么看到旧文件、要么看到完整新文件。
+ */
 export function writeJson(file, value) {
-  fs.mkdirSync(path.dirname(file), { recursive: true });
-  fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
+  const dir = path.dirname(file);
+  fs.mkdirSync(dir, { recursive: true });
+  const tmp = path.join(dir, `.${path.basename(file)}.${process.pid}.${Date.now()}.tmp`);
+  try {
+    fs.writeFileSync(tmp, `${JSON.stringify(value, null, 2)}\n`);
+    fs.renameSync(tmp, file);
+  } catch (e) {
+    try {
+      if (fs.existsSync(tmp)) fs.unlinkSync(tmp);
+    } catch {
+      // 清理临时文件失败不应掩盖原始错误
+    }
+    throw e;
+  }
 }
 
 /** 只保留最近 N 天的快照键，控制仓库体积增长 */

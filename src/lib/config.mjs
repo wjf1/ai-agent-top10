@@ -38,4 +38,12 @@ export function windowDays(kind = "weekly") {
   return config.window?.[kind] ?? 7;
 }
 
+/**
+ * 评分引擎版本号：权重 / 公式发生不兼容变更时必须递增。
+ * 每条日榜数据会带着生成它时的版本号落盘，读侧据此判断历史数据是否同一口径。
+ */
+export function scoringVersion() {
+  return config.scoringVersion ?? "0.0.0";
+}
+
 export default config;
