@@ -85,38 +85,80 @@ ai-agent-top10
 |-- config/
 |   `-- scoring.json            # [单一事实来源 SSOT] 权重、阈值、关键词、时间窗口与抓取参数
 |-- scripts/
-|   |-- fetch-daily.mjs         # 每日抓取编排主入口（落盘带 scoringVersion）
+|   |-- fetch-daily.mjs         # 每日抓取编排主入口（落盘带 scoringVersion / gainCapped）
 |   |-- validate-data.mjs       # 数据完整性与 XSS/注入/伪协议质量门禁
+|   |-- generate-og.mjs         # [v0.8.0 新增] OG 分享图生成（SVG 模板 + sharp → 1200x630 PNG）
 |   |-- backfill-interpretations.mjs # 历史解读回填工具 (--since, --refresh-rules)
 |   |-- rescore.mjs             # [v0.7.0 增强] 规则变更离线重算 (--safe, --since-version)
 |   `-- lib/                    # 抓取子模块 (github, growth, metrics, interpret, persist, status, interpret-cache)
 |-- .rescored-backup/           # [v0.7.0 新增] rescore 写盘前的原文件备份（已 gitignore）
+|-- .github/
+|   |-- workflows/daily.yml     # 每日 UTC 06:00 抓取 → 校验 → 提交 → 构建部署
+|   `-- ISSUE_TEMPLATE/         # [v0.9.0 新增] 数据纠错 / 功能建议 / 项目推荐 + config
 |-- src/
 |   |-- components/
-|   |   |-- RankingPage.astro   # 榜单核心容器 (list-toolbar、说明文案、卡片/表格双视图)
-|   |   |-- EntryCard.astro     # 榜单卡片 (Sparkline 趋势线、高对比墨色徽章、金银铜牌标、Popover)
-|   |   |-- Sparkline.astro     # [v0.6.0 新增] 120x32 轻量 SVG 趋势折线图 (近 21 天增量动力)
-|   |   |-- Icon.astro          # [v0.6.0 新增] 16x16 矢量 SVG 图标组件 (替代全站 Emoji)
-|   |   |-- Radar.astro         # 自适应 6/8 维交互雷达图 (已收敛至项目详情页)
-|   |   |-- TrendChart.astro    # 详情页历史 star/fork 趋势图 (已解耦 --data-primary 色彩)
+|   |   |-- RankingPage.astro   # 榜单核心容器 (list-toolbar、说明文案、卡片/表格双视图、趋势标识)
+|   |   |-- EntryCard.astro     # 榜单卡片 (Sparkline 趋势线、金银铜牌标、趋势标识、Popover)
+|   |   |-- ScoreTrend.astro    # [v0.9.0 新增] 详情页 8 维评分小倍数趋势图（缺失期不补零）
+|   |   |-- SearchView.astro    # [v0.9.0 新增] 检索共享 UI（6 种排序 + 3 种预设，静态链接）
+|   |   |-- ComparePanel.astro  # 多仓库对比（star 走势绝对值/相对起点 + 维度对比模式）
+|   |   |-- ProjectDetail.astro # 项目详情（雷达、趋势、评分趋势、相关推荐、口径标注）
+|   |   |-- Sparkline.astro     # 120x32 轻量 SVG 趋势折线图 (近 21 天增量动力)
+|   |   |-- Icon.astro          # 16x16 矢量 SVG 图标组件 (替代全站 Emoji)
+|   |   |-- Radar.astro         # 自适应 6/8 维交互雷达图
+|   |   |-- TrendChart.astro    # 详情页历史 star/fork 趋势图
 |   |   |-- ProjectTable.astro  # 紧凑表格视图 (支持多态输入，适应双视图与检索页)
 |   |   `-- PeriodSwitch.astro  # 日/周/月周期切换与日期翻页器
 |   |-- layouts/
-|   |   `-- Base.astro          # 全局主布局 (防白屏主题脚本、精简导航、触控热区)
-|   |-- lib/                    # 工具库 (periods.ts 周期聚合, scoring.mjs 评分, routes.ts 路由)
-|   |-- pages/                  # 中英双语动态路由树 ([...lang]/*)
+|   |   `-- Base.astro          # 全局主布局 (OG/元标签、防白屏主题脚本、精简导航、页脚)
+|   |-- lib/
+|   |   |-- periods.ts          # 周期聚合（weekly/monthly）
+|   |   |-- scoring.mjs         # 8 维评分引擎
+|   |   |-- related.ts          # [v0.8.0 新增] 相关项目相似度与挑选（纯函数）
+|   |   |-- score-series.ts     # [v0.9.0 新增] 评分历史序列聚合（缺失期不补零）
+|   |   |-- search-view.ts      # [v0.9.0 新增] 排序 / 快捷筛选规格与纯函数
+|   |   |-- routes.ts           # 路由与 REPO_URL 集中管理
+|   |   `-- ...
+|   |-- pages/                  # 中英双语动态路由树 ([...lang]/*；含 search/[...view].astro)
 |   `-- styles/
 |       `-- global.css          # 全局设计令牌 (Tokens、暗色主题、WCAG 墨色、间距标尺)
 |-- tests/
-|   `-- pipeline.test.mjs       # 核心测试集 (包含 62 项全量自动化测试)
+|   |-- pipeline.test.mjs       # 主回归集
+|   |-- growth.test.mjs         # 增速模块
+|   |-- metrics.test.mjs        # 指标采集
+|   |-- periods.test.mjs        # 周期窗口（periods.ts 受构建期 import 限制，见 §四）
+|   `-- search-view.test.mjs    # [v0.9.0 新增] 排序 / 预设 / 路径解析
 |-- CHANGELOG.md                # 规范更新日志 (遵循 Keep a Changelog)
+|-- PLAN.md                     # [v0.8.0 新增] 剩余计划可行性清理版（待办唯一来源）
 |-- README.md                   # 中英双语仓库说明与架构特性表
 `-- HANDOFF.md                  # [本项目] 接力开发镜像文档
 ```
 
 ---
 
-## 四、最近一轮变更与交付成果 (v0.8.0 · Phase 2：口径修复与体验增强)
+## 四、最近一轮变更与交付成果 (v0.9.0 · PLAN.md 首批)
+
+依据仓库根目录 [PLAN.md](./PLAN.md) 实施其中的 T3.1 / T3.2 / T3.3 与新增项 A1。**本轮不新增任何运行时依赖**，全部保持纯静态与渐进增强。
+
+| 任务 | 内容 | 关键改动文件 |
+|---|---|---|
+| **T3.2** | 详情页「评分趋势」：8 维小倍数折线。连续在榜 ≥3 期才展示；维度数据量不均时**不补零、不连线**（`forksGrowth`/`activity` 仅 130/230 条有值），缺失格子显示「该维度早期未采集」 | `src/lib/score-series.ts`（新增）、`src/components/ScoreTrend.astro`（新增）、`ProjectDetail.astro`、`project/[date]/[slug].astro` |
+| **T3.1** | 检索页排序 0 → **6 种**（累计增量/综合分/热度/创新/生态/Stars），新增 **3 种快捷筛选**（本周新星/生态强者/高完成度），两者可叠加。**排序做成独立静态路由而非 query**——纯静态站构建期读不到 query，挂在 `?sort=` 上会导致无 JS 时排序失效 | `src/lib/search-view.ts`（新增）、`src/components/SearchView.astro`（新增）、`src/pages/[...lang]/search.astro`、`src/pages/[...lang]/search/[...view].astro`（新增） |
+| **T3.3** | 页脚「在 GitHub 上反馈 / 贡献」入口（全站可达）+ 三类 issue 模板（数据纠错 / 功能建议 / 项目推荐）与 config | `src/layouts/Base.astro`、`src/lib/routes.ts`（`REPO_URL`）、`.github/ISSUE_TEMPLATE/*`（新增 4 个） |
+| **A1** | **`gainCapped` 未落盘**（此前算了但从未写入，实测 0/230 条带该标记，裁剪完全不可观测）：落盘该字段 + schema 可选布尔校验 + CI `::warning` 摘要 + 详情页「已封顶」标注 | `scripts/fetch-daily.mjs`、`scripts/lib/schema.mjs`、`src/lib/display.ts`、`src/lib/data.ts` |
+
+**验证结论**：`npm run check` 全绿（**93/93 测试通过**，新增 `tests/search-view.test.mjs` 4 项；数据校验 23 天通过；**644 页**构建含 +46 排序/预设路由；22 张 OG 图）。构建产物中实测确认：详情页 8 个维度格子与「连续在榜不足 3 期」空态均正确渲染；检索页 6 个排序链接、3 个预设链接齐备。
+
+### 本轮仍未完成项
+
+- **A2 `scoringVersion` 历史补齐（运维项）**：23 天数据中 0 天带该字段，因 v0.7.0 引入后尚未发生新的定时抓取。下一次 `daily-update` 会自然写入，无需改代码；如需立即验证可跑 `npm run rescore:safe`（已带备份与变动熔断）。
+- **`T3.4′` 历史保留策略**：触发式，当前不实施（详见 PLAN.md）。
+- **`T2.5` GraphQL 批量查询**：延后保留。
+
+### 历史交付记录
+
+#### v0.8.0 · Phase 2：口径修复与体验增强
+
 
 严格依据《ai-agent-top10 优化开发方案及实施计划》Phase 2 实施，并补齐 Phase 1 的三处遗留验收项：
 
@@ -139,14 +181,14 @@ ai-agent-top10
 
 **验证结论**：`npm run check` 全绿（**89/89 测试通过**，数据校验 23 天通过，598 页构建 + 22 张 OG 图）。
 
-### Phase 2 未完成项（明确延后，非缺陷）
+#### v0.8.0 未完成项（明确延后，非缺陷）
 
 - **T2.5 GraphQL**：分级采集已削减大部分调用，GraphQL 边际收益下降且引入第二套 API 面，延后至 Phase 3。
 - **T2.6 快照分片**：计划风险节明确指出应与 T3.4 一并推进；且读者侧需先完成 T3.8（编译期 import → 运行时读取），否则分片会直接打断构建。
 - **T2.12 的 periods.ts 覆盖率**：`periods.ts` 静态 import 构建产物（index.json / snapshots），Node 测试运行器无法加载，`tests/periods.test.mjs` 目前覆盖其依赖的纯时间窗口逻辑；完整 fixture 测试待 T3.8 改造后补齐。
 
 ---
-## 四、最近一轮变更与交付成果 (v0.7.0 · Phase 1：止血与可信度)
+#### v0.7.0 · Phase 1：止血与可信度
 
 本轮严格依据《ai-agent-top10 优化开发方案及实施计划》**Phase 1（T1.1–T1.8，8 项 P0）**实施，全部完成并通过门禁：
 
