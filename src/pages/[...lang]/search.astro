@@ -6,6 +6,7 @@
  * 客户端的输入框只是过滤已经存在的表格行，不做数据请求也不重建 DOM。
  */
 import Base from "../../layouts/Base.astro";
+import Icon from "../../components/Icon.astro";
 import ProjectTable from "../../components/ProjectTable.astro";
 import { recentProjects } from "../../lib/aggregate";
 import { categories } from "../../lib/categorize.mjs";
@@ -63,6 +64,19 @@ const languages = [...new Set(projects.map((p) => p.entry.language))].sort();
   </div>
 
   <ProjectTable {projects} {lang} windowDays={WINDOW} />
+
+  <div id="search-empty" class="search-empty hidden" role="status">
+    <div class="empty-icon"><Icon name="search" size={28} /></div>
+    <h3>{lang === "zh" ? "未找到匹配的项目" : "No matching projects found"}</h3>
+    <p class="empty-tip">
+      {lang === "zh"
+        ? "尝试调整搜索关键词，或重置分类与语言筛选条件。"
+        : "Try adjusting your search keywords, or reset category and language filters."}
+    </p>
+    <button type="button" class="btn ghost reset-btn" id="reset-filters-btn">
+      {lang === "zh" ? "清除所有筛选条件" : "Clear all filters"}
+    </button>
+  </div>
 </Base>
 
 <script>
@@ -72,6 +86,8 @@ const languages = [...new Set(projects.map((p) => p.entry.language))].sort();
     const input = root.querySelector<HTMLInputElement>("[data-search-input]");
     const count = root.querySelector<HTMLElement>("[data-search-count]");
     const rows = Array.from(document.querySelectorAll<HTMLTableRowElement>("table.ptable tbody tr[data-search]"));
+    const emptyState = document.getElementById("search-empty");
+    const resetBtn = document.getElementById("reset-filters-btn");
 
     const state: Record<"category" | "language", string> = { category: "all", language: "all" };
     const chipsOf = (attr: string) => Array.from(root.querySelectorAll<HTMLButtonElement>(`[data-filter-${attr}]`));
@@ -88,9 +104,25 @@ const languages = [...new Set(projects.map((p) => p.entry.language))].sort();
         if (show) visible++;
       }
       if (count) count.textContent = `${visible} / ${rows.length}`;
+      if (emptyState) {
+        if (visible === 0) {
+          emptyState.classList.remove("hidden");
+        } else {
+          emptyState.classList.add("hidden");
+        }
+      }
     }
 
     input?.addEventListener("input", apply);
+
+    resetBtn?.addEventListener("click", () => {
+      if (input) input.value = "";
+      state.category = "all";
+      state.language = "all";
+      chipsOf("category").forEach((c) => c.classList.toggle("active", c.dataset.filterCategory === "all"));
+      chipsOf("language").forEach((c) => c.classList.toggle("active", c.dataset.filterLanguage === "all"));
+      apply();
+    });
 
     for (const attr of ["category", "language"] as const) {
       const key = attr === "category" ? "filterCategory" : "filterLanguage";
@@ -109,6 +141,29 @@ const languages = [...new Set(projects.map((p) => p.entry.language))].sort();
 </script>
 
 <style>
+  .hidden { display: none !important; }
+  .search-empty {
+    text-align: center;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 36px 20px;
+    margin: 20px 0 40px;
+  }
+  .empty-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-full);
+    background: var(--accent-soft);
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .search-empty h3 { margin: 0 0 6px; font-size: 16px; color: var(--ink); }
+  .empty-tip { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
+  .reset-btn { font-size: 12.5px; padding: 6px 14px; }
   .filters { display: grid; gap: 12px; margin: 22px 0 6px; }
   .search-input {
     width: 100%;

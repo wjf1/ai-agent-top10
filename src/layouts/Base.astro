@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import Icon from "../components/Icon.astro";
 import { strings, type Lang } from "../lib/data.ts";
 import { archivePath, comparePath, dayPath, exportPath, homePath, monthPath, rssPath, searchPath, weekPath } from "../lib/routes.ts";
 
@@ -21,9 +22,6 @@ const fullTitle = title ? `${title} · ${t.siteName}` : `${t.siteName} — ${t.t
 const dailyHref = date && active === "day" ? dayPath(B, lang, date) : homePath(B, lang);
 
 const nav = [
-  { key: "home", href: dailyHref, label: t.periodDaily },
-  { key: "week", href: weekPath(B, lang), label: t.periodWeekly },
-  { key: "month", href: monthPath(B, lang), label: t.periodMonthly },
   { key: "archive", href: archivePath(B, lang), label: t.archive },
   { key: "search", href: searchPath(B, lang), label: t.searchPage },
   { key: "compare", href: comparePath(B, lang), label: t.compare },
@@ -58,7 +56,7 @@ const nav = [
     <header class="site-header">
       <div class="wrap">
         <a class="logo" href={homePath(B, lang)}>
-          <span class="bolt" aria-hidden="true">⚡</span>
+          <span class="bolt" aria-hidden="true"><Icon name="bolt" size={18} /></span>
           <span class="logo-text">{t.siteName}<small>{t.tagline}</small></span>
         </a>
         <nav aria-label={lang === "zh" ? "主导航" : "Main navigation"}>
@@ -69,8 +67,8 @@ const nav = [
             {lang === "zh" ? "English" : "中文"}
           </a>
           <button class="theme-toggle" type="button" data-theme-toggle title={t.darkMode} aria-label={t.darkMode}>
-            <span class="icon-light" aria-hidden="true">☀</span>
-            <span class="icon-dark" aria-hidden="true">☾</span>
+            <span class="icon-light" aria-hidden="true"><Icon name="sun" size={15} /></span>
+            <span class="icon-dark" aria-hidden="true"><Icon name="moon" size={15} /></span>
           </button>
         </nav>
       </div>

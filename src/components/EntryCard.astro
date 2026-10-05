@@ -1,8 +1,9 @@
 ---
-import Radar from "./Radar.astro";
+import Icon from "./Icon.astro";
+import Sparkline from "./Sparkline.astro";
 import { categoryLabel } from "../lib/categorize.mjs";
 import { cardLineTag, gainSourceTag } from "../lib/display.ts";
-import { dimensionLabels, strings, type Lang } from "../lib/data.ts";
+import { strings, type Lang } from "../lib/data.ts";
 import { projectPath } from "../lib/routes.ts";
 
 interface Props {
@@ -21,21 +22,18 @@ const B = import.meta.env.BASE_URL.replace(/\/$/, "");
 const detailPath = projectPath(B, lang, entry.lastSeenDate ?? date, entry.slug);
 const fmt = (n: number) => Number(n ?? 0).toLocaleString("en-US");
 
-// 只渲染数据里真实存在的维度：历史条目是 6 维，新条目是 8 维
-const allDims = dimensionLabels(lang);
-const dims = allDims.filter((d) => typeof entry.scores?.[d.key] === "number");
-
 const change = typeof entry.rankChange === "number" ? entry.rankChange : null;
 const changeLabel =
   change === null ? "" : change > 0 ? `${t.rankUp} ${change}` : change < 0 ? `${t.rankDown} ${Math.abs(change)}` : t.rankSame;
 const lineTag = cardLineTag(entry, t);
-
 const srcTag = gainSourceTag(entry, t);
+
+const rankClass = entry.rank === 1 ? "top rank-1" : entry.rank === 2 ? "top rank-2" : entry.rank === 3 ? "top rank-3" : "";
 ---
 
-<article class:list={["entry-card", compact && "compact"]}>
+<article class:list={["entry-card", compact && "compact", entry.rank <= 3 && "top-entry"]}>
   <div class="rank-col">
-    <div class={`rank ${entry.rank <= 3 ? "top" : ""}`}>{entry.rank}</div>
+    <div class:list={["rank", rankClass]}>{entry.rank}</div>
     {changeLabel && (
       <span class:list={["rank-change", change > 0 ? "up" : change < 0 ? "down" : "same"]}>{changeLabel}</span>
     )}
@@ -49,34 +47,80 @@ const srcTag = gainSourceTag(entry, t);
     </div>
     <p class="entry-desc">{entry.cardLine?.[lang] ?? entry.why[lang]}</p>
     <div class="entry-meta">
-      <span>⭐ {fmt(entry.stars)} {t.stars}</span>
-      <span>🍴 {fmt(entry.forks)} {t.forks}</span>
-      <span>📈 {t.dailyGain} {entry.dailyGain}</span>
-      <span title={t.growthRateNote(windowDays)}>🚀 {t.growthRate} {entry.growthRate}%</span>
+      <span class="meta-item"><Icon name="star" size={13} /> {fmt(entry.stars)} {t.stars}</span>
+      <span class="meta-item"><Icon name="fork" size={13} /> {fmt(entry.forks)} {t.forks}</span>
+      <span class="meta-item"><Icon name="trend" size={13} /> {t.dailyGain} {entry.dailyGain}</span>
+      <span class="meta-item" title={t.growthRateNote?.(windowDays)}><Icon name="rocket" size={13} /> {t.growthRate} {entry.growthRate}%</span>
       {lineTag && (
-        <span class="src" title={lineTag.note}>{lineTag.label}</span>
+        <span class="src-holder">
+          <button type="button" class="src-badge" popovertarget={`pop-line-${entry.slug}`} aria-label={lineTag.note} title={lineTag.note}>
+            {lineTag.label}
+            <Icon name="help" size={11} />
+          </button>
+          <div id={`pop-line-${entry.slug}`} popover="auto" class="src-popover">
+            <strong>{lineTag.label}</strong>
+            <p>{lineTag.note}</p>
+          </div>
+        </span>
       )}
-      <span class="src" title={srcTag.note}>{srcTag.label}</span>
+      <span class="src-holder">
+        <button type="button" class="src-badge" popovertarget={`pop-${entry.slug}`} aria-label={srcTag.note} title={srcTag.note}>
+          {srcTag.label}
+          <Icon name="help" size={11} />
+        </button>
+        <div id={`pop-${entry.slug}`} popover="auto" class="src-popover">
+          <strong>{srcTag.label}</strong>
+          <p>{srcTag.note}</p>
+        </div>
+      </span>
     </div>
   </div>
   <div class="entry-side">
-    <Radar scores={entry.scores} dims={dims} size={compact ? 104 : 132} />
+    <div class="sparkline-block">
+      <Sparkline fullName={entry.full_name} delta={entry.weeklyGain} windowDays={21} width={110} height={32} />
+      <span class="spark-label">{lang === "zh" ? "21天趋势" : "21d Trend"}</span>
+    </div>
     <div class="score-block">
       <div class="score-num">{entry.scores.overall}</div>
       <div class="score-label">{t.overall}</div>
-      <a class="btn ghost" href={detailPath}>{t.viewDetail}</a>
+      <a class="btn ghost btn-sm" href={detailPath}>{t.viewDetail}</a>
     </div>
   </div>
 </article>
 
 <style>
   .rank-col { text-align: center; }
-  .rank-change { display: inline-block; font-size: 10.5px; font-weight: 700; border-radius: 999px; padding: 1px 7px; margin-top: 4px; white-space: nowrap; }
-  .rank-change.up { color: var(--good); background: var(--good-soft); }
-  .rank-change.down { color: var(--warn); background: var(--warn-soft); }
-  .rank-change.same { color: var(--muted); background: var(--accent-soft); }
-  .cat-tag { font-size: 11.5px; background: var(--card-2); color: var(--muted); padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); }
-  .entry-meta .src { font-size: 11px; color: var(--muted); border: 1px dashed var(--line); border-radius: 999px; padding: 0 7px; white-space: nowrap; }
+  .rank { font-style: normal; }
+  .rank.rank-1 { color: #b45309; }
+  .rank.rank-2 { color: #64748b; }
+  .rank.rank-3 { color: #b4552d; }
+  .top-entry { border-color: rgba(99, 102, 241, 0.35); }
+  .entry-card:focus-within { border-color: var(--accent); box-shadow: var(--shadow); }
+  .rank-change { display: inline-block; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 8px; margin-top: 4px; white-space: nowrap; }
+  .rank-change.up { color: var(--good-ink); background: var(--good-soft); }
+  .rank-change.down { color: var(--warn-ink); background: var(--warn-soft); }
+  .rank-change.same { color: var(--muted); background: var(--card-2); }
+  .cat-tag { font-size: 12px; background: var(--card-2); color: var(--cat-tag-ink); padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); }
+  .meta-item { display: inline-flex; align-items: center; gap: 4px; }
+  .src-holder { display: inline-flex; align-items: center; position: relative; }
+  .src-badge {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 12px; color: var(--muted); border: 1px dashed var(--line);
+    border-radius: var(--radius-full); padding: 1px 7px; background: transparent; cursor: pointer;
+    white-space: nowrap;
+  }
+  .src-badge:hover, .src-badge:focus-visible { border-color: var(--accent); color: var(--accent); }
+  .src-popover {
+    border: 1px solid var(--line); border-radius: var(--radius-md);
+    background: var(--card); color: var(--ink); padding: 10px 14px;
+    max-width: 280px; box-shadow: var(--shadow-2); font-size: 12.5px;
+    margin: auto;
+  }
+  .src-popover strong { display: block; margin-bottom: 4px; color: var(--accent); }
+  .src-popover p { margin: 0; line-height: 1.45; }
+  .sparkline-block { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .spark-label { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .btn-sm { padding: 4px 10px; font-size: 12px; border-radius: 8px; }
   .entry-card.compact { padding: 14px 16px; }
   .entry-card.compact .entry-desc { -webkit-line-clamp: 1; }
 </style>

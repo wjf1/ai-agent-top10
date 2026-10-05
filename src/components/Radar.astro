@@ -93,13 +93,13 @@ const fontMain = size >= 200 ? 12 : 9.5;
   <polygon
     points={shape}
     fill="var(--radar-fill)"
-    stroke="var(--accent)"
+    stroke="var(--data-primary, var(--accent))"
     stroke-width="2"
     stroke-linejoin="round"
   />
   {vertices.map((v) => (
     <g class="radar-vertex" data-label={v.dim.label} data-value={v.value} data-desc={v.dim.desc ?? ""}>
-      <circle cx={v.inner.x.toFixed(1)} cy={v.inner.y.toFixed(1)} r={size >= 200 ? 4 : 2.6} fill="var(--accent)" />
+      <circle cx={v.inner.x.toFixed(1)} cy={v.inner.y.toFixed(1)} r={size >= 200 ? 4 : 2.6} fill="var(--data-primary, var(--accent))" />
       <circle
         cx={v.inner.x.toFixed(1)}
         cy={v.inner.y.toFixed(1)}

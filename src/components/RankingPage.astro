@@ -2,10 +2,12 @@
 /** 榜单主体（日榜 / 周榜 / 月榜、zh / en 共用） */
 import Base from "../layouts/Base.astro";
 import EntryCard from "./EntryCard.astro";
+import Icon from "./Icon.astro";
 import PeriodSwitch from "./PeriodSwitch.astro";
+import ProjectTable from "./ProjectTable.astro";
 import { categories } from "../lib/categorize.mjs";
 import { strings, type Lang } from "../lib/data.ts";
-import { categoryPath, dayPath, homePath } from "../lib/routes.ts";
+import { categoryPath, dayPath, homePath, projectPath } from "../lib/routes.ts";
 
 interface Props {
   lang?: Lang;
@@ -48,7 +50,7 @@ const t = strings(lang);
 const B = import.meta.env.BASE_URL.replace(/\/$/, "");
 const fmt = (n: number) => Number(n ?? 0).toLocaleString("en-US");
 const totalGain = entries.reduce((s, e) => s + (e.weeklyGain ?? 0), 0);
-const top = entries[0];
+const avgGain = entries.length ? Math.round(totalGain / entries.length) : 0;
 const cats = categories();
 const catKeys = [...new Set(entries.map((e) => e.category ?? "other"))];
 const visibleCats = cats.filter((c) => catKeys.includes(c.key as string));
@@ -58,7 +60,8 @@ const title = period === "daily" ? t.todayTop : `${t.todayTop} · ${periodLabel}
 const windowDays = requestedDays ?? (period === "monthly" ? 30 : period === "weekly" ? 7 : 1);
 /** 增量数字实际覆盖的天数：日榜固定 7 天窗口，周期榜按真实覆盖天数 */
 const gainDays = period === "daily" ? 7 : coverageDays || windowDays;
-const rankDesc = period === "daily" ? t.rankBy : t.rankByWindow(coverageDays ?? windowDays);
+const effectiveDays = coverageDays ?? windowDays;
+const rankDesc = period === "daily" ? t.rankBy : t.rankByWindow(effectiveDays);
 const showCoverage = !!coverageDays && !!requestedDays && coverageDays < requestedDays;
 
 const activeNav = period === "daily" ? "home" : period === "weekly" ? "week" : "month";
@@ -66,18 +69,16 @@ const activeNav = period === "daily" ? "home" : period === "weekly" ? "week" : "
 
 <Base lang={lang} langHref={langHref} title={`${date} ${periodLabel}`} desc={t.heroSub} active={activeNav} date={period === "daily" ? date : null}>
   <section class="hero">
-    <span class="date-chip">📅 {date} · {periodLabel} · {rankDesc}</span>
+    <span class="date-chip"><Icon name="calendar" size={13} /> {date} · {periodLabel} · {rankDesc}</span>
     <h1>{title}</h1>
     <p class="sub">{t.heroSub}</p>
     <div class="stats">
       <div class="stat"><b>{entries.length}</b><span>{t.entries}</span></div>
       <div class="stat"><b>+{fmt(totalGain)}</b><span>{t.totalGain}</span></div>
-      {top && (
-        <div class="stat">
-          <b>{top.name}</b>
-          <span>{t.top1Gain(fmt(top.weeklyGain), gainDays)}</span>
-        </div>
-      )}
+      <div class="stat">
+        <b>+{fmt(avgGain)}</b>
+        <span>{lang === "zh" ? "平均单项目增量" : "Avg Gain / Project"}</span>
+      </div>
       {poolSize ? (
         <div class="stat"><b>{poolSize}</b><span>{t.candidates}</span></div>
       ) : null}
@@ -95,10 +96,10 @@ const activeNav = period === "daily" ? "home" : period === "weekly" ? "week" : "
   />
 
   {showCoverage && (
-    <p class="notice" role="note">⚠️ {t.coverageNote(coverageDays!, requestedDays!)}</p>
+    <p class="notice" role="note"><Icon name="alert" size={14} /> {t.coverageNote(coverageDays!, requestedDays!)}</p>
   )}
   {partialMetrics && entries.length > 0 && (
-    <p class="notice" role="note">⚠️ {t.partialMetricsNote}</p>
+    <p class="notice" role="note"><Icon name="alert" size={14} /> {t.partialMetricsNote}</p>
   )}
   {baselineDate && period !== "daily" && <p class="meta-line">{t.baselineNote(baselineDate)}</p>}
 
@@ -123,11 +124,43 @@ const activeNav = period === "daily" ? "home" : period === "weekly" ? "week" : "
       <p><a class="btn ghost" href={homePath(B, lang)}>{t.backToList}</a></p>
     </section>
   ) : (
-    <section class="entry-list">
-      {entries.map((e) => (
-        <EntryCard entry={e} date={date} {lang} windowDays={gainDays} />
-      ))}
-    </section>
+    <>
+      <div class="list-toolbar">
+        <p class="rank-note">
+          <Icon name="info" size={14} />
+          <span>
+            {lang === "zh"
+              ? `排名依据：近 ${effectiveDays} 天 Star 增量；综合分为独立的 8 维评估，与排名无关。`
+              : `Ranked by: Star gain in last ${effectiveDays}d; Overall score is an independent rating.`}
+          </span>
+          {entries[0] && (
+            <a href={projectPath(B, lang, date, entries[0].slug)}>
+              {lang === "zh" ? "评分方法与维度 →" : "Scoring criteria →"}
+            </a>
+          )}
+        </p>
+        <div class="view-toggle" role="group" aria-label={lang === "zh" ? "视图切换" : "View switch"}>
+          <button type="button" class="view-btn active" data-view="card" aria-pressed="true">
+            <Icon name="card" size={14} />
+            <span>{lang === "zh" ? "卡片" : "Cards"}</span>
+          </button>
+          <button type="button" class="view-btn" data-view="table" aria-pressed="false">
+            <Icon name="table" size={14} />
+            <span>{lang === "zh" ? "表格" : "Table"}</span>
+          </button>
+        </div>
+      </div>
+
+      <section class="entry-list" id="card-view-container">
+        {entries.map((e) => (
+          <EntryCard entry={e} date={date} {lang} windowDays={gainDays} />
+        ))}
+      </section>
+
+      <div class="table-view-wrap hidden" id="table-view-container">
+        <ProjectTable projects={entries} {lang} windowDays={effectiveDays} {date} />
+      </div>
+    </>
   )}
 
   <details class="data-note">
@@ -142,7 +175,53 @@ const activeNav = period === "daily" ? "home" : period === "weekly" ? "week" : "
   )}
 </Base>
 
+<script>
+  (function () {
+    const cardBtn = document.querySelector('[data-view="card"]') as HTMLButtonElement | null;
+    const tableBtn = document.querySelector('[data-view="table"]') as HTMLButtonElement | null;
+    const cardView = document.getElementById("card-view-container");
+    const tableView = document.getElementById("table-view-container");
+
+    if (!cardBtn || !tableBtn || !cardView || !tableView) return;
+
+    function applyView(mode: "card" | "table") {
+      if (mode === "table") {
+        cardView?.classList.add("hidden");
+        tableView?.classList.remove("hidden");
+        cardBtn?.classList.remove("active");
+        cardBtn?.setAttribute("aria-pressed", "false");
+        tableBtn?.classList.add("active");
+        tableBtn?.setAttribute("aria-pressed", "true");
+      } else {
+        tableView?.classList.add("hidden");
+        cardView?.classList.remove("hidden");
+        tableBtn?.classList.remove("active");
+        tableBtn?.setAttribute("aria-pressed", "false");
+        cardBtn?.classList.add("active");
+        cardBtn?.setAttribute("aria-pressed", "true");
+      }
+      try {
+        localStorage.setItem("agent-top10-view-mode", mode);
+      } catch (e) {
+        // Ignore localStorage error
+      }
+    }
+
+    try {
+      const saved = localStorage.getItem("agent-top10-view-mode");
+      if (saved === "table") {
+        applyView("table");
+      }
+    } catch (e) {}
+
+    cardBtn.addEventListener("click", () => applyView("card"));
+    tableBtn.addEventListener("click", () => applyView("table"));
+  })();
+</script>
+
 <style>
+  .hidden { display: none !important; }
+  .table-view-wrap { margin-top: 16px; }
   .notice {
     margin: 16px 0 0;
     padding: 11px 14px;
@@ -150,6 +229,9 @@ const activeNav = period === "daily" ? "home" : period === "weekly" ? "week" : "
     background: var(--warn-soft);
     color: var(--warn-ink);
     font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
   .meta-line { color: var(--muted); font-size: 12.5px; margin: 10px 0 0; }
   .meta-line a:hover { color: var(--accent); }

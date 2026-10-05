@@ -264,8 +264,8 @@ const payload = JSON.stringify(series).replace(/</g, "\\u003c");
   .pick-list { max-height: 420px; overflow-y: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); padding: 8px; display: grid; gap: 2px; }
   .pick { display: grid; grid-template-columns: 18px 1fr; gap: 8px; align-items: center; padding: 6px 8px; border-radius: 8px; cursor: pointer; font-size: 12.5px; }
   .pick:hover { background: var(--card-2); }
-  .pick-name { font-weight: 600; word-break: break-all; }
-  .pick-meta { grid-column: 2; font-size: 11px; color: var(--muted); }
+  .pick-name { font-weight: 600; word-break: normal; overflow-wrap: anywhere; }
+  .pick-meta { grid-column: 2; font-size: 12px; color: var(--muted); }
   .chart-holder { border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); padding: 16px; min-width: 0; }
   .chart-scroll { overflow-x: auto; }
   [data-chart] { width: 100%; height: auto; min-width: 420px; color: var(--ink); }
