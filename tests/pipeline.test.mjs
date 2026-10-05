@@ -547,6 +547,14 @@ test("快速上手：拿到安装段就标注来自 README，拿不到时保留�
   assert.ok(without.quickstart.includes("git clone"), without.quickstart);
 });
 
+test("首屏 No.1 统计要说清是窗口增量，不能写成「7,454 stars」让人以为是总量", () => {
+  const zh = strings("zh").top1Gain("7,454", 7);
+  assert.ok(zh.includes("7,454") && zh.includes("7"), zh);
+  assert.ok(/近\s*7\s*天|7 天/.test(zh), `必须点明窗口：${zh}`);
+  assert.ok(!/^7,454 stars$/.test(zh), zh);
+  assert.match(strings("en").top1Gain("7,454", 7), /in 7 days/);
+});
+
 // ---------------------------------------------------------------- 解读
 
 test("规则解读四段各司其职：为什么上榜讲指标，项目介绍讲定位", () => {
