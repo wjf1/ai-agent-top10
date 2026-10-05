@@ -240,9 +240,12 @@ export function ruleCons(project) {
  * @param {object} project 至少需要 metrics / weeklyGain / dailyGain / category / windowDays
  */
 export function ruleBasedInterpretation(project, { lang = "zh" } = {}) {
-  const quickstart = project.url
-    ? `# ${project.full_name}\n$ git clone ${project.url}.git\n$ cd ${project.name}\n# 具体安装与运行方式请参考仓库 README`
-    : "";
+  const install = sanitizeMultiline(project.readmeInstall, config.sanitize?.maxQuickstartLength ?? 1200);
+  const quickstart = install
+    ? `# 摘自 ${project.full_name ?? "仓库"} 的 README\n${install}`
+    : project.url
+      ? `# ${project.full_name}\n$ git clone ${project.url}.git\n$ cd ${project.name}\n# 具体安装与运行方式请参考仓库 README`
+      : "";
 
   return {
     why: ruleWhy(project),

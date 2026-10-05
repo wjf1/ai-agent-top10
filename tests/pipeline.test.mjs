@@ -29,6 +29,7 @@ import { refreshRuleEntry } from "../scripts/lib/refresh.mjs";
 import { ciWarningLine, interpretationStatus, stepSummary } from "../scripts/lib/status.mjs";
 import { capWeeklyGain, gainFromSnapshots, windowDaysBetween } from "../scripts/lib/growth.mjs";
 import { pickBaselineForWindow } from "../src/lib/timewindow.mjs";
+import { extractInstallSnippet } from "../scripts/lib/readme.mjs";
 
 // ---------------------------------------------------------------- 测试夹具
 
@@ -496,6 +497,54 @@ test("LLM 全部生效时不产生告警，但摘要仍要写清来源构成", (
   assert.equal(ciWarningLine(ok), "");
   assert.equal(ok.rules, 0);
   assert.match(stepSummary(ok, "2026-10-05"), /llm 1 · manual 1 · rules 0/);
+});
+
+// ----------------------------------------------------------- 快速上手（README 安装段）
+
+test("快速上手：从 README 取第一个安装代码块，而不是空喊「请参考仓库 README」", () => {
+  const markdown = [
+    "# Orca",
+    "Run a fleet of parallel agents.",
+    "## Installation",
+    "```bash",
+    "npm install -g @stably/orca",
+    "```",
+    "## Usage",
+    "```bash",
+    "orca start",
+    "```",
+  ].join("\n");
+  const snippet = extractInstallSnippet(markdown);
+  assert.ok(snippet.includes("npm install -g @stably/orca"), snippet);
+  assert.ok(!snippet.includes("orca start"), `只取安装那一段，别把整篇 README 塞进来：${snippet}`);
+});
+
+test("快速上手：没有安装标题时靠安装类命令识别代码块", () => {
+  const markdown = "```console\n$ uv pip install agent-reach\n```\n\n```js\nimport { x } from 'y';\n```";
+  assert.match(extractInstallSnippet(markdown), /uv pip install agent-reach/);
+});
+
+test("快速上手：README 里没有安装段时返回空串，由调用方保留 git clone 兜底", () => {
+  assert.equal(extractInstallSnippet("# Proj\nSome prose only\n"), "");
+  assert.equal(extractInstallSnippet(""), "");
+  assert.equal(extractInstallSnippet(null), "");
+});
+
+test("快速上手：安装段要过净化（剥标签与控制字符）并限长", () => {
+  const markdown = "## Install\n```sh\ncurl -sL https://get.example/x.sh | sh <script>alert(1)</script>\n```";
+  const snippet = extractInstallSnippet(markdown);
+  assert.ok(!snippet.includes("<script>"), snippet);
+  assert.ok(snippet.includes("curl -sL https://get.example/x.sh | sh"), snippet);
+  const long = `## Install\n\`\`\`sh\n${"echo a; ".repeat(400)}\n\`\`\``;
+  assert.ok(extractInstallSnippet(long, 200).length <= 201, "限长后带省略号");
+});
+
+test("快速上手：拿到安装段就标注来自 README，拿不到时保留通用 clone 文案", () => {
+  const withSnippet = ruleBasedInterpretation({ ...record(), readmeInstall: "npm install -g orca" });
+  assert.ok(withSnippet.quickstart.includes("npm install -g orca"), withSnippet.quickstart);
+  assert.ok(withSnippet.quickstart.includes("README"), `应说明这段摘自 README：${withSnippet.quickstart}`);
+  const without = ruleBasedInterpretation({ ...record(), url: "https://github.com/acme/agent" });
+  assert.ok(without.quickstart.includes("git clone"), without.quickstart);
 });
 
 // ---------------------------------------------------------------- 解读

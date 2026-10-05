@@ -35,7 +35,7 @@ import { discoverCandidates } from "./lib/candidates.mjs";
 import { resolveForkGrowth, resolveStarGrowth } from "./lib/growth.mjs";
 import { collectMetrics } from "./lib/metrics.mjs";
 import { llmInterpretation, normalizeInterpretation, ruleBasedInterpretation } from "./lib/interpret.mjs";
-import { fetchReadmeExcerpt } from "./lib/readme.mjs";
+import { excerptFromMarkdown, extractInstallSnippet, fetchReadmeMarkdown } from "./lib/readme.mjs";
 import { ciWarningLine, interpretationStatus, stepSummary } from "./lib/status.mjs";
 import {
   dataPaths,
@@ -168,8 +168,16 @@ async function main() {
   if (!manualCount) {
     // 项目介绍要把 README 读成人话；只对最终上榜的项目抓，避免白花 API 调用
     const readmeLimit = config.interpretation?.readmeExcerptLength ?? 2600;
-    for (const p of ranked) p.readmeExcerpt = await fetchReadmeExcerpt(client, p.full_name, { limit: readmeLimit });
-    console.log(`readme: ${ranked.filter((p) => p.readmeExcerpt).length}/${ranked.length} excerpt(s) fetched`);
+    for (const p of ranked) {
+      const markdown = await fetchReadmeMarkdown(client, p.full_name);
+      p.readmeExcerpt = excerptFromMarkdown(markdown, readmeLimit);
+      // 安装段单独留一份给「快速上手」：规则兜底时至少能给出一条真实命令
+      p.readmeInstall = extractInstallSnippet(markdown);
+    }
+    console.log(
+      `readme: ${ranked.filter((p) => p.readmeExcerpt).length}/${ranked.length} excerpt(s), ` +
+        `${ranked.filter((p) => p.readmeInstall).length}/${ranked.length} install snippet(s)`
+    );
     llmMap = await llmInterpretation(ranked, { log: console.log });
   } else console.log(`interpretation: manual file found (${manualCount} entries), skipping LLM`);
 
