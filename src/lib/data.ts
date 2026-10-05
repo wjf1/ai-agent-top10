@@ -89,6 +89,16 @@ export const L = {
       return `综合分 ${overall}，${parts.join("；")}。`;
     },
     gainSource: "增速来源",
+    momentTitle: "为什么现在上榜？",
+    momentStreak: (n: number) => `连续第 ${n} 期上榜`,
+    momentFirst: "本期首次上榜",
+    momentUp: (n: number) => `排名较上期上升 ${n} 位`,
+    momentRelease: (n: number) => `近 90 天有 ${n} 次发布，增速可能来自新版本`,
+    momentFastBase: (rate: number) => `相对存量 star 的增速 ${rate}%，基数还小、涨得快`,
+    momentStock: (stars: number, rate: number) =>
+      `累计 ${Number(stars).toLocaleString("en-US")} star 的存量仓库，本期增量主要来自既有关注度（增速 ${rate}%）`,
+    momentQuiet: "未识别到版本或排名事件，属自然增长",
+    forkAnomalyNote: (pct: number) => `fork / star 比 ${pct}%，明显高于常见区间：多为课程作业、批量二次开发或刷量，不能当成热度信号`,
     sourceExactLabel: "精确差值",
     sourceEstimateLabel: "估算",
     gainSourceNote: "精确差值＝两次快照直接相减；估算＝按事件流样本外推，可能有偏差",
@@ -215,6 +225,16 @@ export const L = {
       return `Overall ${overall}: ${parts.join("; ")}.`;
     },
     gainSource: "Growth source",
+    momentTitle: "Why is it on the list now?",
+    momentStreak: (n: number) => `On the board for ${n} issue(s) in a row`,
+    momentFirst: "First appearance",
+    momentUp: (n: number) => `Up ${n} rank(s) from the previous issue`,
+    momentRelease: (n: number) => `${n} release(s) in the last 90 days — the gain may follow a new version`,
+    momentFastBase: (rate: number) => `${rate}% of its own star base — small repo, fast climb`,
+    momentStock: (stars: number, rate: number) =>
+      `An established repo (${Number(stars).toLocaleString("en-US")} stars), so the gain mostly rides on existing attention (${rate}%)`,
+    momentQuiet: "No release or rank event detected — organic growth",
+    forkAnomalyNote: (pct: number) => `fork / star ratio of ${pct}% is far above the usual range — typically coursework, bulk forks or gaming, not a popularity signal`,
     sourceExactLabel: "Exact delta",
     sourceEstimateLabel: "Estimated",
     gainSourceNote: "Exact = two snapshots subtracted; estimated = extrapolated from an event-stream sample",

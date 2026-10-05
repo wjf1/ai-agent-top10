@@ -4,7 +4,7 @@ import Base from "../layouts/Base.astro";
 import Radar from "./Radar.astro";
 import TrendChart from "./TrendChart.astro";
 import { categoryLabel } from "../lib/categorize.mjs";
-import { detailLead, gainSourceTag, highlightsTitle, interpretationTag, scoreFactors } from "../lib/display.ts";
+import { detailLead, forkAnomaly, gainSourceTag, highlightsTitle, interpretationTag, momentReasons, scoreFactors } from "../lib/display.ts";
 import { dimensionLabels, strings, type Lang } from "../lib/data.ts";
 import { archivePath, categoryPath, comparePath, dayPath } from "../lib/routes.ts";
 
@@ -16,9 +16,13 @@ interface Props {
   langHref: string;
   /** 增量与增速所覆盖的天数，来自当期日榜的 windowDays */
   windowDays?: number;
+  /** 连续在榜期数（含本期），0 表示未知 */
+  streak?: number;
+  /** 该项目最早出现在榜单上的日期（由索引算出，比条目里存的 firstSeen 可信） */
+  firstDate?: string;
 }
 
-const { entry, date, lang = "zh", series = [], langHref, windowDays = 7 } = Astro.props;
+const { entry, date, lang = "zh", series = [], langHref, windowDays = 7, streak = 0, firstDate = "" } = Astro.props;
 const t = strings(lang);
 const B = import.meta.env.BASE_URL.replace(/\/$/, "");
 const fmt = (n: number) => Number(n ?? 0).toLocaleString("en-US");
@@ -52,6 +56,8 @@ const lead = detailLead(entry, lang);
 const interpTag = interpretationTag(entry, t);
 const factors = scoreFactors(entry.scores, dims);
 const scoreSummary = t.scoreSummary(entry.scores.overall, factors.low, factors.high);
+const moments = momentReasons({ ...entry, firstSeen: firstDate || entry.firstSeen }, { streak, date, t });
+const anomaly = forkAnomaly(entry, t);
 ---
 
 <Base
@@ -95,7 +101,9 @@ const scoreSummary = t.scoreSummary(entry.scores.overall, factors.low, factors.h
           {change > 0 ? `${t.rankUp} ${change}` : change < 0 ? `${t.rankDown} ${Math.abs(change)}` : t.rankSame}
         </span>
       )}
-      {entry.firstSeen && <span class="meta-line">{t.createdNote}：{entry.firstSeen}</span>}
+      {(firstDate || entry.firstSeen) && (
+        <span class="meta-line">{t.createdNote}：{firstDate || entry.firstSeen}</span>
+      )}
     </div>
   </section>
 
@@ -131,6 +139,14 @@ const scoreSummary = t.scoreSummary(entry.scores.overall, factors.low, factors.h
           )}
         </h2>
         <p class="prose">{entry.intro?.[lang] ?? entry.why[lang]}</p>
+      </div>
+
+      <div class="panel">
+        <h2>{t.momentTitle}</h2>
+        <ul class="moment-list">
+          {moments.map((r: string) => <li>{r}</li>)}
+        </ul>
+        {anomaly && <p class="warn-note">{anomaly.text}</p>}
       </div>
 
       {entry.highlights?.length > 0 && (
@@ -192,5 +208,10 @@ const scoreSummary = t.scoreSummary(entry.scores.overall, factors.low, factors.h
   .radar-holder { display: flex; justify-content: center; margin-bottom: 8px; overflow: visible; }
   .dim-name { border-bottom: 1px dotted var(--line); cursor: help; }
   .hint { margin: 12px 0 0; color: var(--muted); font-size: 11.5px; }
+  .moment-list { margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.75; }
+  .warn-note {
+    margin: 10px 0 0; padding: 8px 11px; font-size: 12.5px; line-height: 1.6;
+    color: var(--warn); background: var(--warn-soft); border-radius: 8px;
+  }
   .detail-col { display: grid; gap: 18px; align-content: start; }
 </style>

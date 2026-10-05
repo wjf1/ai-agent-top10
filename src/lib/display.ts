@@ -87,6 +87,60 @@ export function gainSourceTag(entry: any, t: Strings): InterpretationTag {
   return { label: exact ? t.sourceExactLabel : t.sourceEstimateLabel, note: `${t.gainSource}：${term}。${t.gainSourceNote}` };
 }
 
+/** 连续在榜期数：从当期往前数，中间断一期就重新计 */
+export function streakLength(dates: string[], appearances: string[], date: string): number {
+  const ordered = [...(dates ?? [])].sort().reverse();
+  const seen = new Set(appearances ?? []);
+  if (!seen.has(date)) return 0;
+  const start = ordered.indexOf(date);
+  if (start < 0) return 0;
+  let streak = 0;
+  for (let i = start; i < ordered.length; i++) {
+    if (!seen.has(ordered[i])) break;
+    streak++;
+  }
+  return streak;
+}
+
+/** fork / star 比超过这个比例基本不是"受欢迎"，而是作业式 fork 或刷量 */
+const FORK_RATIO_WARN = 0.15;
+
+/** 热度指标本身的异常提示 —— 分叉增速是个高分维度，读者需要知道它什么时候不该当好评看 */
+export function forkAnomaly(entry: any, t: Strings): { level: "warn"; text: string } | null {
+  const stars = Number(entry?.stars);
+  const forks = Number(entry?.forks);
+  if (!Number.isFinite(stars) || stars < 1000 || !Number.isFinite(forks)) return null;
+  const ratio = forks / stars;
+  if (ratio < FORK_RATIO_WARN) return null;
+  return { level: "warn", text: t.forkAnomalyNote(Math.round(ratio * 100)) };
+}
+
+/**
+ * 「为什么现在上榜」：只用当日已采集的字段做可核对的归因。
+ * 识别不到事件就直说识别不到，不编一个原因出来。
+ */
+export function momentReasons(
+  entry: any,
+  { streak = 0, date = "", t }: { streak?: number; date?: string; t: Strings }
+): string[] {
+  const out: string[] = [];
+  if (streak > 1) out.push(t.momentStreak(streak));
+  else if (entry?.firstSeen && entry.firstSeen === date) out.push(t.momentFirst);
+
+  const change = Number(entry?.rankChange);
+  if (Number.isFinite(change) && change > 0) out.push(t.momentUp(change));
+  if (Number(entry?.releases90d) >= 3) out.push(t.momentRelease(Number(entry.releases90d)));
+
+  const rate = Number(entry?.growthRate);
+  const gain = Number(entry?.weeklyGain);
+  if (Number.isFinite(rate) && rate >= 5) out.push(t.momentFastBase(rate));
+  else if (Number.isFinite(rate) && rate <= 1.5 && Number.isFinite(gain) && gain >= 2000) {
+    out.push(t.momentStock(Number(entry?.stars), rate));
+  }
+
+  return out.length ? out : [t.momentQuiet];
+}
+
 export interface ScoreFactor {
   key: string;
   label: string;

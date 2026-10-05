@@ -7,7 +7,8 @@
  * 现在每个项目每天一个独立路径：/project/<date>/<slug>/。
  */
 import ProjectDetail from "../../../../components/ProjectDetail.astro";
-import { index, loadDay } from "../../../../lib/load-days";
+import { index, loadDay, appearances } from "../../../../lib/load-days";
+import { streakLength } from "../../../../lib/display.ts";
 import { starSeries } from "../../../../lib/periods";
 import { projectPath } from "../../../../lib/routes.ts";
 
@@ -38,6 +39,11 @@ const day = await loadDay(date);
 const entry = day?.entries.find((e) => e.slug === slug);
 if (!entry) throw new Error(`entry ${slug} not found in ${date}`);
 const series = starSeries(entry.full_name);
+const seenDates = appearances(entry.slug);
+const streak = streakLength(index.dates, seenDates, date);
+// 条目里存的 firstSeen 是"本次抓取日"，连续多期上榜的项目会被写成最新那天，
+// 所以首次上榜必须以索引里最早出现该 slug 的日期为准。
+const firstDate = seenDates[0] ?? entry.firstSeen ?? date;
 ---
 
 <ProjectDetail
@@ -45,6 +51,8 @@ const series = starSeries(entry.full_name);
   {date}
   {lang}
   {series}
+  {streak}
+  {firstDate}
   windowDays={day.windowDays ?? 7}
   langHref={projectPath(B, lang === "en" ? "zh" : "en", date, slug)}
 />

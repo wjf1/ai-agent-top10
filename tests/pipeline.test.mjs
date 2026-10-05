@@ -9,7 +9,17 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { categorize } from "../src/lib/categorize.mjs";
-import { cardLineTag, detailLead, gainSourceTag, highlightsTitle, interpretationTag, scoreFactors } from "../src/lib/display.ts";
+import {
+  cardLineTag,
+  detailLead,
+  forkAnomaly,
+  gainSourceTag,
+  highlightsTitle,
+  interpretationTag,
+  momentReasons,
+  scoreFactors,
+  streakLength,
+} from "../src/lib/display.ts";
 import { strings } from "../src/lib/data.ts";
 import { normalizeInterpretation, ruleBasedInterpretation, ruleCardLine, ruleIntro, textWidth } from "../src/lib/interpret.mjs";
 import { topicLabel, topicLabels } from "../src/lib/topic-labels.mjs";
@@ -619,6 +629,47 @@ test("「增速 4%」要能被解释清楚：窗口新增 ÷ 当前 star 总量"
   const note = t.growthRateNote(7);
   assert.ok(note.includes("近 7 天新增") && note.includes("当前 star"), note);
   assert.match(strings("en").growthRateNote(7), /gain over the last 7 days/i);
+});
+
+test("连续在榜期数只数紧挨着的期，中间断了就重新计", () => {
+  const dates = ["2026-10-04", "2026-10-03", "2026-10-02", "2026-10-01", "2026-09-30"];
+  const seen = ["2026-09-30", "2026-10-01", "2026-10-03", "2026-10-04"];
+  assert.equal(streakLength(dates, seen, "2026-10-04"), 2, "10-02 缺一期，只能算 10-03、10-04");
+  assert.equal(streakLength(dates, seen, "2026-10-01"), 2);
+  assert.equal(streakLength(dates, [], "2026-10-04"), 0);
+  assert.equal(streakLength(dates, seen, "2026-10-02"), 0, "当天没上榜就不该有连榜");
+});
+
+test("fork / star 比明显偏高要提示，正常区间不打扰", () => {
+  const t = strings("zh");
+  const odd = forkAnomaly({ stars: 250872, forks: 53770 }, t);
+  assert.equal(odd.level, "warn");
+  assert.ok(odd.text.includes("21%"), odd.text);
+  assert.ok(odd.text.includes("fork"), odd.text);
+  assert.equal(forkAnomaly({ stars: 152269, forks: 8171 }, t), null, "5.4% 属正常");
+  assert.equal(forkAnomaly({ stars: 0, forks: 0 }, t), null, "没有基数时不做判断");
+});
+
+test("「为什么现在上榜」只给可核对的理由，给不出就说是自然增长", () => {
+  const t = strings("zh");
+  const reasons = momentReasons(
+    { rank: 3, rankChange: 2, releases90d: 5, growthRate: 7.9, stars: 62803, weeklyGain: 4963, forks: 10735, firstSeen: "2026-09-20" },
+    { streak: 4, date: "2026-10-04", t }
+  );
+  assert.ok(reasons.some((r) => r.includes("连续第 4 期")), reasons.join(" / "));
+  assert.ok(reasons.some((r) => r.includes("上升 2 位")), reasons.join(" / "));
+  assert.ok(reasons.some((r) => r.includes("近 90 天有 5 次发布")), reasons.join(" / "));
+  assert.ok(reasons.some((r) => r.includes("7.9%")), reasons.join(" / "));
+  assert.ok(!reasons.some((r) => r.includes("自然增长")), reasons.join(" / "));
+
+  const quiet = momentReasons(
+    { rank: 7, rankChange: 0, releases90d: 0, growthRate: 1.5, stars: 188085, weeklyGain: 3189, forks: 10009, firstSeen: "2026-09-13" },
+    { streak: 12, date: "2026-10-04", t }
+  );
+  assert.ok(quiet.some((r) => r.includes("存量")), quiet.join(" / "));
+
+  const newcomer = momentReasons({ rank: 10, releases90d: 0, growthRate: 2, stars: 1000, weeklyGain: 20, forks: 30, firstSeen: "2026-10-04" }, { streak: 1, date: "2026-10-04", t });
+  assert.ok(newcomer.some((r) => r.includes("首次上榜")), newcomer.join(" / "));
 });
 
 // ---------------------------------------------------------------- 解读
