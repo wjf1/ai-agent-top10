@@ -1,7 +1,7 @@
 ---
 import Radar from "./Radar.astro";
 import { categoryLabel } from "../lib/categorize.mjs";
-import { cardLineTag } from "../lib/display.ts";
+import { cardLineTag, gainSourceTag } from "../lib/display.ts";
 import { dimensionLabels, strings, type Lang } from "../lib/data.ts";
 import { projectPath } from "../lib/routes.ts";
 
@@ -30,14 +30,7 @@ const changeLabel =
   change === null ? "" : change > 0 ? `${t.rankUp} ${change}` : change < 0 ? `${t.rankDown} ${Math.abs(change)}` : t.rankSame;
 const lineTag = cardLineTag(entry, t);
 
-const sourceLabel =
-  entry.gainSource === "events"
-    ? t.sourceEvents
-    : entry.gainSource === "stargazers"
-      ? t.sourceStargazers
-      : entry.gainSource === "snapshot-window"
-        ? t.sourceWindow
-        : t.sourceSnapshot;
+const srcTag = gainSourceTag(entry, t);
 ---
 
 <article class:list={["entry-card", compact && "compact"]}>
@@ -59,11 +52,11 @@ const sourceLabel =
       <span>⭐ {fmt(entry.stars)} {t.stars}</span>
       <span>🍴 {fmt(entry.forks)} {t.forks}</span>
       <span>📈 {t.dailyGain} {entry.dailyGain}</span>
-      <span>🚀 {t.growthRate} {entry.growthRate}%</span>
+      <span title={t.growthRateNote(windowDays)}>🚀 {t.growthRate} {entry.growthRate}%</span>
       {lineTag && (
         <span class="src" title={lineTag.note}>{lineTag.label}</span>
       )}
-      <span class="src" title={t.gainSource}>{sourceLabel}</span>
+      <span class="src" title={srcTag.note}>{srcTag.label}</span>
     </div>
   </div>
   <div class="entry-side">

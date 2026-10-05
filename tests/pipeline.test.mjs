@@ -9,7 +9,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { categorize } from "../src/lib/categorize.mjs";
-import { cardLineTag, detailLead, highlightsTitle, interpretationTag } from "../src/lib/display.ts";
+import { cardLineTag, detailLead, gainSourceTag, highlightsTitle, interpretationTag, scoreFactors } from "../src/lib/display.ts";
 import { strings } from "../src/lib/data.ts";
 import { normalizeInterpretation, ruleBasedInterpretation, ruleCardLine, ruleIntro, textWidth } from "../src/lib/interpret.mjs";
 import { topicLabel, topicLabels } from "../src/lib/topic-labels.mjs";
@@ -561,6 +561,64 @@ test("回填 --since 只取该日期之后的期数，避免覆盖更早的 LLM 
   assert.deepEqual(selectDates(dates, {}), dates, "不给 since 时保持原有全量行为");
   assert.deepEqual(selectDates(dates, { since: "2099-01-01" }), []);
   assert.deepEqual(selectDates(["2026-10-04", "2026-09-28", "2026-09-13"], { since: "2026-09-20" }), ["2026-09-28", "2026-10-04"]);
+});
+
+test("综合分要能一句话说清被哪两个维度拉低", () => {
+  const dims = [
+    { key: "heat", label: "热度趋势", weight: 0.16 },
+    { key: "practical", label: "实用完成度", weight: 0.15 },
+    { key: "ecosystem", label: "生态潜力", weight: 0.12 },
+    { key: "activity", label: "迭代活跃度", weight: 0.12 },
+  ];
+  const factors = scoreFactors({ heat: 100, practical: 100, ecosystem: 54, activity: 42, overall: 74 }, dims);
+  assert.deepEqual(
+    factors.low.map((f) => `${f.label} ${f.value}`),
+    ["迭代活跃度 42", "生态潜力 54"]
+  );
+  assert.deepEqual(
+    factors.high.map((f) => f.label),
+    ["热度趋势", "实用完成度"]
+  );
+  const t = strings("zh");
+  const sentence = t.scoreSummary(74, factors.low, factors.high);
+  assert.ok(sentence.includes("拉低") && sentence.includes("迭代活跃度 42"), sentence);
+});
+
+test("各维度齐平或历史数据缺维度时，不硬凑拉分项", () => {
+  const even = scoreFactors({ a: 75, b: 75, overall: 75 }, [
+    { key: "a", label: "A", weight: 0.5 },
+    { key: "b", label: "B", weight: 0.5 },
+  ]);
+  assert.deepEqual(even.low, []);
+  assert.deepEqual(even.high, []);
+  assert.equal(strings("zh").scoreSummary(75, even.low, even.high), "");
+
+  const partial = scoreFactors({ heat: 90, overall: 80 }, [
+    { key: "heat", label: "热度趋势", weight: 0.16 },
+    { key: "health", label: "健康可持续", weight: 0.08 },
+  ]);
+  assert.deepEqual(partial.low, [], "没有分数的维度不能当成 0 分来归因");
+  assert.deepEqual(partial.high.map((f) => f.label), ["热度趋势"]);
+});
+
+test("增速来源给读者「精确 / 估算」，内部术语收进悬停说明", () => {
+  const t = strings("zh");
+  const snap = gainSourceTag({ gainSource: "snapshot", gainExact: true }, t);
+  assert.equal(snap.label, "精确差值");
+  assert.ok(snap.note.includes("快照差值"), snap.note);
+  const est = gainSourceTag({ gainSource: "events", gainExact: false }, t);
+  assert.equal(est.label, "估算");
+  assert.ok(est.note.includes("事件流"), est.note);
+  // gainExact 缺失时按来源判定，不能默认说自己是精确值
+  assert.equal(gainSourceTag({ gainSource: "stargazers" }, t).label, "精确差值");
+  assert.equal(gainSourceTag({ gainSource: "events" }, t).label, "估算");
+});
+
+test("「增速 4%」要能被解释清楚：窗口新增 ÷ 当前 star 总量", () => {
+  const t = strings("zh");
+  const note = t.growthRateNote(7);
+  assert.ok(note.includes("近 7 天新增") && note.includes("当前 star"), note);
+  assert.match(strings("en").growthRateNote(7), /gain over the last 7 days/i);
 });
 
 // ---------------------------------------------------------------- 解读

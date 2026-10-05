@@ -75,14 +75,28 @@ export const L = {
     rankDown: "下降",
     rankNew: "新上榜",
     rankSame: "持平",
-    scoreBreakdown: "评分维度（8 维，权重见配置）",
-    scoreTooltipHint: "悬停查看维度说明",
+    score: "得分",
+    dimMeaning: "它衡量什么",
+    scoreSummary: (
+      overall: number,
+      low: { label: string; value: number }[],
+      high: { label: string; value: number }[]
+    ) => {
+      if (!low.length && !high.length) return "";
+      const parts: string[] = [];
+      if (low.length) parts.push(`主要被${low.map((f) => `${f.label} ${f.value}`).join("、")}拉低`);
+      if (high.length) parts.push(`${high.map((f) => f.label).join("、")}是加分项`);
+      return `综合分 ${overall}，${parts.join("；")}。`;
+    },
     gainSource: "增速来源",
+    sourceExactLabel: "精确差值",
+    sourceEstimateLabel: "估算",
+    gainSourceNote: "精确差值＝两次快照直接相减；估算＝按事件流样本外推，可能有偏差",
+    growthRateNote: (days: number) => `增速＝近 ${days} 天新增 star ÷ 当前 star 总量`,
     sourceSnapshot: "快照差值",
     sourceStargazers: "stargazers 精确统计",
     sourceEvents: "事件流估算",
     sourceWindow: "窗口快照差值",
-    estimated: "估算值",
     trend: "star 趋势",
     trendEmpty: "历史快照不足，暂无法绘制趋势",
     trendPoints: "个快照点",
@@ -187,14 +201,28 @@ export const L = {
     rankDown: "Down",
     rankNew: "New",
     rankSame: "Same",
-    scoreBreakdown: "Score breakdown (8 dimensions)",
-    scoreTooltipHint: "Hover a dimension for its definition",
+    score: "Score",
+    dimMeaning: "What it measures",
+    scoreSummary: (
+      overall: number,
+      low: { label: string; value: number }[],
+      high: { label: string; value: number }[]
+    ) => {
+      if (!low.length && !high.length) return "";
+      const parts: string[] = [];
+      if (low.length) parts.push(`held back by ${low.map((f) => `${f.label} ${f.value}`).join(", ")}`);
+      if (high.length) parts.push(`${high.map((f) => f.label).join(", ")} are strengths`);
+      return `Overall ${overall}: ${parts.join("; ")}.`;
+    },
     gainSource: "Growth source",
+    sourceExactLabel: "Exact delta",
+    sourceEstimateLabel: "Estimated",
+    gainSourceNote: "Exact = two snapshots subtracted; estimated = extrapolated from an event-stream sample",
+    growthRateNote: (days: number) => `Growth = star gain over the last ${days} days ÷ current star total`,
     sourceSnapshot: "snapshot delta",
     sourceStargazers: "exact stargazers count",
     sourceEvents: "event-stream estimate",
     sourceWindow: "window snapshot delta",
-    estimated: "estimated",
     trend: "Star trend",
     trendEmpty: "Not enough snapshots to draw a trend yet",
     trendPoints: "snapshot points",

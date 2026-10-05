@@ -69,3 +69,54 @@ export function cardLineTag(entry: any, t: Strings): InterpretationTag | null {
   }
   return { label: t.tagRules, note: t.tagRulesNote };
 }
+
+/**
+ * 增速来源：读者真正关心的是"这个增量是数出来的还是估出来的"，
+ * 快照差值 / 事件流估算这类内部叫法收进悬停说明。
+ */
+export function gainSourceTag(entry: any, t: Strings): InterpretationTag {
+  const events = entry?.gainSource === "events";
+  const exact = entry?.gainExact !== undefined ? entry.gainExact === true : !events;
+  const term = events
+    ? t.sourceEvents
+    : entry?.gainSource === "stargazers"
+      ? t.sourceStargazers
+      : entry?.gainSource === "snapshot-window"
+        ? t.sourceWindow
+        : t.sourceSnapshot;
+  return { label: exact ? t.sourceExactLabel : t.sourceEstimateLabel, note: `${t.gainSource}：${term}。${t.gainSourceNote}` };
+}
+
+export interface ScoreFactor {
+  key: string;
+  label: string;
+  value: number;
+}
+
+/** 与综合分相差 5 分以上才算"明显拉低 / 抬高"，否则不硬凑话 */
+const FACTOR_GAP = 5;
+
+/**
+ * 把"综合分 74"翻译成读者能用的信息：分数被哪两个维度压低、被哪两个抬高。
+ * 历史数据只有 6 维、且部分维度缺分数 —— 缺分数的维度不能当 0 分参与归因。
+ */
+export function scoreFactors(
+  scores: any,
+  dims: { key: string; label: string }[]
+): { low: ScoreFactor[]; high: ScoreFactor[] } {
+  const overall = Number(scores?.overall);
+  if (!Number.isFinite(overall)) return { low: [], high: [] };
+  const scored = dims
+    .map((d) => ({ key: d.key, label: d.label, value: Number(scores?.[d.key]) }))
+    .filter((d) => Number.isFinite(d.value));
+  return {
+    low: scored
+      .filter((d) => d.value <= overall - FACTOR_GAP)
+      .sort((a, b) => a.value - b.value)
+      .slice(0, 2),
+    high: scored
+      .filter((d) => d.value >= overall + FACTOR_GAP)
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 2),
+  };
+}

@@ -45,5 +45,6 @@ const series = starSeries(entry.full_name);
   {date}
   {lang}
   {series}
+  windowDays={day.windowDays ?? 7}
   langHref={projectPath(B, lang === "en" ? "zh" : "en", date, slug)}
 />

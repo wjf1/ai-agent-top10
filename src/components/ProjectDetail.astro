@@ -4,7 +4,7 @@ import Base from "../layouts/Base.astro";
 import Radar from "./Radar.astro";
 import TrendChart from "./TrendChart.astro";
 import { categoryLabel } from "../lib/categorize.mjs";
-import { detailLead, highlightsTitle, interpretationTag } from "../lib/display.ts";
+import { detailLead, gainSourceTag, highlightsTitle, interpretationTag, scoreFactors } from "../lib/display.ts";
 import { dimensionLabels, strings, type Lang } from "../lib/data.ts";
 import { archivePath, categoryPath, comparePath, dayPath } from "../lib/routes.ts";
 
@@ -14,9 +14,11 @@ interface Props {
   lang?: Lang;
   series: { date: string; stars?: number | null; forks?: number | null }[];
   langHref: string;
+  /** 增量与增速所覆盖的天数，来自当期日榜的 windowDays */
+  windowDays?: number;
 }
 
-const { entry, date, lang = "zh", series = [], langHref } = Astro.props;
+const { entry, date, lang = "zh", series = [], langHref, windowDays = 7 } = Astro.props;
 const t = strings(lang);
 const B = import.meta.env.BASE_URL.replace(/\/$/, "");
 const fmt = (n: number) => Number(n ?? 0).toLocaleString("en-US");
@@ -42,19 +44,14 @@ const minorStats = [
 ];
 
 const change = typeof entry.rankChange === "number" ? entry.rankChange : null;
-const sourceLabel =
-  entry.gainSource === "events"
-    ? t.sourceEvents
-    : entry.gainSource === "stargazers"
-      ? t.sourceStargazers
-      : entry.gainSource === "snapshot-window"
-        ? t.sourceWindow
-        : t.sourceSnapshot;
+const srcTag = gainSourceTag(entry, t);
 
 // 头图导语：用「卡片一行版」这个字段，它本就是为一句话定位设计的。
 // 早先取介绍首句，遇到单句式介绍时头图和「它能做什么？」会一字不差地重复同一句。
 const lead = detailLead(entry, lang);
 const interpTag = interpretationTag(entry, t);
+const factors = scoreFactors(entry.scores, dims);
+const scoreSummary = t.scoreSummary(entry.scores.overall, factors.low, factors.high);
 ---
 
 <Base
@@ -108,19 +105,21 @@ const interpTag = interpretationTag(entry, t);
       <div class="radar-holder">
         <Radar scores={entry.scores} dims={dims} size={262} pad={62} />
       </div>
-      <div class="dim-rows">
+      <ul class="dim-list">
         {dims.map((d) => (
-          <div class="dim-row" title={`${d.label} · ${t.weight} ${(d.weight * 100).toFixed(0)}%`}>
-            <span class="dim-name" title={d.desc}>{d.label}</span>
-            <div class="dim-bar"><div class="dim-fill" style={`width:${entry.scores[d.key]}%`} /></div>
-            <b>{entry.scores[d.key]}</b>
-          </div>
+          <li class="dim-item">
+            <div class="dim-line">
+              <span class="dim-name">{d.label}</span>
+              <div class="dim-bar"><div class="dim-fill" style={`width:${entry.scores[d.key]}%`} /></div>
+              <b>{entry.scores[d.key]}</b>
+            </div>
+            <p class="dim-desc">{d.desc} · {t.weight} {(d.weight * 100).toFixed(0)}%</p>
+          </li>
         ))}
-      </div>
-      <p class="hint">{t.scoreTooltipHint}</p>
-      <p class="hint">
-        {t.gainSource}：{sourceLabel}{entry.gainExact === false ? `（${t.estimated}）` : ""}
-      </p>
+      </ul>
+      {scoreSummary && <p class="score-summary">{scoreSummary}</p>}
+      <p class="hint">{srcTag.note}</p>
+      <p class="hint">{t.growthRateNote(windowDays)}</p>
     </div>
 
     <div class="detail-col">
