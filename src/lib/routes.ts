@@ -7,6 +7,9 @@
  */
 export type Lang = "zh" | "en";
 
+/** 仓库地址：页脚「在 GitHub 上反馈 / 贡献」与 issue 模板共用 */
+export const REPO_URL = "https://github.com/wjf1/ai-agent-top10";
+
 export const base = (): string => import.meta.env.BASE_URL.replace(/\/$/, "");
 
 function prefix(lang: Lang): string {

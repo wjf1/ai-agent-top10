@@ -2,7 +2,7 @@
 import "../styles/global.css";
 import Icon from "../components/Icon.astro";
 import { strings, type Lang } from "../lib/data.ts";
-import { archivePath, comparePath, dayPath, exportPath, homePath, monthPath, rssPath, searchPath, weekPath } from "../lib/routes.ts";
+import { REPO_URL, archivePath, comparePath, dayPath, exportPath, homePath, monthPath, rssPath, searchPath, weekPath } from "../lib/routes.ts";
 
 interface Props {
   lang?: Lang;
@@ -99,6 +99,7 @@ const nav = [
       <div class="wrap">
         <span>{t.footerNote}</span>
         <span class="foot-right">
+          <a href={REPO_URL} target="_blank" rel="noopener noreferrer">{t.footerGithub}</a>
           <a href={rssPath(B, lang)}>RSS</a>
           <span>{t.siteName} · {new Date().getFullYear()}</span>
         </span>

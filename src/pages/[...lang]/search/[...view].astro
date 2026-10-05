@@ -1,0 +1,72 @@
+---
+/**
+ * 检索视图的排序 / 快捷筛选静态路由（T3.1）。
+ *
+ * 路径形态：
+ *   /search/s/<sort>/                仅排序
+ *   /search/p/<preset>/              仅快捷筛选
+ *   /search/p/<preset>/s/<sort>/     两者叠加
+ * 默认视图（不排序、无预设）由 /search/ 负责，这里不重复生成。
+ *
+ * 为什么不用 `?sort=`：纯静态站点在构建期读不到 query，若把排序挂在 query 上，
+ * 无 JS 时点击排序只会重新加载同一份 HTML —— 排序等于失效。独立静态路径则整页跳转即生效。
+ */
+import Base from "../../../layouts/Base.astro";
+import SearchView from "../../../components/SearchView.astro";
+import { recentProjects } from "../../../lib/aggregate";
+import { strings } from "../../../lib/data.ts";
+import { searchPath } from "../../../lib/routes.ts";
+import { PRESETS, SORTS, applyPreset, parseView, sortProjects, viewParts } from "../../../lib/search-view.ts";
+
+const WINDOW = 30;
+
+export function getStaticPaths() {
+  const out: any[] = [];
+  const presets: (string | null)[] = [null, ...PRESETS.map((p) => p.key)];
+  const sorts: string[] = SORTS.map((s) => s.key);
+  for (const preset of presets) {
+    for (const sort of sorts) {
+      const parts = viewParts({ sort, preset });
+      if (!parts.length) continue; // 默认视图交给 search.astro
+      const view = parts.join("/");
+      for (const langParam of [undefined, "en"]) {
+        out.push({ params: { lang: langParam, view }, props: { sort, preset } });
+      }
+    }
+  }
+  return out;
+}
+
+const lang = (Astro.params.lang === "en" ? "en" : "zh") as "zh" | "en";
+const t = strings(lang);
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+// 防御：即使路径被人手改成非法值，也回落到默认而不是报错
+const parsed = parseView({ view: String(Astro.params.view ?? "") });
+
+const all = await recentProjects({ window: WINDOW });
+const projects = sortProjects(applyPreset(all, parsed.preset), parsed.sort);
+
+const activePreset = PRESETS.find((p) => p.key === parsed.preset);
+const activeSort = SORTS.find((s) => s.key === parsed.sort);
+const activeLabel = [activePreset, activeSort].filter(Boolean).map((x: any) => (lang === "zh" ? x.zh : x.en)).join(" · ");
+---
+
+<Base
+  {lang}
+  langHref={searchPath(B, lang === "en" ? "zh" : "en")}
+  title={`${t.searchPage}${activeLabel ? ` · ${activeLabel}` : ""}`}
+  desc={t.search}
+  active="search"
+>
+  <section class="hero" style="padding-bottom:0">
+    <h1>{t.searchPage}{activeLabel && <span class="view-tag"> · {activeLabel}</span>}</h1>
+    <p class="sub">{t.searchScope(WINDOW)}</p>
+  </section>
+
+  <SearchView {projects} {lang} activeSort={parsed.sort} activePreset={parsed.preset} window={WINDOW} />
+</Base>
+
+<style>
+  .view-tag { color: var(--accent); font-size: 0.72em; font-weight: 600; }
+</style>

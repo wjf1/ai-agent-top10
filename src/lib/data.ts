@@ -104,6 +104,8 @@ export const L = {
     sourceLowerBoundLabel: "保守下界",
     gainSourceNote: "精确差值＝两次快照直接相减；估算＝按事件流样本外推，可能有偏差",
     sourceLowerBoundNote: "事件流覆盖率不足，此处直接采用观测到的条数、不做外推，真实增量只会更高。",
+    sourceCappedLabel: "已封顶",
+    sourceCappedNote: "该周增量超过合理性上限（相对仓库体量的比例封顶），实际增量可能更高，此数字为封顶值。",
     scoringMixedNote: (versions: string) =>
       `本周期聚合了多天数据，其中评分口径存在差异（${versions}），综合分之间的可比性有限。`,
     caliberCurrent: "最新口径",
@@ -121,6 +123,7 @@ export const L = {
     relatedHot: "同期热门",
     relatedSimilarNote: "按分类与话题标签相似度推荐",
     relatedHotNote: "同一期榜单中增量最高的项目",
+    scoreTrendEmpty: "该项目连续在榜不足 3 期，暂不展示评分趋势（2 个点画不出趋势）。",
     caliberNote: (current: string) =>
       `评分口径版本 v${current}：分数由该版本引擎生成。历史期数据可能来自更早版本，跨期比较时请留意口径差异。`,
     growthRateNote: (days: number) => `增速＝近 ${days} 天新增 star ÷ 当前 star 总量`,
@@ -164,6 +167,7 @@ export const L = {
       "star 增量优先取历史快照的真实差值；快照缺失时回落到 GitHub stargazers 接口；超大仓库在事件流覆盖率不足时会被跳过，以保证排名公平。某一维度缺少可信输入时会被剔除、其余维度权重重新归一，而不是按 0 计入。评分公式在 0.2.0 做过量纲修正，因此 2026-09-23 及之后期数的分数水平与更早期数不可直接比较。",
     footerNote:
       "数据来自 GitHub 公开 API · 排名依据窗口内 star 增量 · 综合分为多维可解释评分结果",
+    footerGithub: "在 GitHub 上反馈 / 贡献",
     archiveIssues: "期",
     archiveByPeriod: "按周期浏览",
     allHistory: "全部历史",
@@ -261,6 +265,8 @@ export const L = {
     sourceLowerBoundLabel: "Lower bound",
     gainSourceNote: "Exact = two snapshots subtracted; estimated = extrapolated from an event-stream sample",
     sourceLowerBoundNote: "Event-stream coverage is too low, so the raw observed count is used without extrapolation — the real gain can only be higher.",
+    sourceCappedLabel: "Capped",
+    sourceCappedNote: "This weekly gain exceeded the sanity cap (a share of the repo's size); the real gain may be higher — the figure shown is the capped value.",
     scoringMixedNote: (versions: string) =>
       `This period aggregates multiple days whose scoring calibers differ (${versions}); overall scores are only loosely comparable.`,
     caliberCurrent: "Current caliber",
@@ -278,6 +284,7 @@ export const L = {
     relatedHot: "Hot in the same period",
     relatedSimilarNote: "Recommended by category and topic similarity",
     relatedHotNote: "Highest star gain within the same period",
+    scoreTrendEmpty: "This project has been listed for fewer than 3 consecutive periods, so no score trend is shown (2 points do not make a trend).",
     caliberNote: (current: string) =>
       `Scoring caliber v${current}: scores are produced by this engine version. Historical periods may come from earlier versions — mind the caliber gap when comparing across periods.`,
     growthRateNote: (days: number) => `Growth = star gain over the last ${days} days ÷ current star total`,
@@ -321,6 +328,7 @@ export const L = {
       "Star gains come from real snapshot deltas first, then the GitHub stargazers endpoint. Large repos with insufficient event-stream coverage are skipped rather than amplified, so the ranking stays fair. A dimension without trustworthy input is dropped and the remaining weights are renormalised rather than counted as zero. Scoring was renormalised in 0.2.0, so score levels for issues from 2026-09-23 onward are not directly comparable with earlier ones.",
     footerNote:
       "Data from the public GitHub API · Ranked by star gain over the window · Overall score is a multi-dimension, explainable evaluation",
+    footerGithub: "Feedback / contribute on GitHub",
     archiveIssues: "issue(s)",
     archiveByPeriod: "Browse by period",
     allHistory: "Full history",

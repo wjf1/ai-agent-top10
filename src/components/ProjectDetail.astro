@@ -3,6 +3,7 @@
 import Base from "../layouts/Base.astro";
 import EntryCard from "./EntryCard.astro";
 import Radar from "./Radar.astro";
+import ScoreTrend from "./ScoreTrend.astro";
 import TrendChart from "./TrendChart.astro";
 import { categoryLabel } from "../lib/categorize.mjs";
 import { caliberTag, detailLead, forkAnomaly, gainSourceTag, highlightsTitle, interpretationTag, momentReasons, scoreFactors } from "../lib/display.ts";
@@ -26,9 +27,13 @@ interface Props {
   related?: any[];
   /** 社交分享图路径 */
   ogImage?: string;
+  /** 维度定义（key + 短名），评分趋势图用 */
+  trendDims?: { key: string; label: string }[];
+  /** 各维度评分历史序列；为 null 表示不满足展示门槛（连续在榜不足 3 期） */
+  scoreTrend?: Record<string, { date: string; value: number }[]> | null;
 }
 
-const { entry, date, lang = "zh", series = [], langHref, windowDays = 7, streak = 0, firstDate = "", related = [], ogImage } = Astro.props;
+const { entry, date, lang = "zh", series = [], langHref, windowDays = 7, streak = 0, firstDate = "", related = [], ogImage, trendDims = [], scoreTrend = null } = Astro.props;
 const t = strings(lang);
 const B = import.meta.env.BASE_URL.replace(/\/$/, "");
 const fmt = (n: number) => Number(n ?? 0).toLocaleString("en-US");
@@ -181,6 +186,8 @@ const anomaly = forkAnomaly(entry, t);
         <h2>{t.trend}</h2>
         <TrendChart points={series} metric="stars" {lang} emptyText={t.trendEmpty} />
       </div>
+
+      <ScoreTrend series={scoreTrend ?? {}} dims={dims} {lang} emptyText={t.scoreTrendEmpty} />
 
       {entry.quickstart && (
         <div class="panel">

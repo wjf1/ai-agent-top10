@@ -42,6 +42,10 @@ export function validateEntry(entry, { index = 0, errors = [] } = {}) {
   if (entry.gainUnreliable !== undefined && typeof entry.gainUnreliable !== "boolean") {
     errors.push(`${at}.gainUnreliable: must be a boolean when present`);
   }
+  // A1：裁剪标记同样必须是布尔（可选，老数据没有该字段）
+  if (entry.gainCapped !== undefined && typeof entry.gainCapped !== "boolean") {
+    errors.push(`${at}.gainCapped: must be a boolean when present`);
+  }
   if (typeof entry.url === "string" && !/^https?:\/\//.test(entry.url)) {
     errors.push(`${at}.url: must be http(s)`);
   }

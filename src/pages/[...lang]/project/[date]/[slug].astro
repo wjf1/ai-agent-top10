@@ -10,6 +10,8 @@ import ProjectDetail from "../../../../components/ProjectDetail.astro";
 import { pickRelated, relatedPoolCached } from "../../../../lib/aggregate";
 import { index, loadDay, appearances } from "../../../../lib/load-days";
 import { streakLength } from "../../../../lib/display.ts";
+import { meetsScoreTrendGate, scoreSeriesForDims } from "../../../../lib/score-series";
+import { dimensionLabels } from "../../../../lib/data.ts";
 import { starSeries } from "../../../../lib/periods";
 import { projectPath } from "../../../../lib/routes.ts";
 
@@ -49,6 +51,13 @@ const related = pickRelated(entry, date, await relatedPoolCached(), { similar: 3
 // 只为最新一期生成 OG 图（见 scripts/generate-og.mjs），历史期回落到首页分享图
 const isLatest = index.dates[0] === date;
 const ogImage = isLatest ? `${B}/og/${lang}-${entry.slug}.png` : undefined;
+
+// T3.2 评分趋势：只在连续在榜 >= 3 期时聚合，避免 2 个点画出的伪趋势。
+// 只对实际在榜的日期取分，缺失维度不补零（早期数据没有 forksGrowth / activity）。
+const trendDims = dimensionLabels(lang).map((d) => ({ key: d.key, label: d.short ?? d.key }));
+const scoreTrend = meetsScoreTrendGate(streak)
+  ? await scoreSeriesForDims(entry.slug, trendDims.map((d) => d.key))
+  : null;
 ---
 
 <ProjectDetail
@@ -60,6 +69,8 @@ const ogImage = isLatest ? `${B}/og/${lang}-${entry.slug}.png` : undefined;
   {firstDate}
   {related}
   {ogImage}
+  trendDims={trendDims}
+  {scoreTrend}
   windowDays={day.windowDays ?? 7}
   langHref={projectPath(B, lang === "en" ? "zh" : "en", date, slug)}
 />

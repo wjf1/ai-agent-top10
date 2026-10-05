@@ -1,0 +1,56 @@
+name: 数据纠错 / Data correction
+description: 榜单数据有误（star 数、增量、分类、话题、许可证等）
+title: "[数据纠错] "
+labels: ["data"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢帮忙核对数据 👋
+
+        **请先确认这是站点数据问题，而不是数据源本身的问题。** 本站的 star / fork 数来自 GitHub 公开 API，
+        若 GitHub 页面上的数值也是同样的，那属于上游数据，本站无法修正。
+
+        数据每天北京时间 14:00 自动更新，当日新提交的修正会在下一次抓取后生效。
+  - type: input
+    id: project
+    attributes:
+      label: 涉及项目
+      description: 仓库全名（owner/repo）
+      placeholder: e.g. firecrawl/firecrawl
+    validations:
+      required: true
+  - type: input
+    id: date
+    attributes:
+      label: 期数 / 日期
+      description: 出现问题的榜单日期，可在详情页 URL 的 /project/<日期>/ 中找到
+      placeholder: e.g. 2026-10-05
+    validations:
+      required: true
+  - type: dropdown
+    id: field
+    attributes:
+      label: 问题字段
+      options:
+        - star 数 / star 增量
+        - fork 数 / fork 增量
+        - 排名或排名变化
+        - 子分类
+        - 话题标签
+        - 许可证标识
+        - 解读文案（介绍 / 亮点 / 缺点）
+        - 其他
+    validations:
+      required: true
+  - type: textarea
+    id: detail
+    attributes:
+      label: 问题描述与依据
+      description: 请说明站点显示的值、你认为正确的值，以及核对来源（GitHub 页面链接等）
+      placeholder: |
+        站点显示：…
+        实际应为：…
+        核对来源：https://github.com/…
+    validations:
+      required: true

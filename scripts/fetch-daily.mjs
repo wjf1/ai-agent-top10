@@ -173,6 +173,14 @@ async function main() {
   console.log(
     `scored pool: ${records.length} (skipped ${skipped} without reliable growth, ${timedOut} failed/timed out)`
   );
+  // A1：裁剪一旦发生就必须可见，否则站点与后续分析都察觉不到
+  const cappedCount = records.filter((r) => r.capped).length;
+  if (cappedCount) {
+    console.log(
+      `::warning title=周增量被裁剪::${cappedCount}/${records.length} 个项目的周增量超过合理性上限被截断` +
+        `（capWeeklyGain: max(50, stars × ${config.growth?.maxWeeklyGainRatio ?? 0.08})），已落盘 gainCapped 标记。`
+    );
+  }
 
   // ---- 4. 评分 + 排名 ----
   const ctx = buildPoolContext(records);
@@ -258,6 +266,9 @@ async function main() {
       gainExact: p.exact,
       gainUnreliable: p.unreliable === true,
       gainLowerBound: p.lowerBound === true,
+      // A1：裁剪结果必须落盘。此前 capWeeklyGain 算了但从未写入，
+      // 一旦真发生裁剪，站点和后续分析都无从察觉。
+      gainCapped: p.capped === true,
       rankChange: typeof before === "number" ? before - rank : null,
       scores: p.scores,
       why,

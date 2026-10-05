@@ -85,6 +85,10 @@ export function gainSourceTag(entry: any, t: Strings): InterpretationTag {
         ? t.sourceWindow
         : t.sourceSnapshot;
   const note = `${t.gainSource}：${term}。${t.gainSourceNote}`;
+  // A1：周增量被合理性上限截断时，必须如实告知读者这个数字是封顶后的值
+  if (entry?.gainCapped) {
+    return { label: t.sourceCappedLabel, note: `${note} ${t.sourceCappedNote}` };
+  }
   // 覆盖率不足的事件流估算只是保守下界，必须显式说明，避免读者当成精确增量
   if (entry?.gainUnreliable && entry?.gainLowerBound) {
     return { label: t.sourceLowerBoundLabel, note: `${note} ${t.sourceLowerBoundNote}` };

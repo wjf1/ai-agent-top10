@@ -1,0 +1,44 @@
+name: 项目推荐 / Suggest a project
+description: 推荐一个应该被收录进榜单的 AI Agent 项目
+title: "[项目推荐] "
+labels: ["candidate"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢推荐 👋
+
+        **请先确认它符合候选池的入选条件**（见 `config/scoring.json`）：
+
+        | 条件 | 值 |
+        |---|---|
+        | 话题标签 | 含 `ai-agents` / `ai-agent` / `agent-framework` 之一，或关键词命中 `ai agent` |
+        | star 下限 | 300（前两个话题）/ 200（`agent-framework`）/ 800（关键词） |
+        | 最近推送 | 75 天内 |
+        | 其他 | 非归档、非 fork |
+
+        不满足上述条件不会被抓取。另外，榜单按**近期 star 增量**而非总量排名，
+        因此总量很大的老项目也未必上榜，这是预期行为。
+  - type: input
+    id: repo
+    attributes:
+      label: 仓库全名
+      placeholder: owner/repo
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: 推荐理由
+      description: 它解决什么问题、和同类项目相比有什么不同
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: 请确认
+      options:
+        - label: 该仓库不是本仓库作者自己的项目（避免自荐刷榜）
+          required: false
+        - label: 我已确认它符合上面的入选条件
+          required: true

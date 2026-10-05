@@ -1,15 +1,14 @@
 ---
 /**
- * 项目检索（P2-F3）。
+ * 项目检索（P2-F3 / T3.1）。
  *
- * 渐进增强：完整表格在构建期就渲染好（无 JS 也能用、SEO 友好），
- * 客户端的输入框只是过滤已经存在的表格行，不做数据请求也不重建 DOM。
+ * 排序与快捷筛选是独立静态路由（见 search/[...view].astro），因此本页只负责
+ * 默认视图（按累计增量）。共享 UI 在 components/SearchView.astro。
+ * 渐进增强：完整表格在构建期就渲染好（无 JS 也能用、SEO 友好）。
  */
 import Base from "../../layouts/Base.astro";
-import Icon from "../../components/Icon.astro";
-import ProjectTable from "../../components/ProjectTable.astro";
+import SearchView from "../../components/SearchView.astro";
 import { recentProjects } from "../../lib/aggregate";
-import { categories } from "../../lib/categorize.mjs";
 import { strings } from "../../lib/data.ts";
 import { searchPath } from "../../lib/routes.ts";
 
@@ -23,8 +22,6 @@ const lang = (Astro.params.lang === "en" ? "en" : "zh") as "zh" | "en";
 const t = strings(lang);
 const B = import.meta.env.BASE_URL.replace(/\/$/, "");
 const projects = await recentProjects({ window: WINDOW });
-const cats = categories().filter((c) => projects.some((p) => (p.entry.category ?? "other") === c.key));
-const languages = [...new Set(projects.map((p) => p.entry.language))].sort();
 ---
 
 <Base
@@ -39,153 +36,5 @@ const languages = [...new Set(projects.map((p) => p.entry.language))].sort();
     <p class="sub">{t.searchScope(WINDOW)}</p>
   </section>
 
-  <div class="filters" data-search-root>
-    <input
-      type="search"
-      class="search-input"
-      data-search-input
-      placeholder={t.searchPlaceholder}
-      aria-label={t.search}
-      autocomplete="off"
-    />
-    <div class="chips-row" role="group" aria-label={t.categories}>
-      <button type="button" class="fchip active" data-filter-category="all">{t.allCategories}</button>
-      {cats.map((c) => (
-        <button type="button" class="fchip" data-filter-category={c.key}>{lang === "zh" ? c.zh : c.en}</button>
-      ))}
-    </div>
-    <div class="chips-row" role="group" aria-label={t.language}>
-      <button type="button" class="fchip active" data-filter-language="all">{t.allCategories}</button>
-      {languages.map((l) => (
-        <button type="button" class="fchip" data-filter-language={l}>{l}</button>
-      ))}
-    </div>
-    <p class="count" data-search-count></p>
-  </div>
-
-  <ProjectTable {projects} {lang} windowDays={WINDOW} />
-
-  <div id="search-empty" class="search-empty hidden" role="status">
-    <div class="empty-icon"><Icon name="search" size={28} /></div>
-    <h3>{lang === "zh" ? "未找到匹配的项目" : "No matching projects found"}</h3>
-    <p class="empty-tip">
-      {lang === "zh"
-        ? "尝试调整搜索关键词，或重置分类与语言筛选条件。"
-        : "Try adjusting your search keywords, or reset category and language filters."}
-    </p>
-    <button type="button" class="btn ghost reset-btn" id="reset-filters-btn">
-      {lang === "zh" ? "清除所有筛选条件" : "Clear all filters"}
-    </button>
-  </div>
+  <SearchView {projects} {lang} window={WINDOW} />
 </Base>
-
-<script>
-  // 过滤的是构建期已经渲染好的行，不重建 DOM、不发请求，无 JS 时表格仍然完整可用。
-  const root = document.querySelector("[data-search-root]");
-  if (root) {
-    const input = root.querySelector<HTMLInputElement>("[data-search-input]");
-    const count = root.querySelector<HTMLElement>("[data-search-count]");
-    const rows = Array.from(document.querySelectorAll<HTMLTableRowElement>("table.ptable tbody tr[data-search]"));
-    const emptyState = document.getElementById("search-empty");
-    const resetBtn = document.getElementById("reset-filters-btn");
-
-    const state: Record<"category" | "language", string> = { category: "all", language: "all" };
-    const chipsOf = (attr: string) => Array.from(root.querySelectorAll<HTMLButtonElement>(`[data-filter-${attr}]`));
-
-    function apply() {
-      const text = input?.value.trim().toLowerCase() ?? "";
-      let visible = 0;
-      for (const row of rows) {
-        const show =
-          (!text || (row.dataset.search ?? "").includes(text)) &&
-          (state.category === "all" || row.dataset.category === state.category) &&
-          (state.language === "all" || row.dataset.language === state.language);
-        row.hidden = !show;
-        if (show) visible++;
-      }
-      if (count) count.textContent = `${visible} / ${rows.length}`;
-      if (emptyState) {
-        if (visible === 0) {
-          emptyState.classList.remove("hidden");
-        } else {
-          emptyState.classList.add("hidden");
-        }
-      }
-    }
-
-    input?.addEventListener("input", apply);
-
-    resetBtn?.addEventListener("click", () => {
-      if (input) input.value = "";
-      state.category = "all";
-      state.language = "all";
-      chipsOf("category").forEach((c) => c.classList.toggle("active", c.dataset.filterCategory === "all"));
-      chipsOf("language").forEach((c) => c.classList.toggle("active", c.dataset.filterLanguage === "all"));
-      apply();
-    });
-
-    for (const attr of ["category", "language"] as const) {
-      const key = attr === "category" ? "filterCategory" : "filterLanguage";
-      for (const chip of chipsOf(attr)) {
-        chip.addEventListener("click", () => {
-          chipsOf(attr).forEach((c) => c.classList.remove("active"));
-          chip.classList.add("active");
-          state[attr] = (chip.dataset as Record<string, string | undefined>)[key] ?? "all";
-          apply();
-        });
-      }
-    }
-
-    apply();
-  }
-</script>
-
-<style>
-  .hidden { display: none !important; }
-  .search-empty {
-    text-align: center;
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    padding: 36px 20px;
-    margin: 20px 0 40px;
-  }
-  .empty-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 52px;
-    height: 52px;
-    border-radius: var(--radius-full);
-    background: var(--accent-soft);
-    color: var(--accent);
-    margin-bottom: 12px;
-  }
-  .search-empty h3 { margin: 0 0 6px; font-size: 16px; color: var(--ink); }
-  .empty-tip { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
-  .reset-btn { font-size: 12.5px; padding: 6px 14px; }
-  .filters { display: grid; gap: 12px; margin: 22px 0 6px; }
-  .search-input {
-    width: 100%;
-    padding: 11px 15px;
-    font-size: 14px;
-    border-radius: 11px;
-    border: 1px solid var(--line);
-    background: var(--card);
-    color: var(--ink);
-  }
-  .search-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
-  .chips-row { display: flex; gap: 7px; flex-wrap: wrap; }
-  .fchip {
-    font-size: 12.5px;
-    padding: 4px 13px;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: var(--card);
-    color: var(--ink);
-    cursor: pointer;
-  }
-  .fchip:hover { border-color: var(--accent); color: var(--accent); }
-  .fchip.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
-  .count { margin: 0; font-size: 12px; color: var(--muted); }
-</style>

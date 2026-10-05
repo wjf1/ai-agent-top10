@@ -1,7 +1,7 @@
 # ai-agent-top10
 
 [![daily-update](https://github.com/wjf1/ai-agent-top10/actions/workflows/daily.yml/badge.svg)](https://github.com/wjf1/ai-agent-top10/actions/workflows/daily.yml)
-[![version](https://img.shields.io/badge/version-0.8.0-blue.svg)](package.json)
+[![version](https://img.shields.io/badge/version-0.9.0-blue.svg)](package.json)
 
 **每天从 GitHub 上按 star 增速选出最热的 10 个 AI Agent 项目，用 8 个可解释维度打分，并给出中英双语解读。**
 纯静态站点：无后端、无数据库、无运行时 API 调用。
@@ -45,6 +45,8 @@
 | **移动端友好与触控优化** | 顶栏导航精简，≤700px 移动视口下支持单行无折行平滑横向滚动；导航链接与主题按钮通过伪元素扩充至 ≥44×44px 规范触控热区。 |
 | **日 / 周 / 月三种周期** | 周榜与月榜在构建期用历史快照聚合，不额外调用任何 API。历史不足一个完整窗口时会显式标注实际覆盖天数，**不做线性外推**；增长率统一以**基线存量**为分母，日均增量统一按请求窗口标准化。 |
 | **趋势标识与相关推荐** | 卡片标注 NEW / 上升 N 位 / 连榜 N 期；详情页底部按「同分类 + 话题相似度」推荐 3 个同类项目与 2 个同期热门，全部构建期算好、零运行时请求。 |
+| **评分趋势与检索增强** | 详情页对连续在榜 ≥3 期的项目展示 8 维评分小倍数趋势图（缺失期不补零、不连线）；检索页支持 6 种排序与 3 种快捷筛选，排序走独立静态路由而非 query 参数，**关闭 JS 依然可用且链接可分享**。 |
+| **可观测的裁剪标记** | 周增量触发合理性上限时落盘 `gainCapped`，站点标注「已封顶」并提示真实增量可能更高，CI 同时输出告警——而不是静默截断。 |
 | **对比页双模式** | star 走势（绝对值 / 相对起点）之外新增**维度对比**：并排展示 8 维评分与 6 项关键指标，模式写入 URL query 便于分享。 |
 | **社交分享卡片** | 构建期用 SVG 模板 + sharp 生成 1200×630 的 OG 图（首页 + 最新一期各项目，共 22 张），并输出 og:* / twitter:card / canonical 元标签。 |
 | **采集预算分级** | 核心指标随 Search API 结果零成本取得；贡献者 / releases / PR / issue 等扩展指标按 extendedIntervalDays（默认 3 天）降频采集并标记 metricsStale；支持 GITHUB_TOKEN_1 / GITHUB_TOKEN_2 多 token 轮询，限流时先换 token 再退避。 |
@@ -72,6 +74,8 @@
 - **Mobile & touch ergonomics** — simplified top navigation with single-line horizontal touch scrolling on mobile (≤700px); hit areas expanded to ≥44×44px via invisible pseudo-elements.
 - **Daily / weekly / monthly boards** — weekly and monthly are aggregated at build time from historical snapshots, with **no extra API calls** and **no linear extrapolation** when history is short; growth rates use the **baseline** stock as denominator and daily gains are normalised by the requested window.
 - **Trend badges & related projects** — cards mark `NEW` / `Up N places` / `N-period streak`; the detail page recommends 3 similar projects (category + topic similarity) plus 2 hot ones from the same period, all computed at build time.
+- **Score trends & search upgrades** — detail pages show small-multiple 8-dimension score trends for projects listed ≥3 consecutive periods (gaps are never zero-filled or bridged); search offers 6 sorts and 3 quick presets, implemented as **real static routes rather than query params** so sorting works with JavaScript disabled and links stay shareable.
+- **Observable capping** — when a weekly gain hits the sanity cap, `gainCapped` is persisted, the site labels it "Capped" (noting the real gain may be higher) and CI raises a warning — instead of silently truncating.
 - **Dual-mode compare** — alongside star trajectories (absolute / indexed) there is now a **dimension view** comparing 8 scores and 6 key metrics side by side, with the mode persisted in the URL query.
 - **Social share cards** — build-time SVG templates rasterised with sharp produce 1200×630 OG images (home + every project of the latest period, 22 in total) with full `og:*` / `twitter:card` / `canonical` metadata.
 - **Tiered API budget** — core metrics come free with the Search API payload; contributors / releases / PRs / issues are collected every `extendedIntervalDays` (default 3) and marked `metricsStale`; `GITHUB_TOKEN_1` / `GITHUB_TOKEN_2` rotation switches token before backing off on rate limits.
@@ -287,7 +291,7 @@ Originals are backed up to `.rescored-backup/` before being overwritten.
 
 ## 变更记录
 
-见 [CHANGELOG.md](CHANGELOG.md)。当前版本 **0.8.0**。
+见 [CHANGELOG.md](CHANGELOG.md)。当前版本 **0.9.0**。
 
 ---
 

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 站点 / Live site
+    url: https://wjf1.github.io/ai-agent-top10/
+    about: 先看看线上榜单，确认问题确实存在
+  - name: 计划与已知取舍 / Plan and known trade-offs
+    url: https://github.com/wjf1/ai-agent-top10/blob/main/PLAN.md
+    about: 部分建议可能已在计划中，或已被评估并明确排除（附理由）

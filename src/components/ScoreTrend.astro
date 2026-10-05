@@ -1,0 +1,129 @@
+---
+/**
+ * 评分历史趋势（T3.2）—— 小倍数图（small multiples）。
+ *
+ * 每个维度一张独立迷你折线，而不是把 8 条线叠在一张图上：
+ *   - 维度量纲相同（都是 0-100），小倍数之间可直接比较；
+ *   - 早期数据只有 6 个维度，各维度的点数是不同的，叠加会让人误读为「掉线」；
+ *   - 纯 SVG，零 JS，零图表库。
+ * 缺失期不补点、不连线（由调用方保证只传真实存在的点）。
+ */
+import type { ScorePoint } from "../lib/score-series";
+
+interface DimSpec {
+  key: string;
+  label: string;
+}
+
+interface Props {
+  series: Record<string, ScorePoint[]>;
+  dims: DimSpec[];
+  lang?: "zh" | "en";
+  emptyText: string;
+  /** 每个维度至少需要多少个点才画（默认 2） */
+  minPoints?: number;
+}
+
+const { series, dims, lang = "zh", emptyText, minPoints = 2 } = Astro.props;
+
+const W = 168;
+const H = 40;
+const padX = 4;
+const padY = 5;
+
+const rows = dims.map((dim) => {
+  const points = series[dim.key] ?? [];
+  const ok = points.length >= minPoints;
+  let path = "";
+  let first = 0;
+  let last = 0;
+  let delta = 0;
+  let min = 0;
+  let max = 0;
+
+  if (ok) {
+    const values = points.map((p) => p.value);
+    min = Math.min(...values);
+    max = Math.max(...values);
+    const span = Math.max(1, max - min);
+    const x = (i: number) => padX + (i * (W - padX * 2)) / Math.max(1, points.length - 1);
+    const y = (v: number) => H - padY - ((v - min) / span) * (H - padY * 2);
+    path = points.map((p, i) => `${x(i).toFixed(1)},${y(p.value).toFixed(1)}`).join(" ");
+    first = values[0];
+    last = values[values.length - 1];
+    delta = Math.round((last - first) * 10) / 10;
+  }
+
+  return { ...dim, ok, path, first, last, delta, count: points.length, min, max };
+});
+
+const anyOk = rows.some((r) => r.ok);
+---
+
+<div class="score-trend panel">
+  <h2>
+    {lang === "zh" ? "评分趋势" : "Score trend"}
+    {anyOk && (
+      <span class="st-hint">
+        {lang === "zh" ? "仅统计该项目实际在榜的期数" : "only periods the project was actually listed"}
+      </span>
+    )}
+  </h2>
+  {!anyOk ? (
+    <p class="st-empty">{emptyText}</p>
+  ) : (
+    <div class="st-grid">
+      {rows.map((r) => (
+        <figure class="st-cell" class:list={[!r.ok && "is-empty"]}>
+          <figcaption>
+            <span class="st-label">{r.label}</span>
+            {r.ok ? (
+              <span class="st-value">
+                {Math.round(r.last)}
+                <small class:list={[r.delta > 0 ? "up" : r.delta < 0 ? "down" : "flat"]}>
+                  {r.delta > 0 ? "+" : ""}{r.delta}
+                </small>
+              </span>
+            ) : (
+              <span class="st-value muted">{lang === "zh" ? "数据不足" : "n/a"}</span>
+            )}
+          </figcaption>
+          {r.ok ? (
+            <svg viewBox={`0 0 ${W} ${H}`} class="st-svg" role="img" aria-label={`${r.label}: ${Math.round(r.first)} → ${Math.round(r.last)}`}>
+              <polyline points={r.path} fill="none" stroke="var(--data-primary, var(--accent))" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
+            </svg>
+          ) : (
+            <svg viewBox={`0 0 ${W} ${H}`} class="st-svg" aria-hidden="true">
+              <line x1={padX} y1={H / 2} x2={W - padX} y2={H / 2} stroke="var(--line)" stroke-width="1" stroke-dasharray="3 3" />
+            </svg>
+          )}
+          <span class="st-meta">
+            {r.ok
+              ? `${r.count} ${lang === "zh" ? "期" : "periods"}`
+              : lang === "zh" ? "该维度早期未采集" : "not collected early on"}
+          </span>
+        </figure>
+      ))}
+    </div>
+  )}
+</div>
+
+<style>
+  .score-trend { margin-top: 0; }
+  .score-trend h2 { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .st-hint { font-size: 12px; font-weight: 400; color: var(--muted); }
+  .st-empty { margin: 0; color: var(--muted); font-size: 13.5px; }
+  .st-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px 14px; }
+  .st-cell { margin: 0; display: flex; flex-direction: column; gap: 2px; }
+  .st-cell figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+  .st-label { font-size: 12px; color: var(--muted); }
+  .st-value { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .st-value small { font-weight: 600; margin-left: 4px; font-size: 12px; }
+  .st-value small.up { color: var(--good-ink); }
+  .st-value small.down { color: var(--warn-ink); }
+  .st-value small.flat { color: var(--muted); }
+  .st-value.muted { color: var(--muted); font-weight: 400; }
+  .st-svg { width: 100%; height: auto; display: block; }
+  .st-meta { font-size: 11.5px; color: var(--muted); }
+  .st-cell.is-empty { opacity: 0.55; }
+</style>

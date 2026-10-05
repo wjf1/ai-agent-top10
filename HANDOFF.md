@@ -10,9 +10,9 @@
 - **仓库地址**：<https://github.com/wjf1/ai-agent-top10>
 - **线上站点**：<https://wjf1.github.io/ai-agent-top10/>（双语支持：英文根路由 `/en/`）
 - **项目定位**：每天按 GitHub star 真实增量筛选 Top 10 AI Agent 开源项目，基于 8 个可解释维度加权打分，并生成中英双语通俗定位解读与数据报表。
-- **当前发布版本**：`v0.8.0`（2026-10-05 发布，Phase 2 口径修复与体验增强）
+- **当前发布版本**：`v0.9.0`（2026-10-05 发布，PLAN.md 首批：评分趋势 / 检索增强 / 社区入口 / 裁剪可观测）
 - **当前 Git 分支**：`main`（与远端 `origin/main` 保持同步，工作区 Clean）
-- **最新 Release**：[GitHub Release v0.8.0](https://github.com/wjf1/ai-agent-top10/releases/tag/v0.8.0)
+- **最新 Release**：[GitHub Release v0.9.0](https://github.com/wjf1/ai-agent-top10/releases/tag/v0.9.0)
 - **CI/CD 状态**：GitHub Actions `daily-update` 工作流自动化运行通过（构建耗时 ~25s，全自动部署至 GitHub Pages）。
 - **进行中的计划**：《ai-agent-top10 优化开发方案及实施计划》共 3 个 Phase、33 项任务；**Phase 1（T1.1–T1.8）与 Phase 2 主体（T2.1–T2.14，其中 T2.5 的 GraphQL 与 T2.6 明确延后）已完成并发布**，Phase 3（T3.1–T3.11）待推进。
 
@@ -40,7 +40,7 @@ npm install
 # 2. 本地开发服务器 (默认端口 http://localhost:4321)
 npm run dev
 
-# 3. 运行全量单元测试（当前 89 项，跨 4 个测试文件）
+# 3. 运行全量单元测试（当前 93 项，跨 5 个测试文件）
 npm test
 
 # 4. 执行数据结构完整性与安全门禁校验
@@ -175,8 +175,8 @@ ai-agent-top10
 
 | 处置 | 任务 |
 |---|---|
-| **保留执行** | T3.1 搜索增强、T3.2 评分历史追踪、T3.3 社区参与入口 |
-| **新增（实测发现）** | A1 `gainCapped` 落盘、A2 `scoringVersion` 历史补齐 |
+| **已完成（v0.9.0）** | T3.1 搜索增强、T3.2 评分历史追踪、T3.3 社区参与入口、A1 gainCapped 落盘 |
+| **新增（实测发现）** | ~~A1 `gainCapped` 落盘~~（已完成）、A2 `scoringVersion` 历史补齐（运维项） |
 | **删除（前提不成立）** | T3.5 / T3.6 / T3.7 / T3.8 / T3.9 / T3.11 / T2.6 |
 | **合并重写** | T3.4 / T3.5 / T3.6 → T3.4′ 历史保留策略（触发式，当前不实施） |
 | **延后保留** | T2.5 GraphQL 批量查询 |
