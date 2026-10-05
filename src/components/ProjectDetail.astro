@@ -4,6 +4,7 @@ import Base from "../layouts/Base.astro";
 import Radar from "./Radar.astro";
 import TrendChart from "./TrendChart.astro";
 import { categoryLabel } from "../lib/categorize.mjs";
+import { detailLead, forkAnomaly, gainSourceTag, highlightsTitle, interpretationTag, momentReasons, scoreFactors } from "../lib/display.ts";
 import { dimensionLabels, strings, type Lang } from "../lib/data.ts";
 import { archivePath, categoryPath, comparePath, dayPath } from "../lib/routes.ts";
 
@@ -13,9 +14,15 @@ interface Props {
   lang?: Lang;
   series: { date: string; stars?: number | null; forks?: number | null }[];
   langHref: string;
+  /** 增量与增速所覆盖的天数，来自当期日榜的 windowDays */
+  windowDays?: number;
+  /** 连续在榜期数（含本期），0 表示未知 */
+  streak?: number;
+  /** 该项目最早出现在榜单上的日期（由索引算出，比条目里存的 firstSeen 可信） */
+  firstDate?: string;
 }
 
-const { entry, date, lang = "zh", series = [], langHref } = Astro.props;
+const { entry, date, lang = "zh", series = [], langHref, windowDays = 7, streak = 0, firstDate = "" } = Astro.props;
 const t = strings(lang);
 const B = import.meta.env.BASE_URL.replace(/\/$/, "");
 const fmt = (n: number) => Number(n ?? 0).toLocaleString("en-US");
@@ -41,19 +48,16 @@ const minorStats = [
 ];
 
 const change = typeof entry.rankChange === "number" ? entry.rankChange : null;
-const sourceLabel =
-  entry.gainSource === "events"
-    ? t.sourceEvents
-    : entry.gainSource === "stargazers"
-      ? t.sourceStargazers
-      : entry.gainSource === "snapshot-window"
-        ? t.sourceWindow
-        : t.sourceSnapshot;
+const srcTag = gainSourceTag(entry, t);
 
-// 头图副标题：中文页用解读文案的首句（GitHub 原始 description 是英文），英文页沿用原描述
-const rawDesc = String(entry.intro?.zh || entry.description || "");
-const firstDot = rawDesc.indexOf("。");
-const brief = lang === "zh" ? (firstDot > 8 ? rawDesc.slice(0, firstDot + 1) : rawDesc) : String(entry.description || "");
+// 头图导语：用「卡片一行版」这个字段，它本就是为一句话定位设计的。
+// 早先取介绍首句，遇到单句式介绍时头图和「它能做什么？」会一字不差地重复同一句。
+const lead = detailLead(entry, lang);
+const interpTag = interpretationTag(entry, t);
+const factors = scoreFactors(entry.scores, dims);
+const scoreSummary = t.scoreSummary(entry.scores.overall, factors.low, factors.high);
+const moments = momentReasons({ ...entry, firstSeen: firstDate || entry.firstSeen }, { streak, date, t });
+const anomaly = forkAnomaly(entry, t);
 ---
 
 <Base
@@ -71,8 +75,8 @@ const brief = lang === "zh" ? (firstDot > 8 ? rawDesc.slice(0, firstDot + 1) : r
       {entry.full_name}
     </div>
     <h1>{entry.full_name}</h1>
-    {entry.description && (
-      <p class="sub desc">{brief}</p>
+    {lead && (
+      <p class="sub desc">{lead}</p>
     )}
     <div class="tag-row">
       {entry.category && <a class="cat-chip" href={categoryPath(B, lang, entry.category)}>{categoryLabel(entry.category, lang)}</a>}
@@ -97,7 +101,9 @@ const brief = lang === "zh" ? (firstDot > 8 ? rawDesc.slice(0, firstDot + 1) : r
           {change > 0 ? `${t.rankUp} ${change}` : change < 0 ? `${t.rankDown} ${Math.abs(change)}` : t.rankSame}
         </span>
       )}
-      {entry.firstSeen && <span class="meta-line">{t.createdNote}：{entry.firstSeen}</span>}
+      {(firstDate || entry.firstSeen) && (
+        <span class="meta-line">{t.createdNote}：{firstDate || entry.firstSeen}</span>
+      )}
     </div>
   </section>
 
@@ -107,30 +113,45 @@ const brief = lang === "zh" ? (firstDot > 8 ? rawDesc.slice(0, firstDot + 1) : r
       <div class="radar-holder">
         <Radar scores={entry.scores} dims={dims} size={262} pad={62} />
       </div>
-      <div class="dim-rows">
+      <ul class="dim-list">
         {dims.map((d) => (
-          <div class="dim-row" title={`${d.label} · ${t.weight} ${(d.weight * 100).toFixed(0)}%`}>
-            <span class="dim-name" title={d.desc}>{d.label}</span>
-            <div class="dim-bar"><div class="dim-fill" style={`width:${entry.scores[d.key]}%`} /></div>
-            <b>{entry.scores[d.key]}</b>
-          </div>
+          <li class="dim-item">
+            <div class="dim-line">
+              <span class="dim-name">{d.label}</span>
+              <div class="dim-bar"><div class="dim-fill" style={`width:${entry.scores[d.key]}%`} /></div>
+              <b>{entry.scores[d.key]}</b>
+            </div>
+            <p class="dim-desc">{d.desc} · {t.weight} {(d.weight * 100).toFixed(0)}%</p>
+          </li>
         ))}
-      </div>
-      <p class="hint">{t.scoreTooltipHint}</p>
-      <p class="hint">
-        {t.gainSource}：{sourceLabel}{entry.gainExact === false ? `（${t.estimated}）` : ""}
-      </p>
+      </ul>
+      {scoreSummary && <p class="score-summary">{scoreSummary}</p>}
+      <p class="hint">{srcTag.note}</p>
+      <p class="hint">{t.growthRateNote(windowDays)}</p>
     </div>
 
     <div class="detail-col">
       <div class="panel">
-        <h2>{t.intro}</h2>
+        <h2>
+          {t.intro}
+          {interpTag && (
+            <span class="src-tag" title={interpTag.note}>{interpTag.label}</span>
+          )}
+        </h2>
         <p class="prose">{entry.intro?.[lang] ?? entry.why[lang]}</p>
+      </div>
+
+      <div class="panel">
+        <h2>{t.momentTitle}</h2>
+        <ul class="moment-list">
+          {moments.map((r: string) => <li>{r}</li>)}
+        </ul>
+        {anomaly && <p class="warn-note">{anomaly.text}</p>}
       </div>
 
       {entry.highlights?.length > 0 && (
         <div class="panel">
-          <h2>{t.highlights}</h2>
+          <h2>{highlightsTitle(entry, t)}</h2>
           <ul>{entry.highlights.map((h: any) => <li class="good">{h[lang]}</li>)}</ul>
         </div>
       )}
@@ -174,6 +195,11 @@ const brief = lang === "zh" ? (firstDot > 8 ? rawDesc.slice(0, firstDot + 1) : r
     font-weight: 600;
   }
   .topic-chip { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: var(--card-2); color: var(--muted); border: 1px solid var(--line); }
+  .panel h2 .src-tag {
+    margin-left: 8px; font-size: 11px; font-weight: 600; vertical-align: 2px;
+    padding: 1px 8px; border-radius: 999px; border: 1px dashed var(--line);
+    background: var(--card-2); color: var(--muted); cursor: help;
+  }
   .change-chip { align-self: center; font-size: 12px; font-weight: 700; padding: 3px 11px; border-radius: 999px; }
   .change-chip.up { color: var(--good); background: var(--good-soft); }
   .change-chip.down { color: var(--warn); background: var(--warn-soft); }
@@ -182,5 +208,10 @@ const brief = lang === "zh" ? (firstDot > 8 ? rawDesc.slice(0, firstDot + 1) : r
   .radar-holder { display: flex; justify-content: center; margin-bottom: 8px; overflow: visible; }
   .dim-name { border-bottom: 1px dotted var(--line); cursor: help; }
   .hint { margin: 12px 0 0; color: var(--muted); font-size: 11.5px; }
+  .moment-list { margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.75; }
+  .warn-note {
+    margin: 10px 0 0; padding: 8px 11px; font-size: 12.5px; line-height: 1.6;
+    color: var(--warn); background: var(--warn-soft); border-radius: 8px;
+  }
   .detail-col { display: grid; gap: 18px; align-content: start; }
 </style>

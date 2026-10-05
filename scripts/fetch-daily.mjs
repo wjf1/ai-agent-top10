@@ -22,6 +22,7 @@
  */
 import assert from "node:assert";
 import path from "node:path";
+import { appendFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import { config } from "../src/lib/config.mjs";
@@ -34,7 +35,8 @@ import { discoverCandidates } from "./lib/candidates.mjs";
 import { resolveForkGrowth, resolveStarGrowth } from "./lib/growth.mjs";
 import { collectMetrics } from "./lib/metrics.mjs";
 import { llmInterpretation, normalizeInterpretation, ruleBasedInterpretation } from "./lib/interpret.mjs";
-import { fetchReadmeExcerpt } from "./lib/readme.mjs";
+import { excerptFromMarkdown, extractInstallSnippet, fetchReadmeMarkdown } from "./lib/readme.mjs";
+import { ciWarningLine, interpretationStatus, stepSummary } from "./lib/status.mjs";
 import {
   dataPaths,
   listDailyDates,
@@ -166,8 +168,16 @@ async function main() {
   if (!manualCount) {
     // 项目介绍要把 README 读成人话；只对最终上榜的项目抓，避免白花 API 调用
     const readmeLimit = config.interpretation?.readmeExcerptLength ?? 2600;
-    for (const p of ranked) p.readmeExcerpt = await fetchReadmeExcerpt(client, p.full_name, { limit: readmeLimit });
-    console.log(`readme: ${ranked.filter((p) => p.readmeExcerpt).length}/${ranked.length} excerpt(s) fetched`);
+    for (const p of ranked) {
+      const markdown = await fetchReadmeMarkdown(client, p.full_name);
+      p.readmeExcerpt = excerptFromMarkdown(markdown, readmeLimit);
+      // 安装段单独留一份给「快速上手」：规则兜底时至少能给出一条真实命令
+      p.readmeInstall = extractInstallSnippet(markdown);
+    }
+    console.log(
+      `readme: ${ranked.filter((p) => p.readmeExcerpt).length}/${ranked.length} excerpt(s), ` +
+        `${ranked.filter((p) => p.readmeInstall).length}/${ranked.length} install snippet(s)`
+    );
     llmMap = await llmInterpretation(ranked, { log: console.log });
   } else console.log(`interpretation: manual file found (${manualCount} entries), skipping LLM`);
 
@@ -232,6 +242,22 @@ async function main() {
       firstSeen: fromManual?.firstSeen ?? date,
     };
   });
+
+  // ---- 5b. 解读来源构成 ----
+  // LLM 调不通时整轮会静默退回模板文案且 job 仍为绿（2026-09-28 起持续一周才发现），
+  // 所以把构成打进日志、注解和 step summary，让降级本身成为可见信号。
+  const interpStatus = interpretationStatus(entries);
+  const interpLine = stepSummary(interpStatus, date);
+  console.log(interpLine);
+  const interpWarning = ciWarningLine(interpStatus);
+  if (interpWarning) console.log(interpWarning);
+  if (process.env.GITHUB_STEP_SUMMARY) {
+    try {
+      appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${interpLine}\n`);
+    } catch {
+      // 写 summary 失败不该拖垮抓取
+    }
+  }
 
   // ---- 6. 落盘 ----
   const doc = {

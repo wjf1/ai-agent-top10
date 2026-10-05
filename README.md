@@ -176,8 +176,8 @@ npm run check        # 测试 + 校验 + 构建
 | 变量 | 作用 |
 |---|---|
 | `GITHUB_TOKEN` | 调用 GitHub API；缺省时回落到 `gh auth token` |
-| `LLM_API_KEY` | 可选。读取哪个变量由 `interpretation.apiKeyEnv` 决定（默认 `COMMANDCODE_API_KEY`，即本机 Command Code 代理）；密钥缺失或请求失败时自动回落到规则化文案 |
-| `LLM_BASE_URL` / `LLM_MODEL` | 可选。覆盖 `interpretation.baseUrl` / `model`。**CI 上必须配** —— runner 访问不到本机的 `127.0.0.1:9090`，指向外部兼容服务（DeepSeek / OpenAI 等）即可，未配置时该轮解读回落规则版 |
+| `LLM_API_KEY` | 可选。读取哪个变量由 `interpretation.apiKeyEnv` 决定（默认 `COMMANDCODE_API_KEY`，即本机 Command Code 代理）；密钥缺失或请求失败时自动回落到规则化文案，**并在 Actions 里输出 `::warning` 注解**（不再静默降级） |
+| `LLM_BASE_URL` / `LLM_MODEL` | 可选。覆盖 `interpretation.baseUrl` / `model`。**CI 上必须配** —— runner 访问不到本机的 `127.0.0.1:9090`，指向外部兼容服务（DeepSeek / OpenAI 等）即可，未配置时该轮解读回落规则版。配好后用 `npm run backfill:interpretations -- --llm` 补历史，或 `--refresh-rules` 只按新口径重算规则条目 |
 | `MAX_CANDIDATES=3` | 只跑前 N 个候选，用于快速冒烟 |
 | `DRY_RUN=1` | 跑完整流程但不写 `src/data/` |
 | `DEBUG_REQUESTS=1` | 打印每次 API 请求的 URL 与耗时，便于定位限流 / 超时 |

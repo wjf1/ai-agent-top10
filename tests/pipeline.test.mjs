@@ -9,7 +9,19 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { categorize } from "../src/lib/categorize.mjs";
-import { normalizeInterpretation, ruleBasedInterpretation, ruleIntro } from "../src/lib/interpret.mjs";
+import {
+  cardLineTag,
+  detailLead,
+  forkAnomaly,
+  gainSourceTag,
+  highlightsTitle,
+  interpretationTag,
+  momentReasons,
+  scoreFactors,
+  streakLength,
+} from "../src/lib/display.ts";
+import { strings } from "../src/lib/data.ts";
+import { normalizeInterpretation, ruleBasedInterpretation, ruleCardLine, ruleIntro, textWidth } from "../src/lib/interpret.mjs";
 import { topicLabel, topicLabels } from "../src/lib/topic-labels.mjs";
 import { toCsv, csvCell } from "../src/lib/csv.ts";
 import { buildPoolContext, clamp, log01, log100, percentile, recomputeOverall, scoreProject } from "../src/lib/scoring.mjs";
@@ -23,8 +35,11 @@ import {
   sanitizeUrl,
 } from "../src/lib/sanitize.mjs";
 import { validateDailyDoc } from "../scripts/lib/schema.mjs";
+import { refreshRuleEntry, selectDates } from "../scripts/lib/refresh.mjs";
+import { ciWarningLine, interpretationStatus, stepSummary } from "../scripts/lib/status.mjs";
 import { capWeeklyGain, gainFromSnapshots, windowDaysBetween } from "../scripts/lib/growth.mjs";
 import { pickBaselineForWindow } from "../src/lib/timewindow.mjs";
+import { extractInstallSnippet } from "../scripts/lib/readme.mjs";
 
 // ---------------------------------------------------------------- 测试夹具
 
@@ -383,6 +398,280 @@ test("校验器拦住日期不匹配", () => {
   assert.ok(validateDailyDoc(validDoc(), { expectedDate: "2026-01-01" }).some((e) => e.includes("date")));
 });
 
+// ----------------------------------------------------------- 详情页呈现（纯函数部分）
+
+test("详情页头图那行给一句话定位，不再把整段介绍重复一遍", () => {
+  const entry = {
+    cardLine: { zh: "能干什么的一句话", en: "one line" },
+    intro: { zh: "完整的两三句介绍。", en: "Full intro." },
+    description: "Raw description",
+  };
+  assert.equal(detailLead(entry, "zh"), "能干什么的一句话");
+  assert.notEqual(detailLead(entry, "zh"), entry.intro.zh, "头图行不能等于整段介绍");
+});
+
+test("详情页头图行在缺 cardLine 的老数据上回落到介绍首句，再回落到仓库描述", () => {
+  assert.equal(detailLead({ intro: { zh: "第一句。第二句。", en: "" }, description: "d" }, "zh"), "第一句。");
+  assert.equal(detailLead({ description: "just a desc" }, "zh"), "just a desc");
+  assert.equal(detailLead({}, "zh"), "");
+});
+
+test("规则生成的亮点改称「数据要点」，LLM / 人工版仍叫「核心亮点」", () => {
+  const t = strings("zh");
+  assert.equal(highlightsTitle({ interpretationSource: "rules" }, t), "数据要点");
+  assert.equal(highlightsTitle({ interpretationSource: "llm" }, t), "核心亮点");
+  assert.equal(highlightsTitle({}, t), "核心亮点", "老数据没有来源字段时不改名");
+});
+
+test("解读来源徽标：rules 说清是模板拼装，llm 标 AI 解读，来源未知时不显示", () => {
+  const t = strings("zh");
+  assert.equal(interpretationTag({ interpretationSource: "rules" }, t).label, "规则生成");
+  assert.ok(interpretationTag({ interpretationSource: "rules" }, t).note.includes("README"));
+  assert.equal(interpretationTag({ interpretationSource: "llm" }, t).label, "AI 解读");
+  assert.equal(interpretationTag({ interpretationSource: "manual" }, t).label, "人工校对");
+  assert.equal(interpretationTag({}, t), null);
+});
+
+test("卡片来源标注：那一行是仓库自述时标「仓库自述」，模板拼装时标「规则生成」，AI 解读不加噪", () => {
+  const t = strings("zh");
+  const described = {
+    description: "Search, scrape, and interact with the web.",
+    cardLine: ruleCardLine({ description: "Search, scrape, and interact with the web.", category: "framework", topics: [] }),
+    interpretationSource: "rules",
+  };
+  assert.equal(cardLineTag(described, t).label, "仓库自述");
+  const templated = {
+    description: "",
+    cardLine: { zh: "方向：MCP 协议", en: "Focused on MCP" },
+    interpretationSource: "rules",
+  };
+  assert.equal(cardLineTag(templated, t).label, "规则生成");
+  assert.equal(cardLineTag({ ...described, interpretationSource: "llm" }, t), null, "有编辑解读时不必再挂来源 chip");
+});
+
+// ----------------------------------------------------------- 历史文案回填
+
+test("回填 --refresh-rules 只覆盖规则生成的条目，LLM / 人工解读一个字都不动", () => {
+  const llmEntry = {
+    full_name: "a/keep",
+    interpretationSource: "llm",
+    intro: { zh: "模型写的介绍", en: "model written" },
+    cardLine: { zh: "模型写的一行", en: "model line" },
+  };
+  assert.equal(refreshRuleEntry(llmEntry, record(), 7).changed, false);
+  assert.deepEqual(llmEntry.intro, { zh: "模型写的介绍", en: "model written" }, "不应被写回");
+
+  const ruleEntry = {
+    full_name: "acme/agent",
+    interpretationSource: "rules",
+    intro: { zh: "旧模板腔", en: "old" },
+    cardLine: { zh: "旧的一行", en: "old" },
+  };
+  const result = refreshRuleEntry(ruleEntry, { ...record(), description: "Runs your agent jobs" }, 7);
+  assert.equal(result.changed, true);
+  assert.ok(ruleEntry.intro.zh.includes("Runs your agent jobs"), ruleEntry.intro.zh);
+  assert.equal(ruleEntry.interpretationSource, "rules", "来源仍应是规则");
+});
+
+test("回填遇到没有来源字段的老数据时不得覆盖（无法判断是不是人工写的）", () => {
+  const legacy = { full_name: "acme/agent", intro: { zh: "可能是人工写的", en: "maybe human" } };
+  assert.equal(refreshRuleEntry(legacy, record(), 7).changed, false);
+  assert.equal(legacy.intro.zh, "可能是人工写的");
+});
+
+// ----------------------------------------------------------- 解读降级告警
+
+test("只要有条目退回规则文案就要告警：09-28 起整轮静默降级一周无人发现", () => {
+  const allRules = Array.from({ length: 10 }, () => ({ interpretationSource: "rules" }));
+  const status = interpretationStatus(allRules);
+  assert.equal(status.rules, 10);
+  assert.equal(status.total, 10);
+  const warning = ciWarningLine(status);
+  assert.ok(warning.startsWith("::warning"), `必须是 Actions 告警注解：${warning}`);
+  assert.ok(warning.includes("LLM"), "告警要点名 LLM 解读没生效");
+  assert.ok(warning.includes("LLM_BASE_URL"), "告警要给出可直接行动的排查方向");
+
+  const mixed = interpretationStatus([
+    { interpretationSource: "llm" },
+    { interpretationSource: "rules" },
+  ]);
+  assert.ok(ciWarningLine(mixed).startsWith("::warning"), "部分回落同样要提示");
+  assert.ok(!ciWarningLine(mixed).includes("整轮"), "部分回落不该说成整轮降级");
+});
+
+test("LLM 全部生效时不产生告警，但摘要仍要写清来源构成", () => {
+  const ok = interpretationStatus([
+    { interpretationSource: "llm" },
+    { interpretationSource: "manual" },
+  ]);
+  assert.equal(ciWarningLine(ok), "");
+  assert.equal(ok.rules, 0);
+  assert.match(stepSummary(ok, "2026-10-05"), /llm 1 · manual 1 · rules 0/);
+});
+
+// ----------------------------------------------------------- 快速上手（README 安装段）
+
+test("快速上手：从 README 取第一个安装代码块，而不是空喊「请参考仓库 README」", () => {
+  const markdown = [
+    "# Orca",
+    "Run a fleet of parallel agents.",
+    "## Installation",
+    "```bash",
+    "npm install -g @stably/orca",
+    "```",
+    "## Usage",
+    "```bash",
+    "orca start",
+    "```",
+  ].join("\n");
+  const snippet = extractInstallSnippet(markdown);
+  assert.ok(snippet.includes("npm install -g @stably/orca"), snippet);
+  assert.ok(!snippet.includes("orca start"), `只取安装那一段，别把整篇 README 塞进来：${snippet}`);
+});
+
+test("快速上手：没有安装标题时靠安装类命令识别代码块", () => {
+  const markdown = "```console\n$ uv pip install agent-reach\n```\n\n```js\nimport { x } from 'y';\n```";
+  assert.match(extractInstallSnippet(markdown), /uv pip install agent-reach/);
+});
+
+test("快速上手：README 里没有安装段时返回空串，由调用方保留 git clone 兜底", () => {
+  assert.equal(extractInstallSnippet("# Proj\nSome prose only\n"), "");
+  assert.equal(extractInstallSnippet(""), "");
+  assert.equal(extractInstallSnippet(null), "");
+});
+
+test("快速上手：安装段要过净化（剥标签与控制字符）并限长", () => {
+  const markdown = "## Install\n```sh\ncurl -sL https://get.example/x.sh | sh <script>alert(1)</script>\n```";
+  const snippet = extractInstallSnippet(markdown);
+  assert.ok(!snippet.includes("<script>"), snippet);
+  assert.ok(snippet.includes("curl -sL https://get.example/x.sh | sh"), snippet);
+  const long = `## Install\n\`\`\`sh\n${"echo a; ".repeat(400)}\n\`\`\``;
+  assert.ok(extractInstallSnippet(long, 200).length <= 201, "限长后带省略号");
+});
+
+test("快速上手：拿到安装段就标注来自 README，拿不到时保留通用 clone 文案", () => {
+  const withSnippet = ruleBasedInterpretation({ ...record(), readmeInstall: "npm install -g orca" });
+  assert.ok(withSnippet.quickstart.includes("npm install -g orca"), withSnippet.quickstart);
+  assert.ok(withSnippet.quickstart.includes("README"), `应说明这段摘自 README：${withSnippet.quickstart}`);
+  const without = ruleBasedInterpretation({ ...record(), url: "https://github.com/acme/agent" });
+  assert.ok(without.quickstart.includes("git clone"), without.quickstart);
+});
+
+test("首屏 No.1 统计要说清是窗口增量，不能写成「7,454 stars」让人以为是总量", () => {
+  const zh = strings("zh").top1Gain("7,454", 7);
+  assert.ok(zh.includes("7,454") && zh.includes("7"), zh);
+  assert.ok(/近\s*7\s*天|7 天/.test(zh), `必须点明窗口：${zh}`);
+  assert.ok(!/^7,454 stars$/.test(zh), zh);
+  assert.match(strings("en").top1Gain("7,454", 7), /in 7 days/);
+});
+
+test("回填 --since 只取该日期之后的期数，避免覆盖更早的 LLM 文案", () => {
+  const dates = ["2026-09-13", "2026-09-27", "2026-09-28", "2026-10-04"];
+  assert.deepEqual(selectDates(dates, { since: "2026-09-28" }), ["2026-09-28", "2026-10-04"]);
+  assert.deepEqual(selectDates(dates, {}), dates, "不给 since 时保持原有全量行为");
+  assert.deepEqual(selectDates(dates, { since: "2099-01-01" }), []);
+  assert.deepEqual(selectDates(["2026-10-04", "2026-09-28", "2026-09-13"], { since: "2026-09-20" }), ["2026-09-28", "2026-10-04"]);
+});
+
+test("综合分要能一句话说清被哪两个维度拉低", () => {
+  const dims = [
+    { key: "heat", label: "热度趋势", weight: 0.16 },
+    { key: "practical", label: "实用完成度", weight: 0.15 },
+    { key: "ecosystem", label: "生态潜力", weight: 0.12 },
+    { key: "activity", label: "迭代活跃度", weight: 0.12 },
+  ];
+  const factors = scoreFactors({ heat: 100, practical: 100, ecosystem: 54, activity: 42, overall: 74 }, dims);
+  assert.deepEqual(
+    factors.low.map((f) => `${f.label} ${f.value}`),
+    ["迭代活跃度 42", "生态潜力 54"]
+  );
+  assert.deepEqual(
+    factors.high.map((f) => f.label),
+    ["热度趋势", "实用完成度"]
+  );
+  const t = strings("zh");
+  const sentence = t.scoreSummary(74, factors.low, factors.high);
+  assert.ok(sentence.includes("拉低") && sentence.includes("迭代活跃度 42"), sentence);
+});
+
+test("各维度齐平或历史数据缺维度时，不硬凑拉分项", () => {
+  const even = scoreFactors({ a: 75, b: 75, overall: 75 }, [
+    { key: "a", label: "A", weight: 0.5 },
+    { key: "b", label: "B", weight: 0.5 },
+  ]);
+  assert.deepEqual(even.low, []);
+  assert.deepEqual(even.high, []);
+  assert.equal(strings("zh").scoreSummary(75, even.low, even.high), "");
+
+  const partial = scoreFactors({ heat: 90, overall: 80 }, [
+    { key: "heat", label: "热度趋势", weight: 0.16 },
+    { key: "health", label: "健康可持续", weight: 0.08 },
+  ]);
+  assert.deepEqual(partial.low, [], "没有分数的维度不能当成 0 分来归因");
+  assert.deepEqual(partial.high.map((f) => f.label), ["热度趋势"]);
+});
+
+test("增速来源给读者「精确 / 估算」，内部术语收进悬停说明", () => {
+  const t = strings("zh");
+  const snap = gainSourceTag({ gainSource: "snapshot", gainExact: true }, t);
+  assert.equal(snap.label, "精确差值");
+  assert.ok(snap.note.includes("快照差值"), snap.note);
+  const est = gainSourceTag({ gainSource: "events", gainExact: false }, t);
+  assert.equal(est.label, "估算");
+  assert.ok(est.note.includes("事件流"), est.note);
+  // gainExact 缺失时按来源判定，不能默认说自己是精确值
+  assert.equal(gainSourceTag({ gainSource: "stargazers" }, t).label, "精确差值");
+  assert.equal(gainSourceTag({ gainSource: "events" }, t).label, "估算");
+});
+
+test("「增速 4%」要能被解释清楚：窗口新增 ÷ 当前 star 总量", () => {
+  const t = strings("zh");
+  const note = t.growthRateNote(7);
+  assert.ok(note.includes("近 7 天新增") && note.includes("当前 star"), note);
+  assert.match(strings("en").growthRateNote(7), /gain over the last 7 days/i);
+});
+
+test("连续在榜期数只数紧挨着的期，中间断了就重新计", () => {
+  const dates = ["2026-10-04", "2026-10-03", "2026-10-02", "2026-10-01", "2026-09-30"];
+  const seen = ["2026-09-30", "2026-10-01", "2026-10-03", "2026-10-04"];
+  assert.equal(streakLength(dates, seen, "2026-10-04"), 2, "10-02 缺一期，只能算 10-03、10-04");
+  assert.equal(streakLength(dates, seen, "2026-10-01"), 2);
+  assert.equal(streakLength(dates, [], "2026-10-04"), 0);
+  assert.equal(streakLength(dates, seen, "2026-10-02"), 0, "当天没上榜就不该有连榜");
+});
+
+test("fork / star 比明显偏高要提示，正常区间不打扰", () => {
+  const t = strings("zh");
+  const odd = forkAnomaly({ stars: 250872, forks: 53770 }, t);
+  assert.equal(odd.level, "warn");
+  assert.ok(odd.text.includes("21%"), odd.text);
+  assert.ok(odd.text.includes("fork"), odd.text);
+  assert.equal(forkAnomaly({ stars: 152269, forks: 8171 }, t), null, "5.4% 属正常");
+  assert.equal(forkAnomaly({ stars: 0, forks: 0 }, t), null, "没有基数时不做判断");
+});
+
+test("「为什么现在上榜」只给可核对的理由，给不出就说是自然增长", () => {
+  const t = strings("zh");
+  const reasons = momentReasons(
+    { rank: 3, rankChange: 2, releases90d: 5, growthRate: 7.9, stars: 62803, weeklyGain: 4963, forks: 10735, firstSeen: "2026-09-20" },
+    { streak: 4, date: "2026-10-04", t }
+  );
+  assert.ok(reasons.some((r) => r.includes("连续第 4 期")), reasons.join(" / "));
+  assert.ok(reasons.some((r) => r.includes("上升 2 位")), reasons.join(" / "));
+  assert.ok(reasons.some((r) => r.includes("近 90 天有 5 次发布")), reasons.join(" / "));
+  assert.ok(reasons.some((r) => r.includes("7.9%")), reasons.join(" / "));
+  assert.ok(!reasons.some((r) => r.includes("自然增长")), reasons.join(" / "));
+
+  const quiet = momentReasons(
+    { rank: 7, rankChange: 0, releases90d: 0, growthRate: 1.5, stars: 188085, weeklyGain: 3189, forks: 10009, firstSeen: "2026-09-13" },
+    { streak: 12, date: "2026-10-04", t }
+  );
+  assert.ok(quiet.some((r) => r.includes("存量")), quiet.join(" / "));
+
+  const newcomer = momentReasons({ rank: 10, releases90d: 0, growthRate: 2, stars: 1000, weeklyGain: 20, forks: 30, firstSeen: "2026-10-04" }, { streak: 1, date: "2026-10-04", t });
+  assert.ok(newcomer.some((r) => r.includes("首次上榜")), newcomer.join(" / "));
+});
+
 // ---------------------------------------------------------------- 解读
 
 test("规则解读四段各司其职：为什么上榜讲指标，项目介绍讲定位", () => {
@@ -401,9 +690,97 @@ test("规则解读四段各司其职：为什么上榜讲指标，项目介绍�
   assert.ok(result.intro.zh.includes("TypeScript"));
   assert.ok(result.intro.en.startsWith("An agent framework"), "英文介绍应优先用仓库原始描述");
   assert.ok(!/star|fork/i.test(result.intro.zh), `项目介绍不该复述指标：${result.intro.zh}`);
-  // cardLine 要能塞进卡片一行
-  assert.ok(result.cardLine.zh.length <= 45, `卡片一行版过长：${result.cardLine.zh}`);
+  // cardLine 要能塞进卡片一行：按显示宽度约束（CJK 记 2 单位），因为自述多为英文
+  assert.ok(textWidth(result.cardLine.zh) <= 90, `卡片一行版过长：${result.cardLine.zh}`);
   assert.equal(result.source, "rules");
+});
+
+test("回归：中文规则介绍必须带上仓库自述（此前只有英文介绍引用 description）", () => {
+  const intro = ruleIntro({
+    full_name: "DietrichGebert/ponytail",
+    name: "ponytail",
+    category: "framework",
+    language: "JavaScript",
+    topics: ["agent-skills", "ai-agents", "claude"],
+    description: "Makes your AI agent think like the laziest senior dev in the room.",
+  });
+  assert.ok(
+    intro.zh.includes("Makes your AI agent think"),
+    `中文读者拿不到仓库自述时，介绍只剩模板腔：${intro.zh}`
+  );
+  assert.ok(intro.zh.includes("框架 / SDK"), `仍要给出分类定位：${intro.zh}`);
+});
+
+test("中文介绍引用自述时不得把标签 / 不可见字符带进文本", () => {
+  const intro = ruleIntro({
+    full_name: "acme/agent",
+    name: "agent",
+    category: "tool",
+    topics: [],
+    description: '<script>alert(1)</script>Runs your\u202B agent jobs',
+  });
+  assert.ok(!intro.zh.includes("<script>"), intro.zh);
+  assert.ok(!intro.zh.includes("\u202B"), "双向控制符必须被剥除");
+  assert.ok(intro.zh.includes("Runs your agent jobs"), intro.zh);
+});
+
+test("规则介绍在缺 description 时不得拼出空引号", () => {
+  const intro = ruleIntro({ full_name: "acme/agent", name: "agent", category: "framework", topics: [] });
+  assert.ok(!/“”|""|自述\s*[。；]/.test(intro.zh), `没有描述时不该留下空引用痕迹：${intro.zh}`);
+  assert.ok(intro.zh.includes("框架 / SDK"), intro.zh);
+});
+// ----------------------------------------------------------- 卡片一行版（文案）
+
+test("卡片一行：有仓库自述时说清「能干什么」，不复述卡片上已有的分类 chip", () => {
+  const line = ruleCardLine({
+    full_name: "firecrawl/firecrawl",
+    name: "firecrawl",
+    category: "framework",
+    language: "TypeScript",
+    topics: ["ai-agents", "web-scraping"],
+    description: "Search, scrape, and interact with the web at scale.",
+  });
+  assert.ok(line.zh.includes("Search, scrape"), `卡片一行应给出仓库自述：${line.zh}`);
+  assert.ok(
+    !line.zh.includes("框架 / SDK"),
+    `分类在卡片上是独立的 chip，一行文案里不要再写一遍：${line.zh}`
+  );
+  assert.ok(textWidth(line.zh) <= 90, `卡片一行必须塞得进一行（${textWidth(line.zh)} 单位）：${line.zh}`);
+});
+
+test("卡片一行：没有自述时只挑词表收录的方向，未收录的原始 slug 不进句子", () => {
+  const line = ruleCardLine({
+    full_name: "acme/x",
+    name: "x",
+    category: "tool",
+    language: "Python",
+    topics: ["ade", "mcp-server", "ai-search", "dsh-plugin"],
+  });
+  assert.ok(line.zh.includes("MCP 服务"), line.zh);
+  assert.ok(!line.zh.includes("ade"), `词表外的原始 tag 不该混进定位句：${line.zh}`);
+  assert.ok(!line.zh.includes("dsh-plugin"), line.zh);
+});
+
+test("介绍句里的「聚焦 …」同样只挑词表收录的标签", () => {
+  const intro = ruleIntro({
+    full_name: "NousResearch/hermes-agent",
+    name: "hermes-agent",
+    category: "other",
+    language: "Python",
+    topics: ["ai", "ai-agents", "anthropic"],
+    description: "",
+  });
+  assert.ok(intro.zh.includes("聚焦 AI Agent、Anthropic 等方向"), intro.zh);
+});
+
+test("卡片一行：自述过长时按词边界截断并带省略号", () => {
+  const description =
+    "An extremely capable orchestration runtime for production multi-agent systems with tracing and replay";
+  const line = ruleCardLine({ full_name: "acme/long", name: "long", category: "tool", topics: [], description });
+  assert.ok(textWidth(line.zh) <= 90, `${textWidth(line.zh)} 单位：${line.zh}`);
+  assert.ok(/…$/.test(line.zh), `超长应带省略号：${line.zh}`);
+  const kept = line.zh.replace(/…$/, "");
+  assert.ok(description.startsWith(kept), `只能整词截断，实际保留：${kept}`);
 });
 
 test("规则介绍在缺 description / topics / language 时仍产出合规文本", () => {

@@ -56,6 +56,8 @@ const visibleCats = cats.filter((c) => catKeys.includes(c.key as string));
 const periodLabel = period === "daily" ? t.periodDaily : period === "weekly" ? t.periodWeekly : t.periodMonthly;
 const title = period === "daily" ? t.todayTop : `${t.todayTop} · ${periodLabel}`;
 const windowDays = requestedDays ?? (period === "monthly" ? 30 : period === "weekly" ? 7 : 1);
+/** 增量数字实际覆盖的天数：日榜固定 7 天窗口，周期榜按真实覆盖天数 */
+const gainDays = period === "daily" ? 7 : coverageDays || windowDays;
 const rankDesc = period === "daily" ? t.rankBy : t.rankByWindow(coverageDays ?? windowDays);
 const showCoverage = !!coverageDays && !!requestedDays && coverageDays < requestedDays;
 
@@ -73,7 +75,7 @@ const activeNav = period === "daily" ? "home" : period === "weekly" ? "week" : "
       {top && (
         <div class="stat">
           <b>{top.name}</b>
-          <span>{t.top1of}{fmt(top.weeklyGain)} stars</span>
+          <span>{t.top1Gain(fmt(top.weeklyGain), gainDays)}</span>
         </div>
       )}
       {poolSize ? (
@@ -123,7 +125,7 @@ const activeNav = period === "daily" ? "home" : period === "weekly" ? "week" : "
   ) : (
     <section class="entry-list">
       {entries.map((e) => (
-        <EntryCard entry={e} date={date} {lang} windowDays={period === "daily" ? 7 : coverageDays || windowDays} />
+        <EntryCard entry={e} date={date} {lang} windowDays={gainDays} />
       ))}
     </section>
   )}

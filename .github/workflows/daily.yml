@@ -2,11 +2,14 @@ name: daily-update
 
 # 每天 UTC 06:00（北京时间 14:00）抓取数据；代码 push 时只重建站点。
 # 手动触发会同时执行抓取与部署。
+# PR 只跑校验（测试 / 数据 / 构建），既不抓取也不部署 —— 否则未合并的代码会先上线一次。
 on:
   schedule:
     - cron: "0 6 * * *"
   workflow_dispatch:
   push:
+    branches: [main]
+  pull_request:
     branches: [main]
 
 permissions:
@@ -15,10 +18,32 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  # PR 校验按 PR 号分组，不占用生产部署的 pages 队列（否则会互相排队）
+  group: ${{ github.event_name == 'pull_request' && format('check-{0}', github.event.pull_request.number) || 'pages' }}
   cancel-in-progress: false
 
 jobs:
+  # ------------------------------------------------------------------
+  # job 0：PR 校验 —— 与 main 上同一套 check（test + validate + build）
+  # ------------------------------------------------------------------
+  check:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci || npm install
+
+      - name: Test, validate data, build site
+        run: npm run check
+        env:
+          BASE: /${{ github.event.repository.name }}
+
   # ------------------------------------------------------------------
   # job 1：抓数据 → 校验 → 只有校验通过才 commit & push
   # 旧版把 commit 放在 build 之前且没有校验，build 失败时脏数据已经推上去了（P1-A3）。
@@ -76,7 +101,7 @@ jobs:
   # ------------------------------------------------------------------
   build:
     needs: [fetch]
-    if: always() && (needs.fetch.result == 'success' || needs.fetch.result == 'skipped')
+    if: always() && github.event_name != 'pull_request' && (needs.fetch.result == 'success' || needs.fetch.result == 'skipped')
     runs-on: ubuntu-latest
     environment:
       name: github-pages
