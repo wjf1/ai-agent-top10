@@ -26,6 +26,7 @@ import {
 } from "../src/lib/sanitize.mjs";
 import { validateDailyDoc } from "../scripts/lib/schema.mjs";
 import { refreshRuleEntry } from "../scripts/lib/refresh.mjs";
+import { ciWarningLine, interpretationStatus, stepSummary } from "../scripts/lib/status.mjs";
 import { capWeeklyGain, gainFromSnapshots, windowDaysBetween } from "../scripts/lib/growth.mjs";
 import { pickBaselineForWindow } from "../src/lib/timewindow.mjs";
 
@@ -465,6 +466,36 @@ test("回填遇到没有来源字段的老数据时不得覆盖（无法判断�
   const legacy = { full_name: "acme/agent", intro: { zh: "可能是人工写的", en: "maybe human" } };
   assert.equal(refreshRuleEntry(legacy, record(), 7).changed, false);
   assert.equal(legacy.intro.zh, "可能是人工写的");
+});
+
+// ----------------------------------------------------------- 解读降级告警
+
+test("只要有条目退回规则文案就要告警：09-28 起整轮静默降级一周无人发现", () => {
+  const allRules = Array.from({ length: 10 }, () => ({ interpretationSource: "rules" }));
+  const status = interpretationStatus(allRules);
+  assert.equal(status.rules, 10);
+  assert.equal(status.total, 10);
+  const warning = ciWarningLine(status);
+  assert.ok(warning.startsWith("::warning"), `必须是 Actions 告警注解：${warning}`);
+  assert.ok(warning.includes("LLM"), "告警要点名 LLM 解读没生效");
+  assert.ok(warning.includes("LLM_BASE_URL"), "告警要给出可直接行动的排查方向");
+
+  const mixed = interpretationStatus([
+    { interpretationSource: "llm" },
+    { interpretationSource: "rules" },
+  ]);
+  assert.ok(ciWarningLine(mixed).startsWith("::warning"), "部分回落同样要提示");
+  assert.ok(!ciWarningLine(mixed).includes("整轮"), "部分回落不该说成整轮降级");
+});
+
+test("LLM 全部生效时不产生告警，但摘要仍要写清来源构成", () => {
+  const ok = interpretationStatus([
+    { interpretationSource: "llm" },
+    { interpretationSource: "manual" },
+  ]);
+  assert.equal(ciWarningLine(ok), "");
+  assert.equal(ok.rules, 0);
+  assert.match(stepSummary(ok, "2026-10-05"), /llm 1 · manual 1 · rules 0/);
 });
 
 // ---------------------------------------------------------------- 解读
