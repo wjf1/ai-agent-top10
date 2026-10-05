@@ -12,6 +12,9 @@
  *             （改了 interpret.mjs 的文案规则后，用它让已落盘的历史日期跟上）。
  *             LLM / 人工解读以及缺来源字段的老数据一律不动；与 --llm 互斥。
  *
+ * --since=YYYY-MM-DD 只处理该日期（含）之后的期数 —— 补某次故障的窗口时用，
+ *             否则会把更早的、已经写好的 LLM 文案再覆盖一遍。
+ *
  * 用法：
  *   node scripts/backfill-interpretations.mjs
  *   node scripts/backfill-interpretations.mjs --llm [--descriptions]
@@ -31,7 +34,7 @@ import { createClient, resolveToken, withTimeout } from "./lib/github.mjs";
 import { llmInterpretation } from "./lib/interpret.mjs";
 import { fetchReadmeExcerpt } from "./lib/readme.mjs";
 import { dataPaths, listDailyDates, readJson, saveDaily } from "./lib/persist.mjs";
-import { refreshRuleEntry } from "./lib/refresh.mjs";
+import { refreshRuleEntry, selectDates } from "./lib/refresh.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -84,19 +87,24 @@ async function main() {
   const withLlm = process.argv.includes("--llm");
   const withDescriptions = process.argv.includes("--descriptions");
   const refreshRules = process.argv.includes("--refresh-rules");
+  const since = process.argv.find((a) => a.startsWith("--since="))?.slice(8) ?? null;
   if (refreshRules && withLlm) {
     console.error("--refresh-rules 与 --llm 互斥：前者只动规则文案，后者会覆盖非人工条目");
     process.exit(1);
   }
   const dryRun = !!process.env.DRY_RUN;
-  const dates = listDailyDates(paths).sort();
+  const dates = selectDates(listDailyDates(paths), { since });
 
   const docs = new Map();
   for (const date of dates) {
     const doc = readJson(path.join(paths.dailyDir, `${date}.json`));
     if (doc?.entries?.length) docs.set(date, doc);
   }
-  console.log(`# backfill-interpretations: ${docs.size} day(s)${withLlm ? ", LLM" : ""}${dryRun ? ", DRY_RUN" : ""}`);
+  console.log(
+    `# backfill-interpretations: ${docs.size} day(s)${since ? ` since ${since}` : ""}${withLlm ? ", LLM" : ""}${
+      dryRun ? ", DRY_RUN" : ""
+    }`
+  );
 
   // 同一项目多天上榜，介绍 / 亮点只算一次
   const byRepo = new Map();

@@ -25,7 +25,7 @@ import {
   sanitizeUrl,
 } from "../src/lib/sanitize.mjs";
 import { validateDailyDoc } from "../scripts/lib/schema.mjs";
-import { refreshRuleEntry } from "../scripts/lib/refresh.mjs";
+import { refreshRuleEntry, selectDates } from "../scripts/lib/refresh.mjs";
 import { ciWarningLine, interpretationStatus, stepSummary } from "../scripts/lib/status.mjs";
 import { capWeeklyGain, gainFromSnapshots, windowDaysBetween } from "../scripts/lib/growth.mjs";
 import { pickBaselineForWindow } from "../src/lib/timewindow.mjs";
@@ -553,6 +553,14 @@ test("首屏 No.1 统计要说清是窗口增量，不能写成「7,454 stars」
   assert.ok(/近\s*7\s*天|7 天/.test(zh), `必须点明窗口：${zh}`);
   assert.ok(!/^7,454 stars$/.test(zh), zh);
   assert.match(strings("en").top1Gain("7,454", 7), /in 7 days/);
+});
+
+test("回填 --since 只取该日期之后的期数，避免覆盖更早的 LLM 文案", () => {
+  const dates = ["2026-09-13", "2026-09-27", "2026-09-28", "2026-10-04"];
+  assert.deepEqual(selectDates(dates, { since: "2026-09-28" }), ["2026-09-28", "2026-10-04"]);
+  assert.deepEqual(selectDates(dates, {}), dates, "不给 since 时保持原有全量行为");
+  assert.deepEqual(selectDates(dates, { since: "2099-01-01" }), []);
+  assert.deepEqual(selectDates(["2026-10-04", "2026-09-28", "2026-09-13"], { since: "2026-09-20" }), ["2026-09-28", "2026-10-04"]);
 });
 
 // ---------------------------------------------------------------- 解读

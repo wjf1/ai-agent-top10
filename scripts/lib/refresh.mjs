@@ -8,6 +8,15 @@
 import { ruleBasedInterpretation } from "../../src/lib/interpret.mjs";
 
 /**
+ * 按 --since 挑选要处理的期数（含 since 当天），返回字典序。
+ * 用途：只补某次故障之后的日期，避免把更早的、已经写好的 LLM 文案再覆盖一遍。
+ */
+export function selectDates(dates, { since = null } = {}) {
+  const sorted = [...(dates ?? [])].sort();
+  return since ? sorted.filter((d) => d >= since) : sorted;
+}
+
+/**
  * 就地把规则条目的文案换成当前模板口径。
  * @returns {{changed: boolean}} changed 为 true 表示确实改动了内容
  */
