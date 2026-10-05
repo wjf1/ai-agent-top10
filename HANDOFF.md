@@ -167,33 +167,23 @@ ai-agent-top10
 
 ## 五、接力开发指引与后续演进建议 (Next Steps)
 
-依据《ai-agent-top10 优化开发方案及实施计划》，Phase 1 已交付，后续按下列顺序推进（详见 PDF 与仓库内计划）：
+> **待办清单已迁移至仓库根目录 [PLAN.md](./PLAN.md)（可行性清理版）**。
+> 该文档基于 2026-10-05 的实测数据逐条核验了原《优化开发方案及实施计划》Phase 3 的每个前提，
+> 删除了 7 项前提不成立的任务、合并 3 项、并新增 2 项实测暴露的真问题。**后续开发请以 PLAN.md 为准，不要直接照 PDF 的 Phase 3 清单实施。**
 
-### Phase 2（T2.1–T2.14，P1）
-| 任务 | 内容 | 关键切入点 |
-|---|---|---|
-| **T2.1** | 对比工具（ComparePanel）移动端体验：勾选列表搜索过滤 + 指标对比维度扩展 | `src/components/ComparePanel.astro`、`src/pages/[...lang]/compare.astro` |
-| **T2.2** | 榜单新鲜度标记：NEW 徽标、窗口内 N 期上榜次数 | `EntryCard.astro`、`RankingPage.astro`、`display.ts` |
-| **T2.3** | 详情页「同类项目」推荐：category + topics 相似度 | `ProjectDetail.astro`、`src/lib/aggregate.ts` |
-| **T2.4** | OG 社交分享图自动生成（SVG→PNG）+ meta 标签 | `Base.astro`、`scripts/generate-og.mjs`、`astro.config.mjs` |
-| **T2.5** | GitHub API 韧性：多 token 轮换、候选池分页、GraphQL 批量查询 + REST fallback | `scripts/lib/github.mjs`、新增 `graphql.mjs` |
-| **T2.6** | 快照分片存储（metrics / stars 按仓库或月份拆分） | `persist.mjs`、新增 `migrate-snapshots.mjs` |
-| **T2.7** | `metricsComplete` 从 any 改为 every | `src/lib/periods.ts:212` |
-| **T2.8** | backfill 的 `toProject()` 补齐 metrics 字段 | `scripts/backfill-interpretations.mjs` |
-| **T2.9** | `dailyGain` 按 coverageDays 归一 | `src/lib/periods.ts:189-190` |
-| **T2.10** | Search API 独立限流余量检测（`searchRemaining`） | `scripts/lib/github.mjs:96` |
-| **T2.11** | validate 校验快照数值类型 | `scripts/validate-data.mjs:84-96` |
-| **T2.12** | 拆分测试为 `tests/growth.test.mjs` / `metrics.test.mjs` / `periods.test.mjs` | `tests/` |
-| **T2.13** | `growthRate` 基线改用真实 baselineStars | `src/lib/periods.ts:180` |
-| **T2.14** | LLM 返回结构容错（entries 缺失/异常时不崩） | `scripts/lib/interpret.mjs:82-85` |
+一句话摘要：
 
-### Phase 3（T3.1–T3.11，P1/P2）
-检索页增强与 JS 体积治理（T3.1）、详情页趋势/雷达增强（T3.2）、Base 布局与 ISSUE_TEMPLATE（T3.3）、daily 归档分层压缩（T3.4）、归档页 404 fallback（T3.5）、数据导出增强（T3.6）、`saveIndex` 增量优化（T3.7）、periods 导入瘦身（T3.8）、`buildPoolContext` 性能（T3.9）、日志分级（T3.10）、`capWeeklyGain` 小仓库特例（T3.11）。
+| 处置 | 任务 |
+|---|---|
+| **保留执行** | T3.1 搜索增强、T3.2 评分历史追踪、T3.3 社区参与入口 |
+| **新增（实测发现）** | A1 `gainCapped` 落盘、A2 `scoringVersion` 历史补齐 |
+| **删除（前提不成立）** | T3.5 / T3.6 / T3.7 / T3.8 / T3.9 / T3.11 / T2.6 |
+| **合并重写** | T3.4 / T3.5 / T3.6 → T3.4′ 历史保留策略（触发式，当前不实施） |
+| **延后保留** | T2.5 GraphQL 批量查询 |
 
-> **建议切入点**：Phase 2 的 T2.5 / T2.6 属于架构性改动且相互耦合（GraphQL 与快照分片都影响 `persist` / `metrics`），建议同一会话内连续推进；T2.12 的测试拆分可最先做，为后续改动提供更细的回归保护。
+核心判据：当前 23 天数据 / 598 页 / 33.8MB 产物，容量红线在 **700 天以上**；原计划假设的「90 天即需分层」高估了规模 1–2 个数量级。
 
 ---
-
 ## 六、关键避坑与运行约束（必读）
 
 1. **Bash 命令工作目录重置**：
