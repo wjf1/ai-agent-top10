@@ -38,8 +38,14 @@ import { refreshRuleEntry, selectDates } from "./lib/refresh.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-/** 日榜条目的扁平字段 → 解读函数期望的项目形状 */
-function toProject(entry) {
+/**
+ * 日榜条目的扁平字段 → 解读函数期望的项目形状。
+ * T2.8：日榜条目只存了核心指标，扩展指标（licensePermissive / hasDocs / hasHomepage /
+ * hasExamples / ageDays / orgVerified / ownerType / downloadsSignal）只在快照里。
+ * 不合并快照会导致规则版「核心亮点 / 缺点」比原始抓取少一大截（例如永远报「缺少官网」）。
+ */
+function toProject(entry, snapshotMetrics = null) {
+  const snap = snapshotMetrics ?? {};
   return {
     full_name: entry.full_name,
     name: entry.name,
@@ -48,22 +54,32 @@ function toProject(entry) {
     url: entry.url,
     category: entry.category,
     language: entry.language,
-    topics: entry.topics ?? [],
+    topics: entry.topics ?? snap.topics ?? [],
     description: entry.description ?? "",
     weeklyGain: entry.weeklyGain,
     dailyGain: entry.dailyGain,
     growthRate: entry.growthRate,
     forksGain: entry.forksGain,
     metrics: {
-      stars: entry.stars,
-      forks: entry.forks,
-      openIssues: entry.openIssues,
-      contributors: entry.contributors,
-      releases90d: entry.releases90d,
-      prActivity: entry.prActivity,
-      issueActivity: entry.issueActivity,
-      pushDaysAgo: entry.pushDaysAgo,
-      license: entry.license,
+      // 条目自带的核心指标优先，缺失时用快照兜底
+      stars: entry.stars ?? snap.stars,
+      forks: entry.forks ?? snap.forks,
+      openIssues: entry.openIssues ?? snap.openIssues,
+      contributors: entry.contributors ?? snap.contributors,
+      releases90d: entry.releases90d ?? snap.releases90d,
+      prActivity: entry.prActivity ?? snap.prActivity,
+      issueActivity: entry.issueActivity ?? snap.issueActivity,
+      // 以下字段日榜条目根本没有，只能来自快照
+      license: snap.license ?? entry.license ?? null,
+      licensePermissive: snap.licensePermissive ?? false,
+      hasDocs: snap.hasDocs ?? false,
+      hasHomepage: snap.hasHomepage ?? !!entry.homepage,
+      hasExamples: snap.hasExamples ?? false,
+      ageDays: snap.ageDays,
+      pushDaysAgo: snap.pushDaysAgo,
+      orgVerified: snap.orgVerified ?? false,
+      ownerType: snap.ownerType ?? "User",
+      downloadsSignal: snap.downloadsSignal ?? false,
     },
   };
 }
@@ -114,6 +130,17 @@ async function main() {
     }
   }
 
+  // 扩展指标只在快照里，规则版解读需要它们才能产出与原始抓取一致的 highlights / cons
+  const metricSnapshots = readJson(paths.metricsFile, {});
+  /** 取某天某仓库的指标快照（供 toProject 合并） */
+  const snapshotFor = (entry, date) => metricSnapshots?.[date]?.[entry.full_name] ?? null;
+  // 同一项目多天上榜时，取最近一天的快照（信息最新）
+  const latestSnapshotFor = (fullName) => {
+    const dates = Object.keys(metricSnapshots).filter((d) => metricSnapshots[d]?.[fullName]).sort();
+    const date = dates[dates.length - 1];
+    return date ? metricSnapshots[date][fullName] : null;
+  };
+
   const client = createClient({ token: resolveToken() });
   let descriptions = new Map();
 
@@ -126,7 +153,7 @@ async function main() {
   let llmMap = new Map();
   if (withLlm) {
     const limit = config.interpretation?.readmeExcerptLength ?? 2600;
-    const projects = [...byRepo.values()].map(toProject);
+    const projects = [...byRepo.values()].map((e) => toProject(e, latestSnapshotFor(e.full_name)));
     for (const [i, project] of projects.entries()) {
       console.log(`  [${i + 1}/${projects.length}] readme ${project.full_name} …`);
       project.readmeExcerpt = await fetchReadmeExcerpt(client, project.full_name, { limit });
@@ -161,14 +188,17 @@ async function main() {
       }
 
       if (refreshRules) {
-        if (refreshRuleEntry(entry, toProject(entry), doc.windowDays ?? 7).changed) {
+        if (refreshRuleEntry(entry, toProject(entry, snapshotFor(entry, date)), doc.windowDays ?? 7).changed) {
           counters.refreshed++;
           touched = true;
         }
         continue;
       }
 
-      const rule = ruleBasedInterpretation({ ...toProject(entry), windowDays: doc.windowDays ?? 7 });
+      const rule = ruleBasedInterpretation({
+        ...toProject(entry, snapshotFor(entry, date)),
+        windowDays: doc.windowDays ?? 7,
+      });
       const llm = llmMap.get(entry.full_name);
 
       const next = {

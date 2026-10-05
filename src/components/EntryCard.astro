@@ -2,7 +2,7 @@
 import Icon from "./Icon.astro";
 import Sparkline from "./Sparkline.astro";
 import { categoryLabel } from "../lib/categorize.mjs";
-import { cardLineTag, gainSourceTag } from "../lib/display.ts";
+import { cardLineTag, gainSourceTag, type TrendBadge } from "../lib/display.ts";
 import { strings, type Lang } from "../lib/data.ts";
 import { projectPath } from "../lib/routes.ts";
 
@@ -13,9 +13,11 @@ interface Props {
   compact?: boolean;
   /** 该条目的增量覆盖多少天：日榜是归一化后的 7 天，周/月榜是窗口实际覆盖天数 */
   windowDays?: number;
+  /** 趋势标识（NEW / 上升 N 位 / 连榜 N 期），由 RankingPage 依构建期索引算好 */
+  badges?: TrendBadge[];
 }
 
-const { entry, date, lang = "zh", compact = false, windowDays = 7 } = Astro.props;
+const { entry, date, lang = "zh", compact = false, windowDays = 7, badges = [] } = Astro.props;
 const t = strings(lang);
 const B = import.meta.env.BASE_URL.replace(/\/$/, "");
 // 周期榜的条目可能不在窗口结束日当天的日榜里，链接要落到它真实出现过的日期
@@ -41,6 +43,12 @@ const rankClass = entry.rank === 1 ? "top rank-1" : entry.rank === 2 ? "top rank
   <div class="entry-main">
     <div class="entry-title">
       <h3><a href={detailPath}>{entry.full_name}</a></h3>
+      {badges.map((b: TrendBadge) => (
+        <span class:list={["trend-badge", `tb-${b.kind}`]} title={b.note}>
+          <Icon name={b.icon} size={12} />
+          <span>{b.label}</span>
+        </span>
+      ))}
       <span class="lang-tag">{entry.language}</span>
       {entry.category && <span class="cat-tag">{categoryLabel(entry.category, lang)}</span>}
       <span class="gain-chip">+{fmt(entry.weeklyGain)} / {windowDays}d</span>
@@ -101,6 +109,14 @@ const rankClass = entry.rank === 1 ? "top rank-1" : entry.rank === 2 ? "top rank
   .rank-change.down { color: var(--warn-ink); background: var(--warn-soft); }
   .rank-change.same { color: var(--muted); background: var(--card-2); }
   .cat-tag { font-size: 12px; background: var(--card-2); color: var(--cat-tag-ink); padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); }
+  /* 趋势标识：色值全部取自设计令牌，暗色模式下同样可读 */
+  .trend-badge {
+    display: inline-flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 700;
+    padding: 1px 8px; border-radius: 999px; white-space: nowrap;
+  }
+  .trend-badge.tb-new { color: var(--accent-ink, #fff); background: var(--accent); }
+  .trend-badge.tb-rise { color: var(--good-ink); background: var(--good-soft); }
+  .trend-badge.tb-streak { color: var(--data-primary); background: var(--card-2); border: 1px solid var(--line); }
   .meta-item { display: inline-flex; align-items: center; gap: 4px; }
   .src-holder { display: inline-flex; align-items: center; position: relative; }
   .src-badge {

@@ -4,6 +4,48 @@
 
 ---
 
+## [0.8.0] — 2026-10-05
+
+依据《ai-agent-top10 优化开发方案及实施计划》Phase 2（T2.1–T2.14）实施。本轮聚焦「口径修复 + 体验增强 + 采集效率」：修正三处会让周期分位与增长率失真的口径问题，补齐趋势标识、相关推荐、维度对比与社交分享图，并把扩展指标的采集降频以削减 API 预算。同时补齐 Phase 1 的遗留验收项。
+
+### 修复（口径与正确性）
+
+- **周期榜 `metricsComplete` 语义错误（T2.7，P1-C5）**：此前用 `any`（只要有一个项目指标完整就为真），会让「部分项目缺指标」的榜单被误报为完整。改为 `records.every(...)`，语义变为「所有入选项目都有完整指标」。
+- **`dailyGain` 口径不一致（T2.9，P1-C7）**：此前按各期不同的 `coverageDays` 做分母，窗口覆盖天数不同的项目在 heat 维度上分位不可比。统一改为按**请求窗口** `requestedDays` 标准化。
+- **`growthRate` 分母错误（T2.13，P1-C11）**：此前分母是**当前** star 总量，不符合标准增长率定义。改为**基线** star 存量；`forksGrowthRate` 同步改用基线 fork 数。
+- **backfill 解读字段缺失（T2.8，P1-C6）**：`toProject()` 只映射了核心指标，导致回填出的 highlights / cons 比原始抓取少一大截（例如永远误报「缺少官网」）。现合并快照中的扩展指标（`licensePermissive` / `hasDocs` / `hasHomepage` / `hasExamples` / `ageDays` / `orgVerified` / `ownerType` / `downloadsSignal`）。
+- **LLM 返回结构未校验（T2.14，P1-C12）**：`parsed.entries ?? []` 会把结构错误静默吞掉、产出 0 条。现显式要求 `entries` 为数组，否则记日志并回落规则版；同时对非 JSON 响应单独兜底。
+- **两处 Phase 1 验收补漏**：
+  - **解读服务前置检查（T1.3）**：workflow 新增前置检查步骤。默认输出 `::warning` 并继续；把仓库变量 `LLM_REQUIRED` 设为 `true` 即在缺少 `secrets.LLM_API_KEY` 时**硬失败阻断部署**（因当前仓库尚未配置任何密钥，默认硬失败会中断每日流水线，故以变量门控，详见 HANDOFF）。
+  - **contributors 分页深度与异常降级（T1.4）**：页数上限由 2 页提到 **5 页（上限 500 人）**；分页中途报错时降级为「已累计的下界」并标记 `partial`，不再整轮中断；首页即失败仍交由调用方标记为「测不到」。
+  - **评分口径 UI 标注（T1.8）**：`caliberTag` 在详情页展示「评分口径 / 最新口径 / 历史口径 vX」，周期榜顶部展示整榜口径，混用多版本时改走原有的跨口径提示。
+
+### 新增（体验与效率）
+
+- **趋势标识系统（T2.2）**：卡片新增 `NEW`（首次上榜）、`上升 N 位`（排名上升 >5）、`连榜 N 期`（连续在榜 ≥3 期）三类标识，色值全部取自设计令牌、暗色模式可读；一屏最多两种标识以免视觉噪声。首次出现日期与连榜期数取自构建期索引，不依赖条目自带的 `firstSeen`。
+- **详情页相关项目推荐（T2.3）**：构建期按「同分类 +2 / topics 交集 +1」计算相似度，给出 3 个「同类项目」+ 2 个「同期热门」（同一天增量最高），复用首页紧凑卡片直链详情页；30 天聚合结果在构建期缓存，避免逐页重复计算。
+- **对比页维度对比模式（T2.1）**：新增第三种模式「维度对比」，并排展示 8 维评分条形与 6 项关键指标卡（Stars / Forks / 窗口增量 / 增速 / 贡献者 / PR 30d）；模式切换写入 URL query（`?mode=dimensions`），分享链接可还原视图；无 JS 时基础列表与链接仍可用。
+- **OG 社交分享图（T2.4）**：新增 `scripts/generate-og.mjs`，构建期用 SVG 模板 + `sharp` 栅格化为 1200×630 PNG，输出 `dist/og/`（中英首页各一张 + 最新一期 Top10 各项目各一张，共 22 张）；`Base.astro` 输出 `og:*` / `twitter:card` / `canonical` 元标签，历史期回落到首页分享图。
+- **GitHub API 多 token 轮询（T2.5）**：新增 `resolveTokens()`，支持 `GITHUB_TOKEN_1` / `GITHUB_TOKEN_2` 轮询；遇到 403 / 429 / 限流错误时**先换 token**（通常可立即恢复）再退避，`stats()` 暴露 `tokens` 与 `rotations`。
+- **扩展指标分级采集（T2.5）**：核心指标（stars / forks / license / 文档 / 示例 / 年龄等）来自 Search API 结果，**零额外调用**；扩展指标（contributors / releases / PR / issue）按 `metrics.extendedIntervalDays`（默认 3 天）降频采集，未到期时复用上一份快照并标记 `metricsStale`，绝不把「没采」当成「是 0」。预计削减扩展调用约 2/3。
+- **Search API 独立限流（T2.10，P1-C8）**：search 额度（30/分钟）低于 `minSearchRemainingBeforeWait`（默认 5）时先等待，且不再把 search 余额误记成 core 余额。
+
+### 优化（校验与测试）
+
+- **快照内部结构校验（T2.11，P1-C9）**：`validate-data.mjs` 新增 `stars.json[date][repo]` 必须为有限数字、`metrics.json[date][repo]` 关键字段必须为数字或 null、`partial` 必须为布尔的检查——此前只校验到「是不是对象」，一个被写成字符串的 star 数会让增量计算静默产出 NaN。
+- **测试拆分与覆盖率（T2.12）**：测试拆为 `tests/pipeline.test.mjs`（主回归）+ `tests/growth.test.mjs` + `tests/metrics.test.mjs` + `tests/periods.test.mjs`，`npm test` 改为自动发现（88 → 89 项）；新增 `npm run test:coverage`。实测行覆盖率：`growth.mjs` 74.9%、`metrics.mjs` 90.4%、`timewindow.mjs` 96.6%，均 >70%；`periods.ts` 因静态 import 构建产物暂时无法被测试运行器加载（详见「未完成项」）。
+
+### 未完成项（Phase 2 内明确延后，已记录在 HANDOFF）
+
+- **T2.5 的 GraphQL 批量查询**：多 token 轮询与分级采集已落地，GraphQL 客户端（单次取 stars/forks/issues/PRs/releases，失败回落 REST）尚未实现。经评估，分级采集已削减大部分调用，GraphQL 边际收益下降且引入第二套 API 面；延后至 Phase 3 与采集侧改动一并处理。
+- **T2.6 快照分片与增量存储**：计划原文风险节明确指出该任务应与 T3.4（daily 分层归档）一并推进；且读者侧（`periods.ts` 静态 import 快照）需先完成 T3.8 的「编译期 import → 运行时按需读取」改造，否则分片会直接打断构建。故延后至 Phase 3 与 T3.4 / T3.8 同批实施。
+
+### 测试
+
+- 新增 12 项回归测试（77 → 89），覆盖：趋势标识阈值与数量上限、相关项目相似度与去重、LLM 结构校验回落、search 限流不污染 core、口径定义（增长率分母 / 日均分母）、分级采集 stale 标记与零扩展请求、贡献者分页降级、原子写入、缓存降级。
+
+---
+
 ## [0.7.0] — 2026-10-05
 
 依据《ai-agent-top10 优化开发方案及实施计划》Phase 1（T1.1–T1.8，8 项 P0）实施。本轮聚焦「止血与可信度」：修复会让数据静默失真或页面错误的阻塞级缺陷，让流水线在异常时降级可解释、可回滚，并为评分口径建立版本化管理。

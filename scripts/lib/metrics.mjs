@@ -37,16 +37,25 @@ async function countRecent(client, url, { since }) {
 /**
  * 贡献者人数：分页采集并区分「数完」与「翻到上限被截断」。
  * 只取 1 页时超过 100 人的仓库会被截断成同一个数，该维度失去区分度；
- * 因此默认翻 contributorPages 页。返回 capped 让调用方知道这是下界而非精确值。
+ * 因此默认翻 contributorPages 页（默认 5 页 = 上限 500）。
+ * 分页中途报错时降级为「当前页累计数」（partial 下界），不阻断整轮采集；
+ * 第 1 页就失败则抛出，由调用方标记为「测不到」。
  */
 export async function countContributors(client, fullName) {
   const pageSize = metricCfg().contributorPageSize ?? 100;
   const maxPages = metricCfg().contributorPages ?? 1;
   let total = 0;
   for (let page = 1; page <= maxPages; page++) {
-    const items = await client.gh(
-      `/repos/${fullName}/contributors?per_page=${pageSize}&anon=false&page=${page}`
-    );
+    let items;
+    try {
+      items = await client.gh(
+        `/repos/${fullName}/contributors?per_page=${pageSize}&anon=false&page=${page}`
+      );
+    } catch (e) {
+      // 已经有累计值就降级返回，避免整轮采集因单仓库分页失败而中断
+      if (total > 0) return { contributors: total, capped: true, partial: true };
+      throw e;
+    }
     if (!Array.isArray(items) || items.length === 0) return { contributors: total, capped: false };
     total += items.length;
     if (items.length < pageSize) return { contributors: total, capped: false };
@@ -59,21 +68,79 @@ export async function countContributors(client, fullName) {
  * @param {object} repo    Search API 返回的仓库对象
  * @returns {Promise<object>} 指标对象（不含身份字段，身份字段由日榜条目承载）
  */
-export async function collectMetrics(client, repo, { now = new Date(), log = () => {} } = {}) {
+/** 核心指标：全部来自 Search API 返回的仓库对象，零额外 API 调用 */
+function coreFromRepo(repo, { now, permissive, kw }) {
+  const topics = sanitizeTopics(repo.topics);
+  const homepage = typeof repo.homepage === "string" ? repo.homepage : "";
+  const spdx = repo.license?.spdx_id ?? null;
+  return {
+    stars: repo.stargazers_count,
+    forks: repo.forks_count,
+    watchers: repo.subscribers_count ?? repo.watchers_count ?? 0,
+    openIssues: repo.open_issues_count,
+    license: spdx && spdx !== "NOASSERTION" ? spdx : null,
+    licensePermissive: spdx ? permissive.has(spdx) : false,
+    hasDocs:
+      !!repo.has_wiki ||
+      !!repo.has_pages ||
+      (typeof homepage === "string" && new RegExp(kw.docsHomepage ?? "docs|documentation|wiki", "i").test(homepage)) ||
+      topics.some((t) => /doc|documentation|wiki/i.test(t)),
+    hasHomepage: typeof homepage === "string" && homepage.trim().length > 0 && /^https?:\/\//i.test(homepage.trim()),
+    hasExamples:
+      !!repo.has_pages ||
+      topics.some((t) => new RegExp(kw.examples ?? "example", "i").test(t)) ||
+      (repo.size ?? 0) > 2000,
+    ageDays: Math.round((now - new Date(repo.created_at)) / DAY),
+    pushDaysAgo: Math.round((now - new Date(repo.pushed_at)) / DAY),
+    orgVerified: repo.owner?.type === "Organization",
+    ownerType: repo.owner?.type ?? "User",
+    downloadsSignal: false,
+    topics,
+  };
+}
+
+export async function collectMetrics(
+  client,
+  repo,
+  { now = new Date(), log = () => {}, coreOnly = false, previous = null } = {}
+) {
   const fullName = repo.full_name;
   const activityWindowDays = ACTIVITY_WINDOW_DAYS();
   const sinceActivity = new Date(now.getTime() - activityWindowDays * DAY);
   const permissive = permissiveLicenses();
   const kw = keywords();
 
+  // T2.5 分级采集：核心指标来自 Search API 返回的仓库对象，零额外调用；
+  // 扩展指标（贡献者 / releases / PR / issue）各需 1..N 次调用，按 extendedIntervalDays
+  // 降频采集。本轮不采时沿用上一份快照的值并标记 stale，绝不把「没采」当成「是 0」。
+  if (coreOnly) {
+    const prev = previous ?? {};
+    return {
+      ...coreFromRepo(repo, { now, permissive, kw }),
+      contributors: prev.contributors ?? null,
+      contributorsCapped: prev.contributorsCapped ?? false,
+      contributorsPartial: prev.contributorsPartial ?? false,
+      releases90d: prev.releases90d ?? null,
+      prActivity: prev.prActivity ?? null,
+      issueActivity: prev.issueActivity ?? null,
+      activityWindowDays,
+      activityKnown: prev.activityKnown ?? false,
+      activityCapped: prev.activityCapped ?? false,
+      metricsStale: true,
+      extendedCollectedAt: prev.extendedCollectedAt ?? null,
+    };
+  }
+
   // contributors 采集不到时返回 null（"测不到"），而不是 0（"没有贡献者"）——
   // 后者会让社区 / 创新维度把仓库当成冷清项目错误扣分。
   let contributors = null;
   let contributorsCapped = false;
+  let contributorsPartial = false;
   try {
     const c = await countContributors(client, fullName);
     contributors = c.contributors;
     contributorsCapped = c.capped;
+    contributorsPartial = !!c.partial;
   } catch (e) {
     log(`  ~ ${fullName}: contributors unavailable (${e.status ?? "err"})`);
   }
@@ -115,40 +182,18 @@ export async function collectMetrics(client, repo, { now = new Date(), log = () 
     log(`  ~ ${fullName}: issue activity unavailable (${e.status ?? "err"})`);
   }
 
-  const topics = sanitizeTopics(repo.topics);
-  const homepage = typeof repo.homepage === "string" ? repo.homepage : "";
-  const spdx = repo.license?.spdx_id ?? null;
-
   return {
-    stars: repo.stargazers_count,
-    forks: repo.forks_count,
-    watchers: repo.subscribers_count ?? repo.watchers_count ?? 0,
-    openIssues: repo.open_issues_count,
-    license: spdx && spdx !== "NOASSERTION" ? spdx : null,
-    licensePermissive: spdx ? permissive.has(spdx) : false,
-    hasDocs:
-      !!repo.has_wiki ||
-      !!repo.has_pages ||
-      (typeof homepage === "string" && new RegExp(kw.docsHomepage ?? "docs|documentation|wiki", "i").test(homepage)) ||
-      topics.some((t) => /doc|documentation|wiki/i.test(t)),
-    hasHomepage: typeof homepage === "string" && homepage.trim().length > 0 && /^https?:\/\//i.test(homepage.trim()),
-    hasExamples:
-      !!repo.has_pages ||
-      topics.some((t) => new RegExp(kw.examples ?? "example", "i").test(t)) ||
-      (repo.size ?? 0) > 2000,
-    ageDays: Math.round((now - new Date(repo.created_at)) / DAY),
-    pushDaysAgo: Math.round((now - new Date(repo.pushed_at)) / DAY),
+    ...coreFromRepo(repo, { now, permissive, kw }),
     contributors,
     contributorsCapped,
+    contributorsPartial,
     releases90d,
     prActivity,
     issueActivity,
     activityWindowDays,
     activityKnown: prKnown || issuesKnown,
     activityCapped: prActivity >= (metricCfg().activityPages ?? 1) * 100 || issueActivity >= (metricCfg().activityPages ?? 1) * 100,
-    orgVerified: repo.owner?.type === "Organization",
-    ownerType: repo.owner?.type ?? "User",
-    downloadsSignal: false,
-    topics,
+    metricsStale: false,
+    extendedCollectedAt: now.toISOString(),
   };
 }

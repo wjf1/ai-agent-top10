@@ -51,6 +51,24 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DAY = 864e5;
 const WINDOW = config.window?.weekly ?? 7;
 
+/** 某个仓库最近一次的指标快照（跨日期取最新） */
+function latestMetricFor(metricSnapshots, fullName) {
+  const dates = Object.keys(metricSnapshots ?? {})
+    .filter((d) => metricSnapshots[d]?.[fullName])
+    .sort();
+  const date = dates[dates.length - 1];
+  return date ? metricSnapshots[date][fullName] : null;
+}
+
+/** 扩展指标是否到期该采：从未采过、或距上次采集已满 extendedIntervalDays */
+function isExtendedDue(prev, now) {
+  const intervalDays = config.metrics?.extendedIntervalDays ?? 3;
+  if (!prev || !prev.extendedCollectedAt) return true;
+  const last = new Date(prev.extendedCollectedAt).getTime();
+  if (!Number.isFinite(last)) return true;
+  return now.getTime() - last >= intervalDays * 864e5;
+}
+
 const round1 = (n) => Math.round(n * 10) / 10;
 
 async function main() {
@@ -92,7 +110,16 @@ async function main() {
     });
     if (!growth) return null;
 
-    const metrics = await collectMetrics(client, repo, { now, log: console.log });
+    // T2.5 分级采集：扩展指标（贡献者 / releases / PR / issue）按 extendedIntervalDays 降频，
+    // 未到期的仓库复用上一份快照并标记 stale，核心指标每次都从 Search API 结果里取（零额外调用）。
+    const prevMetric = latestMetricFor(metricSnapshots, repo.full_name);
+    const extendedDue = isExtendedDue(prevMetric, now);
+    const metrics = await collectMetrics(client, repo, {
+      now,
+      log: console.log,
+      coreOnly: !extendedDue,
+      previous: prevMetric,
+    });
     const forkGrowth = resolveForkGrowth({
       forkSnapshots,
       forks: metrics.forks,

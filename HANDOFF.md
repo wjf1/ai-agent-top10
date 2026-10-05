@@ -10,11 +10,11 @@
 - **仓库地址**：<https://github.com/wjf1/ai-agent-top10>
 - **线上站点**：<https://wjf1.github.io/ai-agent-top10/>（双语支持：英文根路由 `/en/`）
 - **项目定位**：每天按 GitHub star 真实增量筛选 Top 10 AI Agent 开源项目，基于 8 个可解释维度加权打分，并生成中英双语通俗定位解读与数据报表。
-- **当前发布版本**：`v0.7.0`（2026-10-05 发布，Phase 1 止血与可信度）
+- **当前发布版本**：`v0.8.0`（2026-10-05 发布，Phase 2 口径修复与体验增强）
 - **当前 Git 分支**：`main`（与远端 `origin/main` 保持同步，工作区 Clean）
-- **最新 Release**：[GitHub Release v0.7.0](https://github.com/wjf1/ai-agent-top10/releases/tag/v0.7.0)
+- **最新 Release**：[GitHub Release v0.8.0](https://github.com/wjf1/ai-agent-top10/releases/tag/v0.8.0)
 - **CI/CD 状态**：GitHub Actions `daily-update` 工作流自动化运行通过（构建耗时 ~25s，全自动部署至 GitHub Pages）。
-- **进行中的计划**：《ai-agent-top10 优化开发方案及实施计划》共 3 个 Phase、33 项任务；**Phase 1（T1.1–T1.8）已完成并发布**，Phase 2（T2.1–T2.14）与 Phase 3（T3.1–T3.11）待推进。
+- **进行中的计划**：《ai-agent-top10 优化开发方案及实施计划》共 3 个 Phase、33 项任务；**Phase 1（T1.1–T1.8）与 Phase 2 主体（T2.1–T2.14，其中 T2.5 的 GraphQL 与 T2.6 明确延后）已完成并发布**，Phase 3（T3.1–T3.11）待推进。
 
 ---
 
@@ -40,7 +40,7 @@ npm install
 # 2. 本地开发服务器 (默认端口 http://localhost:4321)
 npm run dev
 
-# 3. 运行全量单元测试与流水线回归测试 (当前 77 个测试项)
+# 3. 运行全量单元测试（当前 89 项，跨 4 个测试文件）
 npm test
 
 # 4. 执行数据结构完整性与安全门禁校验
@@ -116,6 +116,36 @@ ai-agent-top10
 
 ---
 
+## 四、最近一轮变更与交付成果 (v0.8.0 · Phase 2：口径修复与体验增强)
+
+严格依据《ai-agent-top10 优化开发方案及实施计划》Phase 2 实施，并补齐 Phase 1 的三处遗留验收项：
+
+| 任务 | 内容 | 关键改动文件 |
+|---|---|---|
+| **T2.1** | 对比页新增「维度对比」模式（8 维条形 + 6 项指标卡），模式写入 URL query | `src/components/ComparePanel.astro` |
+| **T2.2** | 趋势标识 NEW / 上升 N 位 / 连榜 N 期，取自构建期索引，暗色可读 | `display.ts`、`EntryCard.astro`、`RankingPage.astro` |
+| **T2.3** | 详情页相关推荐：3 同类（分类 + topics 相似度）+ 2 同期热门，构建期缓存 | `src/lib/related.ts`（新增）、`aggregate.ts`、`ProjectDetail.astro` |
+| **T2.4** | OG 分享图：SVG 模板 + sharp → 1200×630 PNG（22 张）+ 元标签 | `scripts/generate-og.mjs`（新增）、`Base.astro`、`package.json` |
+| **T2.5** | 多 token 轮询（GITHUB_TOKEN_1/2）+ 扩展指标分级采集（stale 标记）。**GraphQL 未实现（延后）** | `scripts/lib/github.mjs`、`metrics.mjs`、`fetch-daily.mjs` |
+| **T2.7** | `metricsComplete` 由 any 改为 every | `src/lib/periods.ts` |
+| **T2.8** | backfill `toProject()` 合并快照扩展指标 | `scripts/backfill-interpretations.mjs` |
+| **T2.9** | `dailyGain` 按 requestedDays 标准化 | `src/lib/periods.ts` |
+| **T2.10** | search 额度独立限流检查，且不污染 core 余额 | `scripts/lib/github.mjs` |
+| **T2.11** | 快照内部结构校验（stars 数值 / metrics 关键字段 / partial 布尔） | `scripts/validate-data.mjs` |
+| **T2.12** | 测试拆分 4 个文件 + 覆盖率脚本；growth 74.9% / metrics 90.4% 行覆盖 | `tests/*.test.mjs`、`package.json` |
+| **T2.13** | `growthRate` 分母改为基线 star 存量 | `src/lib/periods.ts` |
+| **T2.14** | LLM 输出显式结构校验（entries 必须为数组） | `scripts/lib/interpret.mjs` |
+| **Phase 1 补漏** | T1.3 解读服务前置检查（`LLM_REQUIRED` 门控）、T1.4 分页 5 页 + 异常降级、T1.8 口径标注 UI | workflow、`metrics.mjs`、`display.ts`、`ProjectDetail.astro` |
+
+**验证结论**：`npm run check` 全绿（**89/89 测试通过**，数据校验 23 天通过，598 页构建 + 22 张 OG 图）。
+
+### Phase 2 未完成项（明确延后，非缺陷）
+
+- **T2.5 GraphQL**：分级采集已削减大部分调用，GraphQL 边际收益下降且引入第二套 API 面，延后至 Phase 3。
+- **T2.6 快照分片**：计划风险节明确指出应与 T3.4 一并推进；且读者侧需先完成 T3.8（编译期 import → 运行时读取），否则分片会直接打断构建。
+- **T2.12 的 periods.ts 覆盖率**：`periods.ts` 静态 import 构建产物（index.json / snapshots），Node 测试运行器无法加载，`tests/periods.test.mjs` 目前覆盖其依赖的纯时间窗口逻辑；完整 fixture 测试待 T3.8 改造后补齐。
+
+---
 ## 四、最近一轮变更与交付成果 (v0.7.0 · Phase 1：止血与可信度)
 
 本轮严格依据《ai-agent-top10 优化开发方案及实施计划》**Phase 1（T1.1–T1.8，8 项 P0）**实施，全部完成并通过门禁：

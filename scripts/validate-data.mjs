@@ -91,12 +91,49 @@ if (typeof starSnap !== "object" || starSnap === null) add(problems, "snapshots/
 else {
   for (const [date, repos] of Object.entries(starSnap)) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) add(problems, `snapshots/stars.json: bad date key ${date}`);
-    if (typeof repos !== "object" || repos === null) add(problems, `snapshots/stars.json[${date}] is not an object`);
+    if (typeof repos !== "object" || repos === null) {
+      add(problems, `snapshots/stars.json[${date}] is not an object`);
+      continue;
+    }
+    // T2.11：值必须是数字。此前只校验到「是不是对象」，
+    // 一个被写成字符串的 star 数会让增量计算静默产出 NaN。
+    for (const [repo, value] of Object.entries(repos)) {
+      if (typeof value !== "number" || !Number.isFinite(value)) {
+        add(problems, `snapshots/stars.json[${date}][${repo}]: expected a finite number, got ${typeof value}`);
+      }
+    }
   }
 }
 
 const metricSnap = readJson(paths.metricsFile, {});
 if (metricSnap && typeof metricSnap !== "object") add(problems, "snapshots/metrics.json unreadable");
+else if (metricSnap) {
+  // T2.11：关键字段类型检查。这几个字段决定社区 / 实用 / 迭代维度，
+  // 类型不对会让评分把「测不到」当成「很冷清」。
+  const numericOrNull = ["contributors", "prActivity", "issueActivity", "ageDays", "pushDaysAgo", "stars", "forks"];
+  for (const [date, repos] of Object.entries(metricSnap)) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) add(problems, `snapshots/metrics.json: bad date key ${date}`);
+    if (typeof repos !== "object" || repos === null) {
+      add(problems, `snapshots/metrics.json[${date}] is not an object`);
+      continue;
+    }
+    for (const [repo, record] of Object.entries(repos)) {
+      if (typeof record !== "object" || record === null) {
+        add(problems, `snapshots/metrics.json[${date}][${repo}] is not an object`);
+        continue;
+      }
+      for (const field of numericOrNull) {
+        const value = record[field];
+        if (value !== undefined && value !== null && (typeof value !== "number" || !Number.isFinite(value))) {
+          add(problems, `snapshots/metrics.json[${date}][${repo}].${field}: expected number or null, got ${typeof value}`);
+        }
+      }
+      if (record.partial !== undefined && typeof record.partial !== "boolean") {
+        add(problems, `snapshots/metrics.json[${date}][${repo}].partial: expected boolean`);
+      }
+    }
+  }
+}
 
 // 跨日期重复 slug 不再产生冲突（路由已带日期），但值得记录
 const slugDates = new Map();

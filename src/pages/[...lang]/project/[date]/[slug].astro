@@ -7,6 +7,7 @@
  * 现在每个项目每天一个独立路径：/project/<date>/<slug>/。
  */
 import ProjectDetail from "../../../../components/ProjectDetail.astro";
+import { pickRelated, relatedPoolCached } from "../../../../lib/aggregate";
 import { index, loadDay, appearances } from "../../../../lib/load-days";
 import { streakLength } from "../../../../lib/display.ts";
 import { starSeries } from "../../../../lib/periods";
@@ -44,6 +45,10 @@ const streak = streakLength(index.dates, seenDates, date);
 // 条目里存的 firstSeen 是"本次抓取日"，连续多期上榜的项目会被写成最新那天，
 // 所以首次上榜必须以索引里最早出现该 slug 的日期为准。
 const firstDate = seenDates[0] ?? entry.firstSeen ?? date;
+const related = pickRelated(entry, date, await relatedPoolCached(), { similar: 3, hot: 2 });
+// 只为最新一期生成 OG 图（见 scripts/generate-og.mjs），历史期回落到首页分享图
+const isLatest = index.dates[0] === date;
+const ogImage = isLatest ? `${B}/og/${lang}-${entry.slug}.png` : undefined;
 ---
 
 <ProjectDetail
@@ -53,6 +58,8 @@ const firstDate = seenDates[0] ?? entry.firstSeen ?? date;
   {series}
   {streak}
   {firstDate}
+  {related}
+  {ogImage}
   windowDays={day.windowDays ?? 7}
   langHref={projectPath(B, lang === "en" ? "zh" : "en", date, slug)}
 />

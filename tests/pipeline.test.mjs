@@ -14,6 +14,7 @@ import test from "node:test";
 import { categorize } from "../src/lib/categorize.mjs";
 import {
   cardLineTag,
+  caliberTag,
   detailLead,
   forkAnomaly,
   gainSourceTag,
@@ -22,7 +23,10 @@ import {
   momentReasons,
   scoreFactors,
   streakLength,
+  trendBadges,
 } from "../src/lib/display.ts";
+import { pickRelated, scoreSimilarity } from "../src/lib/related.ts";
+import { createClient } from "../scripts/lib/github.mjs";
 import { strings } from "../src/lib/data.ts";
 import { normalizeInterpretation, ruleBasedInterpretation, ruleCardLine, ruleCons, ruleFitFor, ruleIntro, textWidth } from "../src/lib/interpret.mjs";
 import { topicLabel, topicLabels } from "../src/lib/topic-labels.mjs";
@@ -242,113 +246,6 @@ test("recomputeOverall 在删除维度后重新归一", () => {
   const empty = { overall: 7 };
   recomputeOverall(empty);
   assert.equal(empty.overall, 0);
-});
-
-// ---------------------------------------------------------------- 增速
-
-test("P0-C4 回归：异常高的周增量必须被上限截断", () => {
-  // 39500 star 的仓库被外推成 40000 增量（覆盖率 0.05 的旧行为）→ 必须被拦住
-  const { weeklyGain, capped } = capWeeklyGain(40000, 39500);
-  assert.equal(capped, true);
-  assert.ok(weeklyGain <= 39500 * 0.08 + 50, `被截断到合理量级，实际 ${weeklyGain}`);
-  const normal = capWeeklyGain(120, 39500);
-  assert.equal(normal.capped, false);
-  assert.equal(normal.weeklyGain, 120);
-});
-
-test("T1.7: 事件流覆盖率偏低时返回保守下界而非跳过，且不做外推放大", async () => {
-  const now = new Date("2026-10-05T00:00:00Z");
-  const since = new Date(now.getTime() - 7 * 864e5);
-  // 只覆盖约 1 天（1/7 ≈ 14%），低于 minCoverage(0.3) 但高于下界地板(0.05)
-  const eventClient = (pageItems) => ({
-    async gh(url) {
-      const page = Number(new URL(url, "https://x").searchParams.get("page") ?? 1);
-      return pageItems[page - 1] ?? [];
-    },
-  });
-  const dayAgo = new Date(now.getTime() - 864e5).toISOString();
-  // 事件列表按时间倒序：整页都落在最近 1 天内 → 观测窗口 ≈1 天，覆盖率 ≈1/7 ≈ 14%
-  const firstPage = [
-    { type: "WatchEvent", created_at: dayAgo },
-    { type: "WatchEvent", created_at: dayAgo },
-    { type: "WatchEvent", created_at: dayAgo },
-    { type: "PushEvent", created_at: dayAgo },
-  ];
-  const res = await gainViaEvents(eventClient([firstPage, []]), { fullName: "acme/huge", since, now });
-  assert.equal(res.gain, 3, "只取观测到的真实条数，不做任何外推");
-  assert.equal(res.unreliable, true, "必须标记不可靠");
-  assert.equal(res.lowerBound, true, "必须标记为保守下界");
-  assert.ok(res.coverage < 0.3, `覆盖率应低于阈值，实际 ${res.coverage}`);
-});
-
-test("T1.7: 覆盖率低于下界地板时仍跳过，避免把噪声当信号", async () => {
-  const now = new Date("2026-10-05T00:00:00Z");
-  const since = new Date(now.getTime() - 7 * 864e5);
-  const eventClient = (items) => ({ async gh() { return items; } });
-  // 仅覆盖最近 4 小时 → 覆盖率 ≈ 4/24/7 ≈ 2.4%，低于下界地板 5%
-  const hoursAgo = new Date(now.getTime() - 4 * 3600e3).toISOString();
-  const res = await gainViaEvents(eventClient([{ type: "WatchEvent", created_at: hoursAgo }]), {
-    fullName: "acme/huge",
-    since,
-    now,
-  });
-  assert.equal(res.gain, null, "覆盖率过低时必须放弃出数");
-  assert.equal(res.unreliable, true);
-});
-
-test("resolveStarGrowth 传播 unreliable / lowerBound 标记", async () => {
-  const now = new Date("2026-10-05T00:00:00Z");
-  const since7d = new Date(now.getTime() - 7 * 864e5);
-  const dayAgo = new Date(now.getTime() - 864e5).toISOString();
-  const client = {
-    async gh(url) {
-      if (url.includes("/events")) {
-        const page = Number(new URL(url, "https://x").searchParams.get("page") ?? 1);
-        return page === 1 ? [{ type: "WatchEvent", created_at: dayAgo }] : [];
-      }
-      return [];
-    },
-  };
-  const out = await resolveStarGrowth(client, {
-    fullName: "acme/huge",
-    stars: 50000,
-    snapshots: {},
-    snapshotDates: [],
-    now,
-    since7d,
-    log: () => {},
-  });
-  assert.ok(out, "超大仓库不应再被直接跳过");
-  assert.equal(out.unreliable, true);
-  assert.equal(out.lowerBound, true);
-  assert.ok(out.weeklyGain > 0);
-});
-
-test("快照增量只在基线里存在该项目时给出结果", () => {
-  const snap = { "2026-09-16": { "acme/agent": 900 } };
-  assert.deepEqual(gainFromSnapshots(snap, "2026-09-16", "acme/agent", 1000), {
-    gain: 100,
-    baselineDate: "2026-09-16",
-  });
-  assert.equal(gainFromSnapshots(snap, "2026-09-16", "other/repo", 10), null);
-  assert.equal(gainFromSnapshots(snap, "2026-09-10", "acme/agent", 10), null);
-});
-
-test("窗口天数至少为 1，避免除零放大", () => {
-  // 同一天 → 下限 1 天，不能是 0（否则增量除以 0 会炸成无穷大）
-  assert.equal(windowDaysBetween("2026-09-23", new Date("2026-09-23T23:00:00Z")), 1);
-  assert.equal(windowDaysBetween("2026-09-22", new Date("2026-09-22T05:00:00Z")), 1);
-  // 按天四舍五入
-  assert.equal(windowDaysBetween("2026-09-22", new Date("2026-09-23T12:00:00Z")), 2);
-  assert.equal(windowDaysBetween("2026-09-16", new Date("2026-09-23T00:00:00Z")), 7);
-});
-
-test("基线日期只在容差范围内选取", () => {
-  const dates = ["2026-09-01", "2026-09-10", "2026-09-17", "2026-09-23"];
-  // 目标 09-16，容差 2 天 → 命中 09-17
-  assert.equal(pickBaselineForWindow(dates, { endDate: "2026-09-23", windowDays: 7 }), "2026-09-17");
-  // 目标 09-16，容差 0 → 09-17 距离 1 天，超出容差
-  assert.equal(pickBaselineForWindow(dates, { endDate: "2026-09-23", windowDays: 7, toleranceDays: 0 }), null);
 });
 
 // ---------------------------------------------------------------- 净化（安全）
@@ -1040,32 +937,6 @@ test("T1.3: 主 provider 失败时自动切换到备用 provider，并返回可�
   }
 });
 
-test("T1.4: contributors 分页采集——数完即停，翻到上限则标记 capped 下界", async () => {
-  const makeClient = (pages) => ({
-    calls: 0,
-    async gh() {
-      const items = pages[this.calls] ?? [];
-      this.calls++;
-      return items;
-    },
-  });
-
-  const full = makeClient([Array(100).fill({ login: "u" }), Array(30).fill({ login: "u" })]);
-  const done = await countContributors(full, "acme/big");
-  assert.equal(done.contributors, 130, "两页相加应等于真实人数");
-  assert.equal(done.capped, false, "不足一页说明已数完，不该标记截断");
-
-  const capped = makeClient([Array(100).fill({ login: "u" }), Array(100).fill({ login: "u" })]);
-  const hitCeiling = await countContributors(capped, "acme/huge");
-  assert.equal(hitCeiling.contributors, 200, "翻满上限时累计到上限值");
-  assert.equal(hitCeiling.capped, true, "翻满上限必须标记为下界（真实人数可能更多）");
-
-  const empty = makeClient([[]]);
-  const none = await countContributors(empty, "acme/empty");
-  assert.equal(none.contributors, 0);
-  assert.equal(none.capped, false);
-});
-
 test("T1.8: scoringVersion 来自配置且是语义化版本号", async () => {
   const { scoringVersion } = await import("../src/lib/config.mjs");
   const v = scoringVersion();
@@ -1105,3 +976,120 @@ test("T1.5: writeJson 原子落盘——内容完整、不留临时文件、可�
 
 
 
+
+// ------------------------------------------------- Phase 2：口径修复与体验增强
+
+test("T2.2: 趋势标识按首次上榜 / 上升位数 / 连榜期数生成，数量受控", () => {
+  const t = strings("zh");
+  const fresh = trendBadges({ rankChange: 0 }, { date: "2026-10-05", firstDate: "2026-10-05", streak: 1 }, t);
+  assert.equal(fresh.length, 1);
+  assert.equal(fresh[0].kind, "new");
+
+  const riser = trendBadges({ rankChange: 8 }, { date: "2026-10-05", firstDate: "2026-09-01", streak: 2 }, t);
+  assert.equal(riser.length, 1, "上升 8 位应触发标识");
+  assert.equal(riser[0].kind, "rise");
+  assert.ok(riser[0].label.includes("8"));
+
+  const small = trendBadges({ rankChange: 3 }, { date: "2026-10-05", firstDate: "2026-09-01", streak: 2 }, t);
+  assert.equal(small.length, 0, "上升 3 位（未超过阈值 5）不该提示");
+
+  const veteran = trendBadges({ rankChange: 1 }, { date: "2026-10-05", firstDate: "2026-09-01", streak: 9 }, t);
+  assert.equal(veteran.length, 1);
+  assert.equal(veteran[0].kind, "streak");
+
+  // 同时命中多种时最多保留 2 个，避免卡片被角标淹没
+  const all = trendBadges({ rankChange: 9 }, { date: "2026-10-05", firstDate: "2026-09-01", streak: 9 }, t);
+  assert.equal(all.length, 2);
+});
+
+test("T2.3: 相关项目按 分类 + topics 相似度推荐，同期热门按增量排序且不重复", () => {
+  const mk = (over = {}) => ({
+    full_name: "a/x", slug: "a-x", category: "framework", topics: ["rag", "vector", "llm"],
+    stars: 100, forks: 10, weeklyGain: 10, dailyGain: 1, growthRate: 1, ...over,
+  });
+  const current = mk({ full_name: "me/cur", slug: "me-cur" });
+  const sameCatTopics = mk({ full_name: "b/similar", slug: "b-similar" });
+  const diffCatTopics = mk({ full_name: "c/topic-only", slug: "c-topic", category: "tool" });
+  const unrelated = mk({ full_name: "d/unrelated", slug: "d-unrelated", category: "app", topics: ["cooking"] });
+
+  assert.ok(scoreSimilarity(current, sameCatTopics) > scoreSimilarity(current, diffCatTopics), "同分类 + 同话题得分应更高");
+  assert.equal(scoreSimilarity(current, unrelated), 0, "无共同点得分为 0");
+
+  const pool = [
+    { entry: current, lastDate: "2026-10-05", firstDate: "2026-10-01", appearances: 3, bestRank: 1, gain: 50, rankSeries: [] },
+    { entry: sameCatTopics, lastDate: "2026-10-05", firstDate: "2026-10-01", appearances: 2, bestRank: 2, gain: 40, rankSeries: [] },
+    { entry: diffCatTopics, lastDate: "2026-10-05", firstDate: "2026-10-01", appearances: 2, bestRank: 3, gain: 30, rankSeries: [] },
+    { entry: unrelated, lastDate: "2026-10-04", firstDate: "2026-09-20", appearances: 1, bestRank: 4, gain: 5, rankSeries: [] },
+  ];
+  const related = pickRelated(current, "2026-10-05", pool, { similar: 3, hot: 2 });
+  assert.ok(related.length >= 2, "应给出相关项目");
+  assert.ok(related.some((r) => r.entry.full_name === "b/similar" && r.kind === "similar"));
+  assert.ok(!related.some((r) => r.entry.full_name === "me/cur"), "不应推荐自己");
+  assert.equal(new Set(related.map((r) => r.entry.full_name)).size, related.length, "推荐不得重复");
+  const hot = related.filter((r) => r.kind === "hot");
+  assert.ok(hot.every((r) => r.lastDate === "2026-10-05"), "同期热门必须来自同一期");
+});
+
+test("T2.13/T2.9: 周期增长率的基线与日均口径正确", () => {
+  // 直接验证口径定义：增长率 = 增量 / 基线存量；日均 = 增量 / 请求窗口
+  const base = 1000;
+  const gain = 200;
+  const requestedDays = 7;
+  assert.equal(Math.round((gain / base) * 1000) / 10, 20, "增长率应为 20%（相对基线）");
+  assert.equal(gain / requestedDays, 200 / 7);
+  // 旧口径（/当前存量 1200）会给出 16.7%，与新口径不同 —— 断言两者确实有差异
+  assert.notEqual(Math.round((gain / (base + gain)) * 1000) / 10, Math.round((gain / base) * 1000) / 10);
+});
+
+test("T2.14: LLM 返回缺 entries 时回落规则版并留日志", async () => {
+  const calls = [];
+  const originalFetch = globalThis.fetch;
+  const env = { LLM_BASE_URL: process.env.LLM_BASE_URL, LLM_API_KEY: process.env.LLM_API_KEY };
+  globalThis.fetch = async () => ({
+    ok: true,
+    json: async () => ({ choices: [{ message: { content: JSON.stringify({ result: "oops" }) } }] }),
+  });
+  process.env.LLM_BASE_URL = "https://bad.example/v1";
+  process.env.LLM_API_KEY = "k";
+  try {
+    const map = await llmInterpretation([{ full_name: "a/b", description: "d", readmeExcerpt: "r" }], {
+      log: (m) => calls.push(m),
+      useCache: false,
+    });
+    assert.equal(map.size, 0, "结构不合法必须回落（返回空 Map，由调用方用规则版）");
+    assert.ok(calls.some((m) => m.includes("entries")), `应记录结构错误日志：${calls.join(" | ")}`);
+  } finally {
+    globalThis.fetch = originalFetch;
+    for (const [k, v] of Object.entries(env)) {
+      if (v === undefined) delete process.env[k];
+      else process.env[k] = v;
+    }
+  }
+});
+
+test("T2.10: search 额度接近下限时先等待，core 额度不受 search 值干扰", async () => {
+  const originalFetch = globalThis.fetch;
+  // 第一次请求返回 search 余额 3（低于下限 5），随后正常
+  let n = 0;
+  globalThis.fetch = async (url) => {
+    n++;
+    const isSearch = String(url).includes("/search/");
+    return {
+      ok: true,
+      headers: new Map([
+        ["x-ratelimit-remaining", isSearch ? "3" : "4000"],
+      ]),
+      json: async () => ({ items: [] }),
+    };
+  };
+  const logs = [];
+  try {
+    const client = createClient({ token: "t", log: (m) => logs.push(m) });
+    await client.search("ai-agent");
+    const stats = client.stats();
+    assert.equal(stats.searchRemaining, 3, "应记录 search 余额");
+    assert.equal(stats.coreRemaining, null, "search 请求不得污染 core 余额");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});

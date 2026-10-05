@@ -6,7 +6,7 @@
  * 客户端只做选择与绘制，不发起任何网络请求。
  * 选择结果写进 URL hash，可直接分享。
  */
-import { strings, type Lang } from "../lib/data.ts";
+import { dimensionLabels, strings, type Lang } from "../lib/data.ts";
 import { projectPath } from "../lib/routes.ts";
 import type { AggregatedProject } from "../lib/aggregate";
 
@@ -26,6 +26,26 @@ const t = strings(lang);
 const B = import.meta.env.BASE_URL.replace(/\/$/, "");
 // 转义 < 防止 JSON 里出现 </script> 提前结束标签
 const payload = JSON.stringify(series).replace(/</g, "\\u003c");
+
+// T2.1：维度对比模式的数据（评分 + 关键指标），构建期内联，客户端零请求
+const allDims = dimensionLabels(lang);
+const dimLabels = allDims.map((d: any) => ({ key: d.key, label: d.short ?? d.key }));
+const dimPayload = JSON.stringify({
+  lang,
+  dims: dimLabels,
+  projects: projects.slice(0, 60).map((p) => ({
+    n: p.entry.full_name,
+    slug: p.entry.slug,
+    d: p.lastDate,
+    sc: p.entry.scores ?? {},
+    stars: p.entry.stars,
+    forks: p.entry.forks,
+    weeklyGain: p.entry.weeklyGain,
+    growthRate: p.entry.growthRate,
+    contributors: p.entry.contributors ?? null,
+    prActivity: p.entry.prActivity ?? null,
+  })),
+}).replace(/</g, "\\u003c");
 ---
 
 <section class="compare" data-compare data-base={B} data-lang={lang}>
@@ -35,6 +55,7 @@ const payload = JSON.stringify(series).replace(/</g, "\\u003c");
     <div class="mode-switch" role="group">
       <button type="button" class="fchip active" data-mode="absolute">{lang === "zh" ? "绝对值" : "Absolute"}</button>
       <button type="button" class="fchip" data-mode="relative">{lang === "zh" ? "相对起点（%）" : "Indexed (%)"}</button>
+      <button type="button" class="fchip" data-mode="dimensions">{lang === "zh" ? "维度对比" : "Dimensions"}</button>
     </div>
     <span class="sel-count" data-count></span>
     <button type="button" class="clear-btn" data-clear>{t.compareClear}</button>
@@ -51,13 +72,15 @@ const payload = JSON.stringify(series).replace(/</g, "\\u003c");
       ))}
     </div>
     <div class="chart-holder">
-      <div class="chart-scroll"><svg data-chart role="img" aria-label={t.compareTitle}></svg></div>
+      <div class="chart-scroll" data-chart-wrap><svg data-chart role="img" aria-label={t.compareTitle}></svg></div>
+      <div class="dims-view hidden" data-dims role="region" aria-label={lang === "zh" ? "维度对比" : "Dimension comparison"}></div>
       <p class="legend" data-legend></p>
       <p class="chart-links" data-links></p>
     </div>
   </div>
 
   <script is:inline type="application/json" data-series set:html={payload} />
+  <script is:inline type="application/json" data-dims-payload set:html={dimPayload} />
 </section>
 
 <script>
@@ -80,9 +103,123 @@ const payload = JSON.stringify(series).replace(/</g, "\\u003c");
     const base = root.dataset.base ?? "";
     const lang = root.dataset.lang === "en" ? "en" : "zh";
     const boxes = Array.from(root.querySelectorAll<HTMLInputElement>("[data-pick] input[type=checkbox]"));
+    const chartWrap = root.querySelector<HTMLElement>("[data-chart-wrap]");
+    const dimsView = root.querySelector<HTMLElement>("[data-dims]");
+    const dimsEl = root.querySelector<HTMLScriptElement>("[data-dims-payload]");
+    const dimData = dimsEl ? (JSON.parse(dimsEl.textContent || "{}") as {
+      lang: string;
+      dims: { key: string; label: string }[];
+      projects: { n: string; slug: string; d: string; sc: Record<string, number>; stars: number; forks: number; weeklyGain: number; growthRate: number; contributors: number | null; prActivity: number | null }[];
+    }) : { lang: "zh", dims: [], projects: [] };
+    const dimByName = new Map(dimData.projects.map((p) => [p.n, p]));
 
-    let mode: "absolute" | "relative" = "absolute";
+    let mode: "absolute" | "relative" | "dimensions" = "absolute";
     const selected: string[] = [];
+
+    /** 模式写进 query，保证分享链接能还原视图（T2.1） */
+    function readMode(): "absolute" | "relative" | "dimensions" {
+      const m = new URLSearchParams(location.search).get("mode");
+      return m === "relative" || m === "dimensions" ? m : "absolute";
+    }
+    function writeMode() {
+      const url = new URL(location.href);
+      if (mode === "absolute") url.searchParams.delete("mode");
+      else url.searchParams.set("mode", mode);
+      history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+    }
+
+    const fmt = (n: number | null | undefined) => (typeof n === "number" ? n.toLocaleString("en-US") : "—");
+
+    /** 维度对比：关键指标卡 + 每个维度一组的并排条形 */
+    function drawDimensions() {
+      if (!dimsView) return;
+      dimsView.innerHTML = "";
+      const zh = lang === "zh";
+      if (selected.length < 2) {
+        const p = document.createElement("p");
+        p.className = "dims-empty";
+        p.textContent = zh ? "至少选择 2 个项目" : "Select at least 2 projects";
+        dimsView.append(p);
+        return;
+      }
+
+      // 关键指标卡片
+      const cards = document.createElement("div");
+      cards.className = "metric-cards";
+      const metrics: [string, (r: any) => string][] = [
+        [zh ? "Stars" : "Stars", (r) => fmt(r.stars)],
+        [zh ? "Forks" : "Forks", (r) => fmt(r.forks)],
+        [zh ? "窗口增量" : "Window gain", (r) => `+${fmt(r.weeklyGain)}`],
+        [zh ? "增速" : "Growth", (r) => `${r.growthRate ?? "—"}%`],
+        [zh ? "贡献者" : "Contributors", (r) => fmt(r.contributors)],
+        [zh ? "PR / 30d" : "PR / 30d", (r) => fmt(r.prActivity)],
+      ];
+      for (const [label, render] of metrics) {
+        const card = document.createElement("div");
+        card.className = "metric-card";
+        const h = document.createElement("h4");
+        h.textContent = label;
+        const ul = document.createElement("ul");
+        selected.forEach((name, i) => {
+          const li = document.createElement("li");
+          const swatch = document.createElement("span");
+          swatch.className = "swatch";
+          swatch.style.background = PALETTE[i % PALETTE.length];
+          const nm = document.createElement("span");
+          nm.className = "mc-name";
+          nm.textContent = name;
+          const val = document.createElement("strong");
+          val.textContent = render(dimByName.get(name) ?? {});
+          li.append(swatch, nm, val);
+          ul.append(li);
+        });
+        card.append(h, ul);
+        cards.append(card);
+      }
+      dimsView.append(cards);
+
+      // 维度条形（每个维度一行，组内并排）
+      const bars = document.createElement("div");
+      bars.className = "dim-bars";
+      for (const dim of dimData.dims) {
+        const row = document.createElement("div");
+        row.className = "dim-row";
+        const label = document.createElement("span");
+        label.className = "dim-label";
+        label.textContent = dim.label;
+        const track = document.createElement("div");
+        track.className = "dim-track";
+        selected.forEach((name, i) => {
+          const rec = dimByName.get(name);
+          const value = rec?.sc?.[dim.key];
+          if (typeof value !== "number") return;
+          const bar = document.createElement("div");
+          bar.className = "dim-bar";
+          bar.style.width = `${Math.max(2, Math.min(100, value))}%`;
+          bar.style.background = PALETTE[i % PALETTE.length];
+          bar.title = `${name} · ${dim.label}: ${value}`;
+          const num = document.createElement("span");
+          num.className = "dim-num";
+          num.textContent = String(Math.round(value));
+          bar.append(num);
+          track.append(bar);
+        });
+        row.append(label, track);
+        bars.append(row);
+      }
+      dimsView.append(bars);
+    }
+
+    function render() {
+      const isDims = mode === "dimensions";
+      chartWrap?.classList.toggle("hidden", isDims);
+      dimsView?.classList.toggle("hidden", !isDims);
+      if (legend) legend.classList.toggle("hidden", isDims);
+      if (isDims) {
+        if (links) links.textContent = "";
+        drawDimensions();
+      } else draw();
+    }
 
     function readHash() {
       const hash = decodeURIComponent(location.hash.replace(/^#/, ""));
@@ -205,7 +342,7 @@ const payload = JSON.stringify(series).replace(/</g, "\\u003c");
 
     function sync() {
       for (const box of boxes) box.checked = selected.includes(box.value);
-      draw();
+      render();
     }
 
     for (const box of boxes) {
@@ -223,8 +360,10 @@ const payload = JSON.stringify(series).replace(/</g, "\\u003c");
       chip.addEventListener("click", () => {
         root.querySelectorAll("[data-mode]").forEach((c) => c.classList.remove("active"));
         chip.classList.add("active");
-        mode = chip.dataset.mode === "relative" ? "relative" : "absolute";
-        draw();
+        const next = chip.dataset.mode;
+        mode = next === "relative" ? "relative" : next === "dimensions" ? "dimensions" : "absolute";
+        writeMode();
+        render();
       });
     }
 
@@ -241,6 +380,10 @@ const payload = JSON.stringify(series).replace(/</g, "\\u003c");
     });
 
     selected.push(...readHash());
+    mode = readMode();
+    for (const chip of Array.from(root.querySelectorAll<HTMLButtonElement>("[data-mode]"))) {
+      chip.classList.toggle("active", chip.dataset.mode === mode);
+    }
     sync();
   }
 
@@ -249,6 +392,24 @@ const payload = JSON.stringify(series).replace(/</g, "\\u003c");
 
 <style>
   .compare { margin: 24px 0 50px; }
+  .hidden { display: none !important; }
+  /* T2.1：维度对比视图 */
+  .dims-view { padding: 4px 2px; }
+  .dims-empty { color: var(--muted); font-size: 14px; text-align: center; padding: 40px 0; }
+  .metric-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 18px; }
+  .metric-card { border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 10px 12px; }
+  .metric-card h4 { margin: 0 0 8px; font-size: 12px; color: var(--muted); font-weight: 600; }
+  .metric-card ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+  .metric-card li { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .metric-card .mc-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); }
+  .metric-card strong { font-variant-numeric: tabular-nums; }
+  .swatch { width: 9px; height: 9px; border-radius: 2px; flex: none; }
+  .dim-bars { display: flex; flex-direction: column; gap: 10px; }
+  .dim-row { display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: 10px; }
+  .dim-label { font-size: 12px; color: var(--muted); }
+  .dim-track { display: flex; flex-direction: column; gap: 3px; }
+  .dim-bar { height: 14px; border-radius: 3px; display: flex; align-items: center; justify-content: flex-end; min-width: 22px; }
+  .dim-num { font-size: 11px; color: #fff; padding-right: 5px; font-variant-numeric: tabular-nums; }
   .hint { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
   .compare-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
   .mode-switch { display: inline-flex; gap: 4px; }

@@ -1,10 +1,12 @@
 ---
 /** 项目详情页（zh / en 共用），含 8 维评分、维度口径说明与 star 趋势图（P1-F2/P1-U3） */
 import Base from "../layouts/Base.astro";
+import EntryCard from "./EntryCard.astro";
 import Radar from "./Radar.astro";
 import TrendChart from "./TrendChart.astro";
 import { categoryLabel } from "../lib/categorize.mjs";
-import { detailLead, forkAnomaly, gainSourceTag, highlightsTitle, interpretationTag, momentReasons, scoreFactors } from "../lib/display.ts";
+import { caliberTag, detailLead, forkAnomaly, gainSourceTag, highlightsTitle, interpretationTag, momentReasons, scoreFactors } from "../lib/display.ts";
+import { scoringVersion } from "../lib/config.mjs";
 import { dimensionLabels, strings, type Lang } from "../lib/data.ts";
 import { archivePath, categoryPath, comparePath, dayPath } from "../lib/routes.ts";
 
@@ -18,11 +20,15 @@ interface Props {
   windowDays?: number;
   /** 连续在榜期数（含本期），0 表示未知 */
   streak?: number;
-  /** 该项目最早出现在榜单上的日期（由索引算出，比条目里存的 firstSeen 可信） */
+  /** 该项目的最早出现日期（索引里最早出现该 slug 的日期） */
   firstDate?: string;
+  /** 相关项目推荐（同类项目 + 同期热门），由页面构建期算好 */
+  related?: any[];
+  /** 社交分享图路径 */
+  ogImage?: string;
 }
 
-const { entry, date, lang = "zh", series = [], langHref, windowDays = 7, streak = 0, firstDate = "" } = Astro.props;
+const { entry, date, lang = "zh", series = [], langHref, windowDays = 7, streak = 0, firstDate = "", related = [], ogImage } = Astro.props;
 const t = strings(lang);
 const B = import.meta.env.BASE_URL.replace(/\/$/, "");
 const fmt = (n: number) => Number(n ?? 0).toLocaleString("en-US");
@@ -49,6 +55,7 @@ const minorStats = [
 
 const change = typeof entry.rankChange === "number" ? entry.rankChange : null;
 const srcTag = gainSourceTag(entry, t);
+const caliber = caliberTag(entry, scoringVersion(), t);
 
 // 头图导语：用「卡片一行版」这个字段，它本就是为一句话定位设计的。
 // 早先取介绍首句，遇到单句式介绍时头图和「它能做什么？」会一字不差地重复同一句。
@@ -67,6 +74,7 @@ const anomaly = forkAnomaly(entry, t);
   desc={String(entry.intro?.[lang] ?? entry.why?.[lang] ?? "").slice(0, 150)}
   active="day"
   date={date}
+  {ogImage}
 >
   <section class="detail-head">
     <div class="crumb">
@@ -127,6 +135,7 @@ const anomaly = forkAnomaly(entry, t);
       </ul>
       {scoreSummary && <p class="score-summary">{scoreSummary}</p>}
       <p class="hint">{srcTag.note}</p>
+      {caliber && <p class="hint" title={caliber.note}>{t.scoreCaliber}：{caliber.label}</p>}
       <p class="hint">{t.growthRateNote(windowDays)}</p>
     </div>
 
@@ -181,6 +190,29 @@ const anomaly = forkAnomaly(entry, t);
       )}
     </div>
   </div>
+
+  {related.length > 0 && (
+    <section class="related">
+      <h2>{t.relatedTitle}</h2>
+      {[
+        { kind: "similar", label: t.relatedSimilar, note: t.relatedSimilarNote },
+        { kind: "hot", label: t.relatedHot, note: t.relatedHotNote },
+      ].map(({ kind, label, note }) => {
+        const items = related.filter((r: any) => r.kind === kind);
+        if (!items.length) return null;
+        return (
+          <div class="related-group">
+            <p class="related-label" title={note}>{label}</p>
+            <div class="related-list">
+              {items.map((r: any) => (
+                <EntryCard entry={r.entry} date={r.lastDate} {lang} compact windowDays={7} />
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </section>
+  )}
 </Base>
 
 <style>
@@ -195,6 +227,12 @@ const anomaly = forkAnomaly(entry, t);
     font-weight: 600;
   }
   .topic-chip { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: var(--card-2); color: var(--muted); border: 1px solid var(--line); }
+  /* 相关项目：与首页一致的紧凑卡片，纵向堆叠 */
+  .related { margin-top: 34px; }
+  .related h2 { font-size: 17px; margin: 0 0 12px; }
+  .related-group + .related-group { margin-top: 18px; }
+  .related-label { font-size: 13px; font-weight: 600; color: var(--muted); margin: 0 0 8px; }
+  .related-list { display: flex; flex-direction: column; gap: 10px; }
   .panel h2 .src-tag {
     margin-left: 8px; font-size: 12px; font-weight: 600; vertical-align: 2px;
     padding: 1px 8px; border-radius: 999px; border: 1px dashed var(--line);

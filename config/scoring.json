@@ -62,8 +62,10 @@
     "activityPages": 2,
     "activityWindowDays": 30,
     "contributorPageSize": 100,
-    "contributorPages": 2,
-    "contributorPages_comment": "contributors 接口分页深度。只取 1 页时超过 100 人的仓库会被截断成同一个数，失去区分度；默认 2 页（上限 200）。",
+    "contributorPages": 5,
+    "contributorPages_comment": "contributors 接口分页深度。只取 1 页时超过 100 人的仓库会被截断成同一个数，失去区分度；默认 5 页（上限 500 人）。",
+    "extendedIntervalDays": 3,
+    "extendedIntervalDays_comment": "扩展指标（contributors / releases / PR / issue）的采集间隔天数。核心指标（stars/forks/license/文档等）每日都采且零额外调用；扩展指标降频以削减 API 预算，未到期时复用上一份快照并标记 metricsStale。",
     "releasePageSize": 30
   },
 
@@ -76,6 +78,8 @@
     "maxRetries": 3,
     "baseBackoffMs": 800,
     "minRemainingBeforeWait": 200,
+    "minSearchRemainingBeforeWait": 5,
+    "minSearchRemainingBeforeWait_comment": "search API 独立限额 30/分钟；余额低于该值先等待，避免被 403 打回。",
     "requestTimeoutMs": 15000,
     "maxTotalBackoffMs": 60000,
     "repoTimeoutMs": 90000,

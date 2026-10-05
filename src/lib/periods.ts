@@ -117,7 +117,6 @@ export async function buildPeriodBoard(
   }
 
   const records: any[] = [];
-  let anyComplete = false;
   for (const [fullName, { entry, date: lastSeenDate }] of latestEntryByProject) {
     const base = baselineStars[fullName];
     if (typeof base !== "number") continue; // 没有基线就没有窗口增量，不猜
@@ -146,7 +145,6 @@ export async function buildPeriodBoard(
     };
 
     const full = current?.full ?? false;
-    if (full) anyComplete = true;
 
     const gain = Math.max(0, entry.stars - base);
     const forksBase = baselineForks[fullName];
@@ -161,12 +159,15 @@ export async function buildPeriodBoard(
       metricsComplete: full,
       topics,
       weeklyGain: gain,
-      dailyGain: coverageDays > 0 ? gain / coverageDays : gain,
-      growthRate: Math.round((gain / Math.max(1, entry.stars)) * 1000) / 10,
+      // T2.9：日均增量统一用「请求窗口」做分母，而不是各期不同的 coverageDays，
+      // 否则窗口覆盖天数不一致的项目在 heat 维度上分位不可比。
+      dailyGain: gain / Math.max(1, requestedDays),
+      // T2.13：增长率按标准定义 = 增量 / 基线存量，而不是 / 当前存量。
+      growthRate: Math.round((gain / Math.max(1, base)) * 1000) / 10,
       forksGain,
       forksGrowthRate:
-        typeof forksGain === "number" && entry.forks > 0
-          ? Math.round((forksGain / Math.max(1, entry.forks)) * 1000) / 10
+        typeof forksGain === "number" && (forksBase ?? 0) > 0
+          ? Math.round((forksGain / Math.max(1, forksBase)) * 1000) / 10
           : null,
       windowDays: coverageDays,
     });
@@ -258,7 +259,9 @@ export async function buildPeriodBoard(
     requestedDays,
     entries,
     poolSize: records.length,
-    metricsComplete: anyComplete,
+    // T2.7：口径是「所有入选项目都有完整指标」。此前用 any（只要有一个完整就为真），
+    // 会让「部分项目缺指标」的榜单被误报为完整。
+    metricsComplete: records.length > 0 && records.every((r: any) => r.metricsComplete),
     scoringMixed,
     scoringVersions: [...versionsInWindow].sort(),
   };

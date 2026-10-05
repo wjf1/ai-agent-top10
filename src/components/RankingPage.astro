@@ -6,6 +6,9 @@ import Icon from "./Icon.astro";
 import PeriodSwitch from "./PeriodSwitch.astro";
 import ProjectTable from "./ProjectTable.astro";
 import { categories } from "../lib/categorize.mjs";
+import { scoringVersion } from "../lib/config.mjs";
+import { caliberTag, streakLength, trendBadges } from "../lib/display.ts";
+import { appearances, index } from "../lib/load-days";
 import { strings, type Lang } from "../lib/data.ts";
 import { categoryPath, dayPath, homePath, projectPath } from "../lib/routes.ts";
 
@@ -70,6 +73,16 @@ const rankDesc = period === "daily" ? t.rankBy : t.rankByWindow(effectiveDays);
 const showCoverage = !!coverageDays && !!requestedDays && coverageDays < requestedDays;
 
 const activeNav = period === "daily" ? "home" : period === "weekly" ? "week" : "month";
+// 趋势标识的数据来自构建期索引（首次出现日期 + 连续在榜期数）
+const badgesFor = (e: any) => {
+  const boardDate = e.lastSeenDate ?? date;
+  const seen = appearances(e.slug);
+  const firstDate = seen[0] ?? e.firstSeen ?? boardDate;
+  const streak = streakLength(index.dates, seen, boardDate);
+  return trendBadges(e, { date: boardDate, firstDate, streak }, t);
+};
+// 周期榜的口径标注：整榜同版本时展示该版本，混合时改走 scoringMixed 提示
+const boardCaliber = !scoringMixed && entries[0] ? caliberTag(entries[0], scoringVersion(), t) : null;
 ---
 
 <Base lang={lang} langHref={langHref} title={`${date} ${periodLabel}`} desc={t.heroSub} active={activeNav} date={period === "daily" ? date : null}>
@@ -156,16 +169,23 @@ const activeNav = period === "daily" ? "home" : period === "weekly" ? "week" : "
         </div>
       </div>
 
-      {scoringMixed && (
+      {scoringMixed ? (
         <p class="caliber-note" role="note">
           <Icon name="info" size={14} />
           <span>{t.scoringMixedNote(scoringVersions.join(" · ") || "—")}</span>
         </p>
+      ) : (
+        period !== "daily" && boardCaliber && (
+          <p class="caliber-note" role="note">
+            <Icon name="info" size={14} />
+            <span>{t.scoreCaliber}：{boardCaliber.label}</span>
+          </p>
+        )
       )}
 
       <section class="entry-list" id="card-view-container">
         {entries.map((e) => (
-          <EntryCard entry={e} date={date} {lang} windowDays={gainDays} />
+          <EntryCard entry={e} date={date} {lang} windowDays={gainDays} badges={badgesFor(e)} />
         ))}
       </section>
 

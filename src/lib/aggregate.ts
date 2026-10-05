@@ -62,6 +62,16 @@ export function filterByTopic(projects: AggregatedProject[], tag: string) {
   return projects.filter((p) => (p.entry.topics ?? []).some((t) => t.toLowerCase() === needle));
 }
 
+// T2.3 的相似度与挑选逻辑抽到 related.ts（纯函数、可单测），此处仅提供构建期数据源
+export { pickRelated, scoreSimilarity, type RelatedProject } from "./related";
+
+/** 构建期缓存：详情页数量多，30 天聚合只算一次 */
+let relatedPool: AggregatedProject[] | null = null;
+export async function relatedPoolCached(): Promise<AggregatedProject[]> {
+  if (!relatedPool) relatedPool = await recentProjects({ window: 30 });
+  return relatedPool;
+}
+
 /** 所有出现过的标签（按出现频次降序） */
 export async function allTopics({ window = 30, limit = 80 }: { window?: number; limit?: number } = {}) {
   const projects = await recentProjects({ window });

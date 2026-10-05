@@ -1,7 +1,7 @@
 # ai-agent-top10
 
 [![daily-update](https://github.com/wjf1/ai-agent-top10/actions/workflows/daily.yml/badge.svg)](https://github.com/wjf1/ai-agent-top10/actions/workflows/daily.yml)
-[![version](https://img.shields.io/badge/version-0.7.0-blue.svg)](package.json)
+[![version](https://img.shields.io/badge/version-0.8.0-blue.svg)](package.json)
 
 **每天从 GitHub 上按 star 增速选出最热的 10 个 AI Agent 项目，用 8 个可解释维度打分，并给出中英双语解读。**
 纯静态站点：无后端、无数据库、无运行时 API 调用。
@@ -43,7 +43,11 @@
 | **零依赖矢量图标与 Popover** | 封装 16×16 内联矢量图标组件（`Icon.astro`）全面替代 Emoji，杜绝跨系统排版差异与读屏干扰；数据采集口径采用现代原生 HTML Popover 提示，触屏可点击、键盘 Tab+Enter 均可唤出。 |
 | **WCAG 2.1 AA 级无障碍** | 遵循深墨色配对原则（Soft-Ink Pairing），上涨（5.81:1）、下降（6.18:1）与分类标签（6.98:1）实测对比度全量 PASS；全站文字收口至 ≥12px 基线；数字严格等宽对齐；前三名尊享金银铜荣誉色阶。 |
 | **移动端友好与触控优化** | 顶栏导航精简，≤700px 移动视口下支持单行无折行平滑横向滚动；导航链接与主题按钮通过伪元素扩充至 ≥44×44px 规范触控热区。 |
-| **日 / 周 / 月三种周期** | 周榜与月榜在构建期用历史快照聚合，不额外调用任何 API。历史不足一个完整窗口时会显式标注实际覆盖天数，**不做线性外推**。 |
+| **日 / 周 / 月三种周期** | 周榜与月榜在构建期用历史快照聚合，不额外调用任何 API。历史不足一个完整窗口时会显式标注实际覆盖天数，**不做线性外推**；增长率统一以**基线存量**为分母，日均增量统一按请求窗口标准化。 |
+| **趋势标识与相关推荐** | 卡片标注 NEW / 上升 N 位 / 连榜 N 期；详情页底部按「同分类 + 话题相似度」推荐 3 个同类项目与 2 个同期热门，全部构建期算好、零运行时请求。 |
+| **对比页双模式** | star 走势（绝对值 / 相对起点）之外新增**维度对比**：并排展示 8 维评分与 6 项关键指标，模式写入 URL query 便于分享。 |
+| **社交分享卡片** | 构建期用 SVG 模板 + sharp 生成 1200×630 的 OG 图（首页 + 最新一期各项目，共 22 张），并输出 og:* / twitter:card / canonical 元标签。 |
+| **采集预算分级** | 核心指标随 Search API 结果零成本取得；贡献者 / releases / PR / issue 等扩展指标按 extendedIntervalDays（默认 3 天）降频采集并标记 metricsStale；支持 GITHUB_TOKEN_1 / GITHUB_TOKEN_2 多 token 轮询，限流时先换 token 再退避。 |
 | **真实增量优先** | star 增量优先取"约 7 天前那一期快照"的真实差值（零 API 成本）；快照缺失才回落到 stargazers 接口；超大仓库在事件流覆盖不足时改为给出**保守下界**（只用观测到的条数、不做外推）并显式标注，不再直接跳过。 |
 | **解读可靠性与降级可见** | LLM 解读支持**备用 provider 自动切换**与**按 README 哈希缓存**（省 token、降单点失败）；整轮退回模板文案时 CI 输出 `::error` 级注解，不再静默降级。 |
 | **评分口径版本化** | 每份日榜带生成时的 `scoringVersion`；`npm run rescore:safe` 可在规则变更后分批重算历史（自动备份、变动熔断）；周期榜混用多版本时页面给出提示。 |
@@ -66,12 +70,11 @@
 - **Zero-dependency vector icons & Popover** — clean 16×16 stroke SVG icons (`Icon.astro`) replace emojis across the board; data computation notes adopt the modern HTML Popover API for seamless touch and keyboard accessibility.
 - **WCAG 2.1 AA accessibility compliance** — strictly follows soft-ink color pairing (up: 5.81:1, down: 6.18:1, tags: 6.98:1 all pass); minimum 12px font baseline; tabular figures for numbers; gold/silver/bronze honor tiers for top-3 entries.
 - **Mobile & touch ergonomics** — simplified top navigation with single-line horizontal touch scrolling on mobile (≤700px); hit areas expanded to ≥44×44px via invisible pseudo-elements.
-- **Daily / weekly / monthly boards** — weekly and monthly are aggregated at build time from historical snapshots, with **no extra API calls** and **no linear extrapolation** when history is short.
-- **Real deltas first** — star gains come from actual snapshot deltas when available and fall back to the stargazers endpoint; large repos with sparse event-stream coverage now report a **conservative lower bound** (observed count, no extrapolation) clearly flagged in the UI instead of being dropped.
-- **Resilient interpretation** — LLM commentary has an **automatic fallback provider** and a **README-hash cache** (fewer tokens, less single-point failure); a full fallback to template text now raises a CI `::error` annotation instead of degrading silently.
-- **Versioned scoring calibers** — every daily board records the `scoringVersion` that produced it; `npm run rescore:safe` re-scores history in batches (auto backup + drift circuit-breaker); period boards warn when they mix calibers.
-- **Layered input defence** — the sanitiser strips dangerous block elements **together with their contents** (`script`/`style`/`iframe`, …) and defangs pseudo-protocols (`javascript:`, `data:text/html`); `validate-data.mjs` re-blocks them as a build-time gate.
-- **Trend charts & interactive radar** — hand-written SVG, no chart library, no client-side data fetching.
+- **Daily / weekly / monthly boards** — weekly and monthly are aggregated at build time from historical snapshots, with **no extra API calls** and **no linear extrapolation** when history is short; growth rates use the **baseline** stock as denominator and daily gains are normalised by the requested window.
+- **Trend badges & related projects** — cards mark `NEW` / `Up N places` / `N-period streak`; the detail page recommends 3 similar projects (category + topic similarity) plus 2 hot ones from the same period, all computed at build time.
+- **Dual-mode compare** — alongside star trajectories (absolute / indexed) there is now a **dimension view** comparing 8 scores and 6 key metrics side by side, with the mode persisted in the URL query.
+- **Social share cards** — build-time SVG templates rasterised with sharp produce 1200×630 OG images (home + every project of the latest period, 22 in total) with full `og:*` / `twitter:card` / `canonical` metadata.
+- **Tiered API budget** — core metrics come free with the Search API payload; contributors / releases / PRs / issues are collected every `extendedIntervalDays` (default 3) and marked `metricsStale`; `GITHUB_TOKEN_1` / `GITHUB_TOKEN_2` rotation switches token before backing off on rate limits.
 - **Date-scoped archive** — `/project/<date>/<slug>/` gives every project its own page per day; the archive offers card and table views.
 - **Search, categories, topics, empty states, multi-repo compare, dark mode, open data endpoints** and a **CI data-quality gate** that blocks bad data from ever being committed.
 
@@ -284,7 +287,7 @@ Originals are backed up to `.rescored-backup/` before being overwritten.
 
 ## 变更记录
 
-见 [CHANGELOG.md](CHANGELOG.md)。当前版本 **0.7.0**。
+见 [CHANGELOG.md](CHANGELOG.md)。当前版本 **0.8.0**。
 
 ---
 

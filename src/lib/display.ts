@@ -92,6 +92,18 @@ export function gainSourceTag(entry: any, t: Strings): InterpretationTag {
   return { label: exact ? t.sourceExactLabel : t.sourceEstimateLabel, note };
 }
 
+/**
+ * 评分口径标注：分数是由哪一版评分引擎生成的。
+ * 规则变更后，历史期的分数与最新期不同口径，跨期比较需要明确提示（T1.8）。
+ */
+export function caliberTag(entry: any, current: string, t: Strings): InterpretationTag | null {
+  const version = entry?.scoringVersion;
+  if (!current) return null;
+  if (!version) return { label: t.caliberUnknown, note: t.caliberNote(current) };
+  if (version === current) return { label: t.caliberCurrent, note: t.caliberNote(current) };
+  return { label: t.caliberLegacy(version), note: t.caliberNote(current) };
+}
+
 /** 连续在榜期数：从当期往前数，中间断一期就重新计 */
 export function streakLength(dates: string[], appearances: string[], date: string): number {
   const ordered = [...(dates ?? [])].sort().reverse();
@@ -109,6 +121,55 @@ export function streakLength(dates: string[], appearances: string[], date: strin
 
 /** fork / star 比超过这个比例基本不是"受欢迎"，而是作业式 fork 或刷量 */
 const FORK_RATIO_WARN = 0.15;
+
+/** 上升超过这么多位才值得强调，避免满屏都是"上升 1 位" */
+const RISE_THRESHOLD = 5;
+/** 连续在榜达到这么多期才显示连榜标识 */
+const STREAK_THRESHOLD = 3;
+
+export interface TrendBadge {
+  kind: "new" | "rise" | "streak";
+  icon: string;
+  label: string;
+  note: string;
+}
+
+/**
+ * 趋势标识：首次上榜（NEW）/ 排名大幅上升 / 长期连榜。
+ * 数据来自构建期的索引（appearances + index.dates），不是当天条目自带的字段，
+ * 所以 firstDate 与 streak 由调用方算好后传入。
+ */
+export function trendBadges(
+  entry: any,
+  ctx: { date: string; firstDate?: string; streak?: number },
+  t: Strings
+): TrendBadge[] {
+  const badges: TrendBadge[] = [];
+  const firstDate = ctx?.firstDate ?? entry?.firstSeen;
+  if (firstDate && ctx?.date && firstDate === ctx.date) {
+    badges.push({ kind: "new", icon: "bolt", label: t.badgeNew, note: t.badgeNewNote });
+  }
+  const change = typeof entry?.rankChange === "number" ? entry.rankChange : null;
+  if (change !== null && change > RISE_THRESHOLD) {
+    badges.push({
+      kind: "rise",
+      icon: "arrow-up",
+      label: t.badgeRise(change),
+      note: t.badgeRiseNote(change),
+    });
+  }
+  const streak = typeof ctx?.streak === "number" ? ctx.streak : 0;
+  if (streak >= STREAK_THRESHOLD) {
+    badges.push({
+      kind: "streak",
+      icon: "trend",
+      label: t.badgeStreak(streak),
+      note: t.badgeStreakNote(streak),
+    });
+  }
+  // 一屏最多两种标识，避免卡片被角标淹没（验收：同时存在 ≥3 种标识时视觉整洁）
+  return badges.slice(0, 2);
+}
 
 /** 热度指标本身的异常提示 —— 分叉增速是个高分维度，读者需要知道它什么时候不该当好评看 */
 export function forkAnomaly(entry: any, t: Strings): { level: "warn"; text: string } | null {

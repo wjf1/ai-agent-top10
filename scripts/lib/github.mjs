@@ -9,13 +9,28 @@ import { config } from "../../src/lib/config.mjs";
 
 const API = "https://api.github.com";
 
-export function resolveToken() {
-  if (process.env.GITHUB_TOKEN) return process.env.GITHUB_TOKEN;
-  try {
-    return execSync("gh auth token", { encoding: "utf8" }).trim();
-  } catch {
-    return "";
+/**
+ * 收集可用 token：优先 GITHUB_TOKEN_1 / GITHUB_TOKEN_2（可轮询、额度翻倍），
+ * 其次 GITHUB_TOKEN，最后回落到本机 gh CLI 登录态。
+ */
+export function resolveTokens() {
+  const out = [];
+  for (const key of ["GITHUB_TOKEN_1", "GITHUB_TOKEN_2", "GITHUB_TOKEN", "GH_TOKEN"]) {
+    const v = (process.env[key] ?? "").trim();
+    if (v && !out.includes(v)) out.push(v);
   }
+  if (out.length) return out;
+  try {
+    const t = execSync("gh auth token", { encoding: "utf8" }).trim();
+    return t ? [t] : [];
+  } catch {
+    return [];
+  }
+}
+
+/** 首个可用 token（保持旧接口兼容） */
+export function resolveToken() {
+  return resolveTokens()[0] ?? "";
 }
 
 export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -51,14 +66,21 @@ function retryAfterMs(res) {
   return null;
 }
 
-export function createClient({ token = resolveToken(), log = console.log } = {}) {
+export function createClient({ token = null, tokens = null, log = console.log } = {}) {
   const {
     maxCallsPerRun = 1400,
     maxRetries = 3,
     baseBackoffMs = 800,
     minRemainingBeforeWait = 200,
+    minSearchRemainingBeforeWait = 5,
     requestTimeoutMs = 20000,
   } = config.api ?? {};
+
+  // 多 token 轮询：任一 token 额度耗尽 / 被限流时自动切到下一个（T2.5）
+  const tokenList = (tokens && tokens.length ? tokens : token ? [token] : resolveTokens()).slice();
+  let tokenIndex = 0;
+  const currentToken = () => tokenList[tokenIndex] ?? "";
+  let rotations = 0;
 
   let calls = 0;
   let retries = 0;
@@ -88,7 +110,9 @@ export function createClient({ token = resolveToken(), log = console.log } = {})
       "User-Agent": "ai-agent-top10",
       "X-GitHub-Api-Version": "2022-11-28",
     };
-    if (token) headers.Authorization = `Bearer ${token}`;
+    if (tokenList.length === 0) headers.Authorization = undefined;
+    else headers.Authorization = `Bearer ${currentToken()}`;
+    if (!currentToken()) delete headers.Authorization;
 
     // 必须显式超时：Node 的 fetch 默认无限等待，代理停滞时会永久挂住整个流水线
     const res = await fetch(`${API}${url}`, { headers, signal: AbortSignal.timeout(requestTimeoutMs) });
@@ -108,13 +132,32 @@ export function createClient({ token = resolveToken(), log = console.log } = {})
     throw err;
   }
 
+  /** 切到下一个 token；没有下一个返回 false */
+  function rotateToken() {
+    if (tokenIndex + 1 >= tokenList.length) return false;
+    tokenIndex++;
+    rotations++;
+    coreRemaining = null;
+    searchRemaining = null;
+    log(`  ~ token rotated (${tokenIndex + 1}/${tokenList.length})`);
+    return true;
+  }
+
   /** 带重试的请求；404 视为“无此资源/超页”，直接抛出由调用方决定降级 */
   async function gh(url) {
     let lastError;
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
+        // search 与 core 额度独立：search 只有 30 次/分钟，耗尽是 403 且要等满一分钟。
+        // 接近下限时先停一下，比被 403 打回再退避更省事（T2.10）。
+        if (isSearchUrl(url) && searchRemaining !== null && searchRemaining < minSearchRemainingBeforeWait && attempt === 0) {
+          throttled++;
+          const wait = Math.min(30_000, Math.max(baseBackoffMs * 2, 5_000));
+          log(`  ~ search rate limit low (${searchRemaining} left), waiting ${wait}ms`);
+          await sleep(wait);
+        }
         // core 额度偏低时先等一下，避免整批请求被 403 打回
-        if (coreRemaining !== null && coreRemaining < minRemainingBeforeWait && attempt === 0) {
+        if (!isSearchUrl(url) && coreRemaining !== null && coreRemaining < minRemainingBeforeWait && attempt === 0) {
           throttled++;
           const wait = Math.min(5_000, baseBackoffMs * 2 ** attempt);
           log(`  ~ core rate limit low (${coreRemaining} left), waiting ${wait}ms`);
@@ -126,8 +169,12 @@ export function createClient({ token = resolveToken(), log = console.log } = {})
         // 超时与网络错误同样值得重试，否则一次抖动就会让整个仓库被跳过
         const isTimeout = e.name === "TimeoutError" || e.name === "AbortError";
         if (isTimeout) timeouts++;
+        // 额度类错误优先换 token（T2.5）：换 token 往往能立刻恢复，比退避等待更有效
+        const rateLimited =
+          e.status === 403 || e.status === 429 || /rate limit|API rate/i.test(String(e.message ?? ""));
+        if (rateLimited && rotateToken()) continue;
         const retryable =
-          isTimeout || e.status === 403 || e.status === 429 || e.status >= 500 || e.retryAfter;
+          isTimeout || rateLimited || e.status >= 500 || e.retryAfter;
         if (!retryable || attempt === maxRetries || exhausted) throw e;
         retries++;
         const backoff = e.retryAfter ?? Math.min(requestTimeoutMs, baseBackoffMs * 2 ** attempt);
@@ -146,6 +193,6 @@ export function createClient({ token = resolveToken(), log = console.log } = {})
   return {
     gh,
     search,
-    stats: () => ({ calls, retries, throttled, timeouts, coreRemaining, searchRemaining, exhausted }),
+    stats: () => ({ calls, retries, throttled, timeouts, rotations, tokens: tokenList.length, coreRemaining, searchRemaining, exhausted }),
   };
 }

@@ -1,11 +1,12 @@
 {
   "name": "ai-agent-top10",
   "type": "module",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Daily top-10 AI agent projects on GitHub, ranked by star growth with multi-dimension explainable scores.",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/generate-og.mjs",
+    "og": "node scripts/generate-og.mjs",
     "preview": "astro preview",
     "fetch": "node scripts/fetch-daily.mjs",
     "backfill": "node scripts/backfill-metrics.mjs",
@@ -13,7 +14,8 @@
     "rescore": "node scripts/rescore.mjs",
     "rescore:safe": "node scripts/rescore.mjs --safe",
     "validate": "node scripts/validate-data.mjs",
-    "test": "node --test tests/pipeline.test.mjs",
+    "test": "node --test",
+    "test:coverage": "node --test --experimental-test-coverage",
     "check": "npm test && npm run validate && npm run build"
   },
   "dependencies": {

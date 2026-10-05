@@ -63,6 +63,26 @@ jobs:
 
       - run: npm ci || npm install
 
+      # 前置检查：解读服务未配置时不再「静默降级」。
+      # 默认输出 warning 并继续（回落到规则文案）；把仓库变量 LLM_REQUIRED 设为 true，
+      # 即在缺少 secrets.LLM_API_KEY 时硬失败、阻断本次部署（符合 T1.3 的验收要求）。
+      - name: Preflight — interpretation service
+        run: |
+          if [ -z "${LLM_API_KEY:-}" ]; then
+            if [ "${LLM_REQUIRED:-}" = "true" ]; then
+              echo "::error title=解读服务未配置::已设置 LLM_REQUIRED=true 但缺少 secrets.LLM_API_KEY，按预案阻断本次部署。"
+              exit 1
+            fi
+            echo "::warning title=解读服务未配置::未提供 secrets.LLM_API_KEY，本次抓取将回落到规则模板文案。配置该 secret 后站点才会有 AI 解读。"
+          else
+            echo "解读服务已配置：base=${LLM_BASE_URL:-<config 默认>} model=${LLM_MODEL:-<config 默认>}"
+          fi
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
+          LLM_MODEL: ${{ vars.LLM_MODEL }}
+          LLM_REQUIRED: ${{ vars.LLM_REQUIRED }}
+
       - name: Fetch daily data
         run: node scripts/fetch-daily.mjs
         env:

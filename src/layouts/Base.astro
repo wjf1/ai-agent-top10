@@ -12,12 +12,19 @@ interface Props {
   /** 当前激活的导航项，用于高亮 */
   active?: "home" | "day" | "week" | "month" | "archive" | "search" | "compare" | "export";
   date?: string | null;
+  /** 社交分享图（相对站点根的路径，如 /og/zh-firecrawl-mcp.png）；缺省回落首页图 */
+  ogImage?: string;
 }
 
-const { lang = "zh", title, desc, langHref, active, date = null } = Astro.props;
+const { lang = "zh", title, desc, langHref, active, date = null, ogImage } = Astro.props;
 const t = strings(lang);
 const B = import.meta.env.BASE_URL.replace(/\/$/, "");
 const fullTitle = title ? `${title} · ${t.siteName}` : `${t.siteName} — ${t.tagline}`;
+// OG 图必须给绝对地址，否则社交平台抓不到
+const site = (import.meta.env.SITE ?? "").replace(/\/$/, "");
+const ogPath = ogImage ?? `${B}/og/home-${lang}.png`;
+const ogUrl = `${site}${ogPath}`;
+const canonical = new URL(`${B}/${lang === "en" ? "en/" : ""}`, `${site || "https://example.invalid"}/`).toString();
 // 首页始终指向最新一期；若当前在某一期日报里，则“日榜”指向该期
 const dailyHref = date && active === "day" ? dayPath(B, lang, date) : homePath(B, lang);
 
@@ -36,6 +43,18 @@ const nav = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     {desc && <meta name="description" content={desc} />}
+    {site && <link rel="canonical" href={canonical} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={t.siteName} />
+    <meta property="og:title" content={fullTitle} />
+    {desc && <meta property="og:description" content={desc} />}
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    {desc && <meta name="twitter:description" content={desc} />}
+    <meta name="twitter:image" content={ogUrl} />
     <link rel="alternate" type="application/rss+xml" title={`${t.siteName} RSS`} href={rssPath(B, lang)} />
     <meta name="color-scheme" content="light dark" />
     <script is:inline>

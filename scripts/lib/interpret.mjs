@@ -81,11 +81,29 @@ async function requestInterpretation(provider, payload, cfg, log) {
       return null;
     }
     const data = await res.json();
-    const parsed = JSON.parse(data.choices?.[0]?.message?.content ?? "{}");
+    let parsed;
+    try {
+      parsed = JSON.parse(data.choices?.[0]?.message?.content ?? "{}");
+    } catch (e) {
+      log(`interpretation: ${provider.model} returned non-JSON content (${e.message})`);
+      return null;
+    }
+    // T2.14：明确的契约校验 —— entries 必须是数组，否则视为无效响应并回落规则版，
+    // 而不是静默产出 0 条（此前 `parsed.entries ?? []` 会把结构错误吞掉）。
+    if (!parsed || typeof parsed !== "object" || !Array.isArray(parsed.entries)) {
+      log(
+        `interpretation: ${provider.model} response missing a valid "entries" array ` +
+          `(got ${parsed === null ? "null" : typeof parsed.entries}); falling back to rules`
+      );
+      return null;
+    }
     const out = new Map();
-    for (const item of parsed.entries ?? []) {
+    for (const item of parsed.entries) {
       const normalized = normalizeInterpretation(item);
       if (normalized && typeof item.full_name === "string") out.set(item.full_name, { ...normalized, source: "llm" });
+    }
+    if (out.size < parsed.entries.length) {
+      log(`interpretation: ${parsed.entries.length - out.size} entr(ies) failed validation and were dropped`);
     }
     log(`interpretation: ${provider.model} produced ${out.size} entries`);
     return out.size ? out : null;
