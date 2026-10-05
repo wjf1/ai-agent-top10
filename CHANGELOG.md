@@ -4,6 +4,53 @@
 
 ---
 
+## [Unreleased]
+
+规则兜底文案的信息量修补 + 让"LLM 静默降级"变成可见信号。背景：CI 上的 LLM 解读自
+2026-09-28 起每天调不通并静默回落到模板文案（默认 `baseUrl` 指向本机网关，runner 不可达），
+而 workflow 一直是绿的，一周后才靠肉眼从首页文案发现。
+
+### 新增
+
+- **解读来源构成与告警**：`scripts/lib/status.mjs` 统计当日 `interpretationSource` 构成，
+  抓取收尾输出到日志、`::warning` 注解与 `$GITHUB_STEP_SUMMARY`。只要有条目回落到规则文案就提示，
+  并在文案里点名要检查 `secrets.LLM_API_KEY` 与 `vars.LLM_BASE_URL` / `vars.LLM_MODEL`。
+- **`--refresh-rules` 回填开关**：`backfill-interpretations.mjs` 只重算
+  `interpretationSource === "rules"` 的条目（判定在 `scripts/lib/refresh.mjs`），
+  LLM / 人工文案与缺来源字段的老数据一律不动；与 `--llm` 互斥。用于文案口径变更后让历史日期跟上。
+- **快速上手用真实安装命令**：`scripts/lib/readme.mjs` 新增 `fetchReadmeMarkdown` 与
+  `extractInstallSnippet`，从 README 里按标题（## Installation / 快速开始…）或安装类命令
+  （npm/pnpm/uv/pip/brew/cargo/docker/curl|sh…）抽出第一个安装代码块，过净化与限长后填进
+  「快速上手」并标注摘自 README；抽不到才退回通用 `git clone` 说明。
+
+### 变更
+
+- **中文介绍不再比英文少信息**：`ruleIntro` 的中文分支此前完全丢掉仓库 description（只有英文分支
+  会引用），现在两版都引用，中文以「仓库自述是 "…"」的形式给出，并统一走 `sanitizeText` 净化。
+- **卡片一行改说「它能干什么」**：`ruleCardLine` 不再输出"框架 / SDK 项目，方向：…"——分类与语言
+  在卡片上本就是独立 chip，等于把同一信息占两处。现在优先放仓库自述（按显示宽度截断，
+  CJK 记 2 单位 / 上限 90 单位，等价于原先"45 个汉字"的一行约束），没有自述时才用方向标签兜底。
+- **成句的方向标签只取词表收录项**：新增 `readableTopicLabels`。`topicLabels` 保留原始 slug 的行为
+  不变（详情页的 `#topic` chip 仍如实显示 GitHub 标签），但 `ade`、`ai-search`、`dsh-plugin`
+  这类未收录 slug 不再混进"聚焦 …等方向"的句子。
+- **详情页头图导语改用 `cardLine`**：0.5.1 取的「它能做什么？」首句在单句式介绍下会与下方板块
+  逐字重复；改为卡片一行版后，头图给定位、板块给完整介绍，各司其职。
+- **规则兜底时「核心亮点」改称「数据要点」**：规则版亮点本就是贡献者 / 许可证 / fork 数这类指标，
+  顶着「核心亮点」的名义与"指标不复述"的设计原则冲突。同时卡片与详情页挂来源标注
+  （「仓库自述」/「规则生成」/「AI 解读」/「人工校对」，悬停说明口径），
+  让读者分得清哪句是编辑内容、哪句是 metadata 拼装。
+- **首屏 No.1 统计修正单位**：原「ponytail No.1：7,454 stars」里的 7,454 是近 7 天增量，
+  读起来像该项目只有 7,454 star（实际 154,160）。改为「ponytail / 近 7 天 +7,454 star」，
+  并把日榜与周期榜共用的"增量覆盖天数"收敛成 `RankingPage` 的一个常量。
+
+### 测试
+
+- `tests/pipeline.test.mjs` 从 32 项增至 54 项，新增：中文介绍引用自述、净化不可见字符、
+  卡片一行不复述 chip 与词边界截断、方向标签过滤、详情页导语去重、来源标注与「数据要点」改名、
+  回填只覆盖规则条目、CI 降级告警、README 安装段抽取（含无安装段与限长分支）。
+
+---
+
 ## [0.5.1] — 2026-09-29
 
 详情页上线后的三处视觉修正。
