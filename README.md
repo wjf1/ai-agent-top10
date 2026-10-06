@@ -1,7 +1,7 @@
 # ai-agent-top10
 
 [![daily-update](https://github.com/wjf1/ai-agent-top10/actions/workflows/daily.yml/badge.svg)](https://github.com/wjf1/ai-agent-top10/actions/workflows/daily.yml)
-[![version](https://img.shields.io/badge/version-0.9.0-blue.svg)](package.json)
+[![version](https://img.shields.io/badge/version-0.9.1-blue.svg)](package.json)
 
 **每天从 GitHub 上按 star 增速选出最热的 10 个 AI Agent 项目，用 8 个可解释维度打分，并给出中英双语解读。**
 纯静态站点：无后端、无数据库、无运行时 API 调用。
@@ -291,7 +291,7 @@ Originals are backed up to `.rescored-backup/` before being overwritten.
 
 ## 变更记录
 
-见 [CHANGELOG.md](CHANGELOG.md)。当前版本 **0.9.0**。
+见 [CHANGELOG.md](CHANGELOG.md)。当前版本 **0.9.1**。
 
 ---
 

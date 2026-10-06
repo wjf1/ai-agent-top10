@@ -42,14 +42,14 @@
       "rankChange": 0,
       "scores": {
         "heat": 100,
-        "community": 55,
+        "community": 57,
         "innovation": 71,
         "practical": 100,
-        "ecosystem": 54,
-        "health": 78,
-        "forksGrowth": 83,
-        "activity": 67,
-        "overall": 77
+        "ecosystem": 48,
+        "health": 80,
+        "forksGrowth": 70,
+        "activity": 62,
+        "overall": 75
       },
       "why": {
         "zh": "近 7 天新增 7,454 star（日均约 1,065，相对存量增速 4.8%），累计 154,160 star、8,292 fork。窗口内被 fork 411 次，近 30 天新建 PR 162 个、issue 200 个，82 位贡献者共同维护。",
@@ -107,7 +107,8 @@
       ],
       "quickstart": "# DietrichGebert/ponytail\n$ git clone https://github.com/DietrichGebert/ponytail.git\n$ cd ponytail\n# 具体安装与运行方式请参考仓库 README",
       "interpretationSource": "llm",
-      "firstSeen": "2026-10-04"
+      "firstSeen": "2026-10-04",
+      "scoringVersion": "2.1.0"
     },
     {
       "rank": 2,
@@ -146,15 +147,15 @@
       "gainExact": true,
       "rankChange": 0,
       "scores": {
-        "heat": 98,
-        "community": 64,
-        "innovation": 82,
+        "heat": 90,
+        "community": 70,
+        "innovation": 65,
         "practical": 100,
-        "ecosystem": 49,
-        "health": 63,
-        "forksGrowth": 72,
+        "ecosystem": 41,
+        "health": 68,
+        "forksGrowth": 44,
         "activity": 100,
-        "overall": 81
+        "overall": 74
       },
       "why": {
         "zh": "近 7 天新增 5,467 star（日均约 781，相对存量增速 6.5%），累计 84,662 star、5,463 fork。窗口内被 fork 279 次，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
@@ -204,7 +205,8 @@
       ],
       "quickstart": "# stablyai/orca\n$ git clone https://github.com/stablyai/orca.git\n$ cd orca\n# 具体安装与运行方式请参考仓库 README",
       "interpretationSource": "llm",
-      "firstSeen": "2026-10-04"
+      "firstSeen": "2026-10-04",
+      "scoringVersion": "2.1.0"
     },
     {
       "rank": 3,
@@ -243,15 +245,15 @@
       "gainExact": true,
       "rankChange": 0,
       "scores": {
-        "heat": 95,
-        "community": 50,
-        "innovation": 78,
+        "heat": 80,
+        "community": 54,
+        "innovation": 59,
         "practical": 100,
-        "ecosystem": 34,
-        "health": 80,
-        "forksGrowth": 90,
-        "activity": 22,
-        "overall": 70
+        "ecosystem": 35,
+        "health": 83,
+        "forksGrowth": 87,
+        "activity": 10,
+        "overall": 64
       },
       "why": {
         "zh": "近 7 天新增 4,774 star（日均约 682，相对存量增速 7.5%），累计 63,466 star、10,856 fork。窗口内被 fork 689 次，近 30 天新建 PR 52 个、issue 76 个，22 位贡献者共同维护。",
@@ -305,7 +307,8 @@
       ],
       "quickstart": "# rohitg00/ai-engineering-from-scratch\n$ git clone https://github.com/rohitg00/ai-engineering-from-scratch.git\n$ cd ai-engineering-from-scratch\n# 具体安装与运行方式请参考仓库 README",
       "interpretationSource": "llm",
-      "firstSeen": "2026-10-04"
+      "firstSeen": "2026-10-04",
+      "scoringVersion": "2.1.0"
     },
     {
       "rank": 4,
@@ -344,15 +347,15 @@
       "gainExact": true,
       "rankChange": 1,
       "scores": {
-        "heat": 93,
-        "community": 26,
-        "innovation": 78,
+        "heat": 70,
+        "community": 33,
+        "innovation": 56,
         "practical": 100,
-        "ecosystem": 44,
-        "health": 65,
-        "forksGrowth": 80,
-        "activity": 31,
-        "overall": 67
+        "ecosystem": 35,
+        "health": 72,
+        "forksGrowth": 62,
+        "activity": 20,
+        "overall": 57
       },
       "why": {
         "zh": "近 7 天新增 4,596 star（日均约 657，相对存量增速 5.1%），累计 90,274 star、7,938 fork。窗口内被 fork 406 次，近 30 天新建 PR 73 个、issue 96 个，36 位贡献者共同维护。",
@@ -410,7 +413,8 @@
       ],
       "quickstart": "# Panniantong/Agent-Reach\n$ git clone https://github.com/Panniantong/Agent-Reach.git\n$ cd Agent-Reach\n# 具体安装与运行方式请参考仓库 README",
       "interpretationSource": "llm",
-      "firstSeen": "2026-10-04"
+      "firstSeen": "2026-10-04",
+      "scoringVersion": "2.1.0"
     },
     {
       "rank": 5,
@@ -449,15 +453,15 @@
       "gainExact": true,
       "rankChange": -1,
       "scores": {
-        "heat": 91,
-        "community": 60,
-        "innovation": 78,
+        "heat": 60,
+        "community": 69,
+        "innovation": 69,
         "practical": 100,
-        "ecosystem": 75,
-        "health": 82,
-        "forksGrowth": 96,
+        "ecosystem": 74,
+        "health": 91,
+        "forksGrowth": 87,
         "activity": 100,
-        "overall": 86
+        "overall": 80
       },
       "why": {
         "zh": "近 7 天新增 4,467 star（日均约 638，相对存量增速 1.6%），累计 272,558 star、40,691 fork。窗口内被 fork 640 次，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
@@ -511,7 +515,8 @@
       ],
       "quickstart": "# affaan-m/ECC\n$ git clone https://github.com/affaan-m/ECC.git\n$ cd ECC\n# 具体安装与运行方式请参考仓库 README",
       "interpretationSource": "llm",
-      "firstSeen": "2026-10-04"
+      "firstSeen": "2026-10-04",
+      "scoringVersion": "2.1.0"
     },
     {
       "rank": 6,
@@ -550,15 +555,15 @@
       "gainExact": true,
       "rankChange": 0,
       "scores": {
-        "heat": 88,
-        "community": 62,
-        "innovation": 47,
+        "heat": 50,
+        "community": 66,
+        "innovation": 35,
         "practical": 62,
-        "ecosystem": 73,
-        "health": 92,
-        "forksGrowth": 58,
+        "ecosystem": 66,
+        "health": 96,
+        "forksGrowth": 35,
         "activity": 100,
-        "overall": 72
+        "overall": 62
       },
       "why": {
         "zh": "近 7 天新增 3,123 star（日均约 446，相对存量增速 1.7%），累计 188,413 star、10,023 fork。窗口内被 fork 85 次，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
@@ -616,7 +621,8 @@
       ],
       "quickstart": "# firecrawl/firecrawl\n$ git clone https://github.com/firecrawl/firecrawl.git\n$ cd firecrawl\n# 具体安装与运行方式请参考仓库 README",
       "interpretationSource": "llm",
-      "firstSeen": "2026-10-04"
+      "firstSeen": "2026-10-04",
+      "scoringVersion": "2.1.0"
     },
     {
       "rank": 7,
@@ -646,15 +652,15 @@
       "gainExact": true,
       "rankChange": 0,
       "scores": {
-        "heat": 86,
-        "community": 67,
-        "innovation": 56,
+        "heat": 40,
+        "community": 73,
+        "innovation": 43,
         "practical": 80,
-        "ecosystem": 72,
-        "health": 87,
-        "forksGrowth": 87,
+        "ecosystem": 66,
+        "health": 94,
+        "forksGrowth": 63,
         "activity": 100,
-        "overall": 79
+        "overall": 67
       },
       "why": {
         "zh": "近 7 天新增 2,659 star（日均约 380，相对存量增速 2.4%），累计 112,325 star、14,241 fork。窗口内被 fork 290 次，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
@@ -708,7 +714,8 @@
       ],
       "quickstart": "# earendil-works/pi\n$ git clone https://github.com/earendil-works/pi.git\n$ cd pi\n# 具体安装与运行方式请参考仓库 README",
       "interpretationSource": "llm",
-      "firstSeen": "2026-10-04"
+      "firstSeen": "2026-10-04",
+      "scoringVersion": "2.1.0"
     },
     {
       "rank": 8,
@@ -747,15 +754,15 @@
       "gainExact": true,
       "rankChange": 0,
       "scores": {
-        "heat": 84,
-        "community": 60,
-        "innovation": 77,
+        "heat": 30,
+        "community": 68,
+        "innovation": 46,
         "practical": 100,
-        "ecosystem": 39,
-        "health": 73,
-        "forksGrowth": 84,
+        "ecosystem": 36,
+        "health": 81,
+        "forksGrowth": 63,
         "activity": 100,
-        "overall": 78
+        "overall": 64
       },
       "why": {
         "zh": "近 7 天新增 2,171 star（日均约 310，相对存量增速 3%），累计 72,783 star、10,423 fork。窗口内被 fork 388 次，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
@@ -809,7 +816,8 @@
       ],
       "quickstart": "# diegosouzapw/OmniRoute\n$ git clone https://github.com/diegosouzapw/OmniRoute.git\n$ cd OmniRoute\n# 具体安装与运行方式请参考仓库 README",
       "interpretationSource": "llm",
-      "firstSeen": "2026-10-04"
+      "firstSeen": "2026-10-04",
+      "scoringVersion": "2.1.0"
     },
     {
       "rank": 9,
@@ -848,15 +856,15 @@
       "gainExact": true,
       "rankChange": 0,
       "scores": {
-        "heat": 81,
-        "community": 61,
-        "innovation": 78,
+        "heat": 20,
+        "community": 64,
+        "innovation": 45,
         "practical": 100,
-        "ecosystem": 71,
-        "health": 69,
-        "forksGrowth": 81,
+        "ecosystem": 67,
+        "health": 72,
+        "forksGrowth": 50,
         "activity": 100,
-        "overall": 81
+        "overall": 63
       },
       "why": {
         "zh": "近 7 天新增 1,905 star（日均约 272，相对存量增速 1.5%），累计 123,657 star、11,920 fork。窗口内被 fork 199 次，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
@@ -910,7 +918,8 @@
       ],
       "quickstart": "# Graphify-Labs/graphify\n$ git clone https://github.com/Graphify-Labs/graphify.git\n$ cd graphify\n# 具体安装与运行方式请参考仓库 README",
       "interpretationSource": "llm",
-      "firstSeen": "2026-10-04"
+      "firstSeen": "2026-10-04",
+      "scoringVersion": "2.1.0"
     },
     {
       "rank": 10,
@@ -949,15 +958,15 @@
       "gainExact": true,
       "rankChange": 0,
       "scores": {
-        "heat": 79,
-        "community": 72,
-        "innovation": 54,
+        "heat": 10,
+        "community": 80,
+        "innovation": 33,
         "practical": 100,
-        "ecosystem": 87,
-        "health": 70,
+        "ecosystem": 85,
+        "health": 78,
         "forksGrowth": 100,
         "activity": 100,
-        "overall": 82
+        "overall": 70
       },
       "why": {
         "zh": "近 7 天新增 1,745 star（日均约 249，相对存量增速 0.7%），累计 251,080 star、53,864 fork。窗口内被 fork 881 次，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
@@ -1007,7 +1016,10 @@
       ],
       "quickstart": "# NousResearch/hermes-agent\n$ git clone https://github.com/NousResearch/hermes-agent.git\n$ cd hermes-agent\n# 具体安装与运行方式请参考仓库 README",
       "interpretationSource": "llm",
-      "firstSeen": "2026-10-04"
+      "firstSeen": "2026-10-04",
+      "scoringVersion": "2.1.0"
     }
-  ]
+  ],
+  "rescoredAt": "2026-10-06T02:02:52.460Z",
+  "scoringVersion": "2.1.0"
 }

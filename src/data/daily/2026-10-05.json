@@ -42,14 +42,14 @@
       "rankChange": 0,
       "scores": {
         "heat": 100,
-        "community": 55,
+        "community": 57,
         "innovation": 71,
         "practical": 100,
-        "ecosystem": 55,
-        "health": 80,
-        "forksGrowth": 81,
-        "activity": 67,
-        "overall": 77
+        "ecosystem": 48,
+        "health": 82,
+        "forksGrowth": 70,
+        "activity": 62,
+        "overall": 75
       },
       "why": {
         "zh": "近 7 天新增 7,306 star（日均约 1,044，相对存量增速 4.7%），累计 155,562 star、8,363 fork。窗口内被 fork 451 次，最近一次提交在 0 天前，近 30 天新建 PR 168 个、issue 200 个，91 位贡献者共同维护。",
@@ -98,7 +98,8 @@
       ],
       "quickstart": "# 摘自 DietrichGebert/ponytail 的 README\n/plugin marketplace add DietrichGebert/ponytail",
       "interpretationSource": "rules",
-      "firstSeen": "2026-10-05"
+      "firstSeen": "2026-10-05",
+      "scoringVersion": "2.1.0"
     },
     {
       "rank": 2,
@@ -137,15 +138,15 @@
       "gainExact": true,
       "rankChange": 2,
       "scores": {
-        "heat": 98,
-        "community": 26,
-        "innovation": 79,
+        "heat": 90,
+        "community": 33,
+        "innovation": 62,
         "practical": 100,
-        "ecosystem": 44,
-        "health": 64,
-        "forksGrowth": 82,
-        "activity": 30,
-        "overall": 68
+        "ecosystem": 35,
+        "health": 71,
+        "forksGrowth": 73,
+        "activity": 20,
+        "overall": 62
       },
       "why": {
         "zh": "近 7 天新增 4,850 star（日均约 693，相对存量增速 5.3%），累计 91,445 star、8,030 fork。窗口内被 fork 479 次，最近一次提交在 20 天前，近 30 天新建 PR 70 个、issue 94 个，36 位贡献者共同维护。",
@@ -190,7 +191,8 @@
       ],
       "quickstart": "# 摘自 Panniantong/Agent-Reach 的 README\n帮我安装 Agent Reach：https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/install.md",
       "interpretationSource": "rules",
-      "firstSeen": "2026-10-05"
+      "firstSeen": "2026-10-05",
+      "scoringVersion": "2.1.0"
     },
     {
       "rank": 3,
@@ -229,15 +231,15 @@
       "gainExact": true,
       "rankChange": -1,
       "scores": {
-        "heat": 95,
-        "community": 64,
-        "innovation": 82,
+        "heat": 80,
+        "community": 70,
+        "innovation": 62,
         "practical": 100,
-        "ecosystem": 50,
-        "health": 63,
-        "forksGrowth": 70,
+        "ecosystem": 41,
+        "health": 68,
+        "forksGrowth": 44,
         "activity": 100,
-        "overall": 80
+        "overall": 72
       },
       "why": {
         "zh": "近 7 天新增 4,559 star（日均约 651，相对存量增速 5.3%），累计 85,441 star、5,499 fork。窗口内被 fork 265 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
@@ -291,7 +293,8 @@
       ],
       "quickstart": "# 摘自 stablyai/orca 的 README\n# macOS (Homebrew)\nbrew install --cask stablyai/orca/orca\n\n# Arch Linux (AUR) — or stably-orca-git to build from source\nyay -S stably-orca-bin",
       "interpretationSource": "rules",
-      "firstSeen": "2026-10-05"
+      "firstSeen": "2026-10-05",
+      "scoringVersion": "2.1.0"
     },
     {
       "rank": 4,
@@ -330,15 +333,15 @@
       "gainExact": true,
       "rankChange": 1,
       "scores": {
-        "heat": 93,
-        "community": 63,
-        "innovation": 79,
+        "heat": 70,
+        "community": 72,
+        "innovation": 72,
         "practical": 100,
-        "ecosystem": 75,
-        "health": 84,
-        "forksGrowth": 96,
+        "ecosystem": 76,
+        "health": 93,
+        "forksGrowth": 95,
         "activity": 100,
-        "overall": 87
+        "overall": 84
       },
       "why": {
         "zh": "近 7 天新增 4,054 star（日均约 579，相对存量增速 1.5%），累计 273,298 star、40,790 fork。窗口内被 fork 654 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
@@ -387,7 +390,8 @@
       ],
       "quickstart": "# 摘自 affaan-m/ECC 的 README\nnpx ecc-universal@2.2.3 setup",
       "interpretationSource": "rules",
-      "firstSeen": "2026-10-05"
+      "firstSeen": "2026-10-05",
+      "scoringVersion": "2.1.0"
     },
     {
       "rank": 5,
@@ -426,15 +430,15 @@
       "gainExact": true,
       "rankChange": -2,
       "scores": {
-        "heat": 91,
-        "community": 53,
-        "innovation": 77,
+        "heat": 60,
+        "community": 57,
+        "innovation": 53,
         "practical": 100,
         "ecosystem": 35,
-        "health": 81,
-        "forksGrowth": 90,
-        "activity": 22,
-        "overall": 70
+        "health": 85,
+        "forksGrowth": 92,
+        "activity": 10,
+        "overall": 61
       },
       "why": {
         "zh": "近 7 天新增 3,757 star（日均约 537，相对存量增速 5.8%），累计 64,331 star、11,038 fork。窗口内被 fork 701 次，最近一次提交在 0 天前，近 30 天新建 PR 54 个、issue 78 个，22 位贡献者共同维护。",
@@ -483,7 +487,8 @@
       ],
       "quickstart": "# 摘自 rohitg00/ai-engineering-from-scratch 的 README\ngit clone https://github.com/rohitg00/ai-engineering-from-scratch.git\ncd ai-engineering-from-scratch\npython3 phases/00-setup-and-tooling/01-dev-environment/code/verify.py --route beginner\npython3 phases/01-math-foundations/01-linear-algebra-intuition/code/vectors.py",
       "interpretationSource": "rules",
-      "firstSeen": "2026-10-05"
+      "firstSeen": "2026-10-05",
+      "scoringVersion": "2.1.0"
     },
     {
       "rank": 6,
@@ -522,15 +527,15 @@
       "gainExact": true,
       "rankChange": 0,
       "scores": {
-        "heat": 88,
-        "community": 62,
-        "innovation": 47,
+        "heat": 50,
+        "community": 66,
+        "innovation": 35,
         "practical": 62,
-        "ecosystem": 73,
-        "health": 92,
-        "forksGrowth": 53,
+        "ecosystem": 70,
+        "health": 96,
+        "forksGrowth": 31,
         "activity": 100,
-        "overall": 71
+        "overall": 62
       },
       "why": {
         "zh": "近 7 天新增 2,638 star（日均约 377，相对存量增速 1.4%），累计 188,764 star、10,028 fork。窗口内被 fork 69 次，最近一次提交在 1 天前，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
@@ -567,7 +572,8 @@
       ],
       "quickstart": "# 摘自 firecrawl/firecrawl 的 README\nnpx -y firecrawl-cli@latest init --all --browser",
       "interpretationSource": "rules",
-      "firstSeen": "2026-10-05"
+      "firstSeen": "2026-10-05",
+      "scoringVersion": "2.1.0"
     },
     {
       "rank": 7,
@@ -597,15 +603,15 @@
       "gainExact": true,
       "rankChange": 0,
       "scores": {
-        "heat": 86,
-        "community": 67,
-        "innovation": 56,
+        "heat": 40,
+        "community": 75,
+        "innovation": 43,
         "practical": 80,
-        "ecosystem": 72,
-        "health": 87,
-        "forksGrowth": 86,
+        "ecosystem": 66,
+        "health": 96,
+        "forksGrowth": 63,
         "activity": 100,
-        "overall": 78
+        "overall": 68
       },
       "why": {
         "zh": "近 7 天新增 2,283 star（日均约 326，相对存量增速 2%），累计 112,598 star、14,283 fork。窗口内被 fork 302 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
@@ -650,7 +656,8 @@
       ],
       "quickstart": "# 摘自 earendil-works/pi 的 README\ncurl -fsSL https://pi.dev/install.sh | sh",
       "interpretationSource": "rules",
-      "firstSeen": "2026-10-05"
+      "firstSeen": "2026-10-05",
+      "scoringVersion": "2.1.0"
     },
     {
       "rank": 8,
@@ -689,15 +696,15 @@
       "gainExact": true,
       "rankChange": 0,
       "scores": {
-        "heat": 84,
-        "community": 58,
-        "innovation": 77,
+        "heat": 30,
+        "community": 66,
+        "innovation": 46,
         "practical": 100,
-        "ecosystem": 39,
-        "health": 72,
-        "forksGrowth": 84,
+        "ecosystem": 36,
+        "health": 80,
+        "forksGrowth": 68,
         "activity": 100,
-        "overall": 78
+        "overall": 64
       },
       "why": {
         "zh": "近 7 天新增 1,972 star（日均约 282，相对存量增速 2.7%），累计 73,169 star、10,495 fork。窗口内被 fork 404 次，最近一次提交在 3 天前，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
@@ -746,7 +753,8 @@
       ],
       "quickstart": "# 摘自 diegosouzapw/OmniRoute 的 README\n# Fresh install, zero credentials — `auto` already works:\ncurl http://localhost:20128/v1/chat/completions \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"model\":\"auto\",\"messages\":[{\"role\":\"user\",\"content\":\"Hello!\"}]}'",
       "interpretationSource": "rules",
-      "firstSeen": "2026-10-05"
+      "firstSeen": "2026-10-05",
+      "scoringVersion": "2.1.0"
     },
     {
       "rank": 9,
@@ -776,15 +784,15 @@
       "gainExact": true,
       "rankChange": null,
       "scores": {
-        "heat": 81,
-        "community": 53,
-        "innovation": 57,
+        "heat": 20,
+        "community": 61,
+        "innovation": 39,
         "practical": 80,
-        "ecosystem": 70,
-        "health": 87,
-        "forksGrowth": 90,
-        "activity": 42,
-        "overall": 69
+        "ecosystem": 67,
+        "health": 94,
+        "forksGrowth": 71,
+        "activity": 36,
+        "overall": 55
       },
       "why": {
         "zh": "近 7 天新增 1,709 star（日均约 244，相对存量增速 1.1%），累计 156,960 star、25,337 fork。窗口内被 fork 335 次，最近一次提交在 1 天前，近 30 天新建 PR 175 个、issue 187 个，99 位贡献者共同维护。",
@@ -825,7 +833,8 @@
       ],
       "quickstart": "# 摘自 msitarzewski/agency-agents 的 README\nbrew install --cask msitarzewski/agency-agents/agency-agents",
       "interpretationSource": "rules",
-      "firstSeen": "2026-10-05"
+      "firstSeen": "2026-10-05",
+      "scoringVersion": "2.1.0"
     },
     {
       "rank": 10,
@@ -864,15 +873,15 @@
       "gainExact": true,
       "rankChange": -1,
       "scores": {
-        "heat": 79,
-        "community": 60,
-        "innovation": 77,
+        "heat": 10,
+        "community": 62,
+        "innovation": 42,
         "practical": 100,
-        "ecosystem": 71,
-        "health": 68,
-        "forksGrowth": 80,
+        "ecosystem": 67,
+        "health": 71,
+        "forksGrowth": 50,
         "activity": 100,
-        "overall": 80
+        "overall": 61
       },
       "why": {
         "zh": "近 7 天新增 1,684 star（日均约 241，相对存量增速 1.4%），累计 123,926 star、11,958 fork。窗口内被 fork 206 次，最近一次提交在 1 天前，近 30 天新建 PR 200 个、issue 200 个，100 位贡献者共同维护。",
@@ -921,7 +930,10 @@
       ],
       "quickstart": "# 摘自 Graphify-Labs/graphify 的 README\nbrew install python@3.12 uv",
       "interpretationSource": "rules",
-      "firstSeen": "2026-10-05"
+      "firstSeen": "2026-10-05",
+      "scoringVersion": "2.1.0"
     }
-  ]
+  ],
+  "rescoredAt": "2026-10-06T02:02:52.455Z",
+  "scoringVersion": "2.1.0"
 }
