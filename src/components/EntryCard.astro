@@ -27,7 +27,7 @@ const fmt = (n: number) => Number(n ?? 0).toLocaleString("en-US");
 const change = typeof entry.rankChange === "number" ? entry.rankChange : null;
 const changeLabel =
   change === null ? "" : change > 0 ? `${t.rankUp} ${change}` : change < 0 ? `${t.rankDown} ${Math.abs(change)}` : t.rankSame;
-const lineTag = cardLineTag(entry, t);
+const lineTag = cardLineTag(entry, lang, t);
 const srcTag = gainSourceTag(entry, t);
 
 const rankClass = entry.rank === 1 ? "top rank-1" : entry.rank === 2 ? "top rank-2" : entry.rank === 3 ? "top rank-3" : "";

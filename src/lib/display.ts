@@ -60,11 +60,12 @@ export function interpretationTag(entry: any, t: Strings): InterpretationTag | n
  * 卡片那一行的来源标注，只在规则兜底时出现（有编辑解读就别再加噪）。
  * 这一行如果是仓库作者自己的描述，标「仓库自述」比标「规则生成」更准确 ——
  * 读者据此知道这句话来自项目本身，而不是我们拼出来的模板腔。
+ * 按语言各判各的：规则版只把自述放进读得懂它的那一侧，另一侧是方向标签。
  */
-export function cardLineTag(entry: any, t: Strings): InterpretationTag | null {
+export function cardLineTag(entry: any, lang: Lang, t: Strings): InterpretationTag | null {
   if (entry?.interpretationSource !== "rules") return null;
   const fromDescription = clipToOneLine(sanitizeText(entry?.description), 90);
-  if (fromDescription && entry?.cardLine?.zh === fromDescription) {
+  if (fromDescription && entry?.cardLine?.[lang] === fromDescription) {
     return { label: t.cardFromRepo, note: t.cardFromRepoNote };
   }
   return { label: t.tagRules, note: t.tagRulesNote };

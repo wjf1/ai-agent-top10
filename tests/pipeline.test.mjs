@@ -440,14 +440,22 @@ test("卡片来源标注：那一行是仓库自述时标「仓库自述」，�
     cardLine: ruleCardLine({ description: "Search, scrape, and interact with the web.", category: "framework", topics: [] }),
     interpretationSource: "rules",
   };
-  assert.equal(cardLineTag(described, t).label, "仓库自述");
+  // 英文自述只进英文页，来源标注跟着语言各判各的：英文页是自述，中文页是方向标签
+  assert.equal(cardLineTag(described, "en", t).label, "仓库自述");
+  assert.equal(cardLineTag(described, "zh", t).label, "规则生成");
+  const zhDescribed = {
+    description: "会读网页并抓取数据的研究助手。",
+    cardLine: ruleCardLine({ description: "会读网页并抓取数据的研究助手。", category: "tool", topics: [] }),
+    interpretationSource: "rules",
+  };
+  assert.equal(cardLineTag(zhDescribed, "zh", t).label, "仓库自述", "中文自述进中文页时仍标「仓库自述」");
   const templated = {
     description: "",
     cardLine: { zh: "方向：MCP 协议", en: "Focused on MCP" },
     interpretationSource: "rules",
   };
-  assert.equal(cardLineTag(templated, t).label, "规则生成");
-  assert.equal(cardLineTag({ ...described, interpretationSource: "llm" }, t), null, "有编辑解读时不必再挂来源 chip");
+  assert.equal(cardLineTag(templated, "zh", t).label, "规则生成");
+  assert.equal(cardLineTag({ ...described, interpretationSource: "llm" }, "zh", t), null, "有编辑解读时不必再挂来源 chip");
 });
 
 // ----------------------------------------------------------- 历史文案回填
@@ -703,8 +711,10 @@ test("规则解读四段各司其职：为什么上榜讲指标，项目介绍�
   assert.ok(result.intro.zh.includes("TypeScript"));
   assert.ok(result.intro.en.startsWith("An agent framework"), "英文介绍应优先用仓库原始描述");
   assert.ok(!/star|fork/i.test(result.intro.zh), `项目介绍不该复述指标：${result.intro.zh}`);
-  // cardLine 要能塞进卡片一行：按显示宽度约束（CJK 记 2 单位），因为自述多为英文
+  // cardLine 要能塞进卡片一行：按显示宽度约束（CJK 记 2 单位）；
+  // 英文自述只进英文侧，中文页这一行由方向标签拼出，不能出现整行英文
   assert.ok(textWidth(result.cardLine.zh) <= 90, `卡片一行版过长：${result.cardLine.zh}`);
+  assert.ok(/[\u4e00-\u9fff]/.test(result.cardLine.zh), `中文卡片行必须是中文：${result.cardLine.zh}`);
   assert.equal(result.source, "rules");
 });
 
@@ -744,7 +754,7 @@ test("规则介绍在缺 description 时不得拼出空引号", () => {
 });
 // ----------------------------------------------------------- 卡片一行版（文案）
 
-test("卡片一行：有仓库自述时说清「能干什么」，不复述卡片上已有的分类 chip", () => {
+test("卡片一行：自述只进读得懂它的语言那一侧，英文自述不再塞进中文页", () => {
   const line = ruleCardLine({
     full_name: "firecrawl/firecrawl",
     name: "firecrawl",
@@ -753,12 +763,28 @@ test("卡片一行：有仓库自述时说清「能干什么」，不复述卡�
     topics: ["ai-agents", "web-scraping"],
     description: "Search, scrape, and interact with the web at scale.",
   });
-  assert.ok(line.zh.includes("Search, scrape"), `卡片一行应给出仓库自述：${line.zh}`);
+  assert.ok(line.en.includes("Search, scrape"), `英文卡片行应给出仓库自述：${line.en}`);
+  assert.ok(!line.zh.includes("Search, scrape"), `英文自述不该进中文卡片行（此前整行英文还被截断）：${line.zh}`);
+  assert.ok(/[\u4e00-\u9fff]/.test(line.zh), `中文卡片行必须是中文：${line.zh}`);
   assert.ok(
     !line.zh.includes("框架 / SDK"),
     `分类在卡片上是独立的 chip，一行文案里不要再写一遍：${line.zh}`
   );
   assert.ok(textWidth(line.zh) <= 90, `卡片一行必须塞得进一行（${textWidth(line.zh)} 单位）：${line.zh}`);
+});
+
+test("卡片一行：中文自述直接进中文页，英文页退回英文方向标签", () => {
+  const line = ruleCardLine({
+    full_name: "acme/zh",
+    name: "zh",
+    category: "tool",
+    language: "Python",
+    topics: ["ai-agents"],
+    description: "会读网页、抓数据的研究助手。",
+  });
+  assert.ok(line.zh.includes("会读网页"), `中文自述应进中文卡片行：${line.zh}`);
+  assert.ok(!line.zh.includes("方向："), `有中文自述时不必退回方向标签：${line.zh}`);
+  assert.ok(!line.en.includes("会读网页"), `中文自述不该进英文卡片行：${line.en}`);
 });
 
 test("卡片一行：没有自述时只挑词表收录的方向，未收录的原始 slug 不进句子", () => {
@@ -790,10 +816,12 @@ test("卡片一行：自述过长时按词边界截断并带省略号", () => {
   const description =
     "An extremely capable orchestration runtime for production multi-agent systems with tracing and replay";
   const line = ruleCardLine({ full_name: "acme/long", name: "long", category: "tool", topics: [], description });
-  assert.ok(textWidth(line.zh) <= 90, `${textWidth(line.zh)} 单位：${line.zh}`);
-  assert.ok(/…$/.test(line.zh), `超长应带省略号：${line.zh}`);
-  const kept = line.zh.replace(/…$/, "");
+  // 截断只发生在英文侧（自述只进英文页）；中文侧是短标签，同样要守住一行宽度
+  assert.ok(textWidth(line.en) <= 90, `${textWidth(line.en)} 单位：${line.en}`);
+  assert.ok(/…$/.test(line.en), `超长应带省略号：${line.en}`);
+  const kept = line.en.replace(/…$/, "");
   assert.ok(description.startsWith(kept), `只能整词截断，实际保留：${kept}`);
+  assert.ok(textWidth(line.zh) <= 90, `中文卡片行同样受一行约束（${textWidth(line.zh)} 单位）：${line.zh}`);
 });
 
 test("规则介绍在缺 description / topics / language 时仍产出合规文本", () => {

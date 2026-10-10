@@ -2,3 +2,5 @@ node_modules/
 dist/
 .astro/
 .rescored-backup/
+# LLM 解读缓存：本机回填的运行产物，按 README 哈希复用，不入库
+src/data/snapshots/interpret-cache.json

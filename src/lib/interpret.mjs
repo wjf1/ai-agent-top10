@@ -223,29 +223,37 @@ export function clipToOneLine(text, maxUnits = 90) {
   return `${head.trimEnd()}…`;
 }
 
+/** 描述里含汉字才算中文读者读得懂的自述；纯英文自述整行塞进中文页，读者既读不动也读不全 */
+const CJK_RE = /[\u3400-\u9fff]/;
+
 /**
  * 规则版卡片一行：卡片上已经有分类 chip、语言标签和增速 chip，
  * 所以这一行只剩「它是什么、能干什么」这一个位置 —— 优先放仓库自述，
  * 没有自述时放读得懂的方向标签，都拿不到就明说没有描述，不复述 chip 上的信息。
+ * 自述只放在读得懂它的语言那一侧：英文自述进中文页会变成一整行被截断的英文，
+ * 中文页宁可退回方向标签（LLM 版才有中文版自述可放）。
  */
 export function ruleCardLine(project) {
   const { catZh, catEn, language } = categoryBits(project);
   const description = sanitizeText(project.description);
-  if (description) {
-    return { zh: clipToOneLine(description, 90), en: clipToOneLine(description, 90) };
-  }
   const zhTopics = readableTopicLabels(project.topics, "zh", 3);
   const enTopics = readableTopicLabels(project.topics, "en", 3);
-  const zh = zhTopics.length
-    ? `方向：${zhTopics.join("、")}`
-    : language
-      ? `主要使用 ${language}`
-      : `${catZh}，未提供仓库描述`;
-  const en = enTopics.length
-    ? `Focused on ${enTopics.join(", ")}`
-    : language
-      ? `Written in ${language}`
-      : `A ${catEn} project with no repository description`;
+  const zhFromDescription = description && CJK_RE.test(description) ? clipToOneLine(description, 90) : "";
+  const enFromDescription = description && !CJK_RE.test(description) ? clipToOneLine(description, 90) : "";
+  const zh =
+    zhFromDescription ||
+    (zhTopics.length
+      ? `方向：${zhTopics.join("、")}`
+      : language
+        ? `主要使用 ${language}`
+        : `${catZh}，未提供仓库描述`);
+  const en =
+    enFromDescription ||
+    (enTopics.length
+      ? `Focused on ${enTopics.join(", ")}`
+      : language
+        ? `Written in ${language}`
+        : `A ${catEn} project with no repository description`);
   return { zh, en };
 }
 

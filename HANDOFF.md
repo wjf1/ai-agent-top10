@@ -10,10 +10,10 @@
 - **仓库地址**：<https://github.com/wjf1/ai-agent-top10>
 - **线上站点**：<https://wjf1.github.io/ai-agent-top10/>（双语支持：英文根路由 `/en/`）
 - **项目定位**：每天按 GitHub star 真实增量筛选 Top 10 AI Agent 开源项目，基于 8 个可解释维度加权打分，并生成中英双语通俗定位解读与数据报表。
-- **当前发布版本**：`v0.9.1`（2026-10-06 发布，A2：`scoringVersion` 历史补齐，13 天重算至口径 v2.1.0）
+- **当前发布版本**：`v0.9.2`（2026-10-10 发布，中文页卡片文案语言归属修复 + 10-05 起中文解读回填）
 - **当前 Git 分支**：`main`（与远端 `origin/main` 保持同步，工作区 Clean）
-- **最新 Release**：[GitHub Release v0.9.1](https://github.com/wjf1/ai-agent-top10/releases/tag/v0.9.1)
-- **CI/CD 状态**：GitHub Actions `daily-update` 工作流自动化运行通过（构建耗时 ~25s，全自动部署至 GitHub Pages）。
+- **最新 Release**：[GitHub Release v0.9.2](https://github.com/wjf1/ai-agent-top10/releases/tag/v0.9.2)
+- **CI/CD 状态**：GitHub Actions `daily-update` 工作流自动化运行通过（构建耗时 ~25s，全自动部署至 GitHub Pages）。**注意：CI 仓库未配置 `secrets.LLM_API_KEY`**，每日抓取产出的解读为规则兜底版；如需每日新增也有中文一句话解读，需在仓库配置该密钥（详见「五、接力开发指引」）。
 - **进行中的计划**：《ai-agent-top10 优化开发方案及实施计划》经 [PLAN.md](./PLAN.md) 可行性清理后共 6 项任务，**已全部处置完毕**：T3.1 / T3.2 / T3.3 / A1 由 v0.9.0 交付，A2 由 v0.9.1 交付；T3.4′ 触发式当前不实施，T2.5 GraphQL 延后保留，另有 7 项前提不成立已删除。当前无待办开发任务，新会话可直接从「新需求规划」切入。
 
 ---
@@ -136,7 +136,21 @@ ai-agent-top10
 
 ---
 
-## 四、最近一轮变更与交付成果 (v0.9.1 · A2 数据补齐)
+## 四、最近一轮变更与交付成果 (v0.9.2 · 中文页卡片文案语言归属修复)
+
+修复线上中文页卡片一行「显示英文自述且被截断」的问题，并把 CI 未配置 LLM 期间（2026-10-05 起）产出的 5 天数据回填为 LLM 中文解读。
+
+| 项 | 内容 |
+|---|---|
+| **根因** | 规则兜底版 `ruleCardLine` 把仓库自述同时写进中英两侧：英文自述进中文页变成整行英文，还被 90 显示单位截断（`Makes your AI agent…The best code is the…`）；徽标 `cardLineTag` 又只比对 `zh` 一侧，中文页的规则状态可能被误标 |
+| **修复** | 自述按语言分侧：中文页优先用中文自述、拿不到退回中文方向标签（`方向：Agent 技能、AI Agent、Claude`）；英文页维持自述原文。`cardLineTag(entry, lang, t)` 按当前语言各判各的；徽标说明去掉「未翻译」措辞 |
+| **关键改动文件** | `src/lib/interpret.mjs`、`src/lib/display.ts`、`src/components/EntryCard.astro`、`src/lib/data.ts`、`tests/pipeline.test.mjs` |
+| **数据回填** | `node scripts/backfill-interpretations.mjs --llm --since=2026-10-05`：5 天 / 50 条经本机网关（`127.0.0.1:9090`）生成 LLM 解读，13 个去重仓库（10 条命中 README 哈希缓存），`interpretationSource` 全部转为 `llm`；`description` 未改动 |
+| **缓存策略** | `src/data/snapshots/interpret-cache.json`（本机回填派生缓存）纳入 `.gitignore`，不入库 |
+
+**验证结论**：`npm run check` 全绿（**94/94 测试通过**、数据校验 27 天通过、**740 页**构建含 22 张 OG 图）。测试覆盖：英文自述不进中文页 / 中文自述进中文页 / 截断只发生在英文侧 / 来源徽标按语言判定。
+
+### 上一轮交付记录（v0.9.1 · A2 数据补齐）
 
 本轮**无任何代码变更**：执行 `npm run rescore:safe` 补齐历史日榜的评分口径标记（PLAN.md A2 运维项）。
 
@@ -153,6 +167,7 @@ ai-agent-top10
 
 - **`T3.4′` 历史保留策略**：触发式，当前不实施（详见 PLAN.md）。
 - **`T2.5` GraphQL 批量查询**：延后保留。
+- **CI 侧 LLM 密钥未配置**：每日新增解读仍为规则兜底版（v0.9.2 起中文页显示中文方向标签，不再是英文原文）；配置方法见「五、接力开发指引」的运维建议。
 
 ### 历史交付记录
 
@@ -233,11 +248,14 @@ ai-agent-top10
 |---|---|
 | **已完成（v0.9.0）** | T3.1 搜索增强、T3.2 评分历史追踪、T3.3 社区参与入口、A1 gainCapped 落盘 |
 | **已完成（v0.9.1）** | A2 `scoringVersion` 历史补齐（`rescore:safe` 重算 13 天 → v2.1.0；10 天 partial 数据按安全设计保留原口径） |
+| **已完成（v0.9.2）** | 中文页卡片文案语言归属修复（自述按语言分侧 + 徽标按语言判定）+ 10-05 至 10-09 中文解读回填 |
 | **删除（前提不成立）** | T3.5 / T3.6 / T3.7 / T3.8 / T3.9 / T3.11 / T2.6 |
 | **合并重写** | T3.4 / T3.5 / T3.6 → T3.4′ 历史保留策略（触发式，当前不实施） |
 | **延后保留** | T2.5 GraphQL 批量查询 |
 
-核心判据：当前 23 天数据 / 598 页 / 33.8MB 产物，容量红线在 **700 天以上**；原计划假设的「90 天即需分层」高估了规模 1–2 个数量级。
+**运维建议（非代码任务）**：GitHub 仓库未配置 `secrets.LLM_API_KEY`，CI 每日新增的解读是规则兜底版（卡片一行显示中文方向标签）。若希望每日新增也有 LLM 中文一句话解读，可参照本机 `config/scoring.json` 的 `interpretation` 结构，在仓库配置 `secrets.LLM_API_KEY`（或 `LLM_FALLBACK_API_KEY`）与 `vars.LLM_BASE_URL` / `vars.LLM_MODEL` 指向一个公网可达的 OpenAI 兼容服务；未配置时自 v0.9.2 起中文页也不会再出现英文原文。
+
+核心判据：当前 27 天数据 / **740 页** / 产物约 40MB，容量红线在 **700 天以上**；原计划假设的「90 天即需分层」高估了规模 1–2 个数量级。
 
 ---
 ## 六、关键避坑与运行约束（必读）
