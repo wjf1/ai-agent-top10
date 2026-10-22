@@ -1,7 +1,8 @@
 {
-  "generatedAt": "2026-10-21T10:45:29.349Z",
-  "latest": "2026-10-21",
+  "generatedAt": "2026-10-22T10:46:29.176Z",
+  "latest": "2026-10-22",
   "dates": [
+    "2026-10-22",
     "2026-10-21",
     "2026-10-20",
     "2026-10-19",
@@ -43,6 +44,33 @@
     "2026-09-13"
   ],
   "days": [
+    {
+      "date": "2026-10-22",
+      "count": 10,
+      "totalGain": 45988,
+      "top": {
+        "full_name": "DietrichGebert/ponytail",
+        "slug": "dietrichgebert-ponytail",
+        "weeklyGain": 8517
+      },
+      "categories": [
+        "framework",
+        "tool",
+        "other"
+      ],
+      "slugs": [
+        "dietrichgebert-ponytail",
+        "stablyai-orca",
+        "affaan-m-ecc",
+        "graphify-labs-graphify",
+        "ruvnet-ruflo",
+        "panniantong-agent-reach",
+        "msitarzewski-agency-agents",
+        "rohitg00-ai-engineering-from-scratch",
+        "addyosmani-agent-skills",
+        "firecrawl-firecrawl"
+      ]
+    },
     {
       "date": "2026-10-21",
       "count": 10,
