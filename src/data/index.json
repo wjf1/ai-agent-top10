@@ -1,7 +1,8 @@
 {
-  "generatedAt": "2026-10-22T10:46:29.176Z",
-  "latest": "2026-10-22",
+  "generatedAt": "2026-10-23T10:40:49.384Z",
+  "latest": "2026-10-23",
   "dates": [
+    "2026-10-23",
     "2026-10-22",
     "2026-10-21",
     "2026-10-20",
@@ -44,6 +45,33 @@
     "2026-09-13"
   ],
   "days": [
+    {
+      "date": "2026-10-23",
+      "count": 10,
+      "totalGain": 74458,
+      "top": {
+        "full_name": "morluto/rea",
+        "slug": "morluto-rea",
+        "weeklyGain": 29575
+      },
+      "categories": [
+        "framework",
+        "tool",
+        "other"
+      ],
+      "slugs": [
+        "morluto-rea",
+        "dietrichgebert-ponytail",
+        "stablyai-orca",
+        "graphify-labs-graphify",
+        "affaan-m-ecc",
+        "panniantong-agent-reach",
+        "ruvnet-ruflo",
+        "msitarzewski-agency-agents",
+        "rohitg00-ai-engineering-from-scratch",
+        "addyosmani-agent-skills"
+      ]
+    },
     {
       "date": "2026-10-22",
       "count": 10,
