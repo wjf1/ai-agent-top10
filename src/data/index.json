@@ -1,7 +1,8 @@
 {
-  "generatedAt": "2026-10-27T11:11:44.794Z",
-  "latest": "2026-10-27",
+  "generatedAt": "2026-10-28T11:45:53.059Z",
+  "latest": "2026-10-28",
   "dates": [
+    "2026-10-28",
     "2026-10-27",
     "2026-10-26",
     "2026-10-25",
@@ -49,6 +50,33 @@
     "2026-09-13"
   ],
   "days": [
+    {
+      "date": "2026-10-28",
+      "count": 10,
+      "totalGain": 47445,
+      "top": {
+        "full_name": "stablyai/orca",
+        "slug": "stablyai-orca",
+        "weeklyGain": 8142
+      },
+      "categories": [
+        "framework",
+        "tool",
+        "other"
+      ],
+      "slugs": [
+        "stablyai-orca",
+        "dietrichgebert-ponytail",
+        "graphify-labs-graphify",
+        "affaan-m-ecc",
+        "panniantong-agent-reach",
+        "leonxlnx-taste-skill",
+        "rohitg00-ai-engineering-from-scratch",
+        "firecrawl-firecrawl",
+        "nousresearch-hermes-agent",
+        "addyosmani-agent-skills"
+      ]
+    },
     {
       "date": "2026-10-27",
       "count": 10,
