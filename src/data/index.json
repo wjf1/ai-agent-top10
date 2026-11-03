@@ -1,7 +1,8 @@
 {
-  "generatedAt": "2026-11-02T14:00:32.561Z",
-  "latest": "2026-11-02",
+  "generatedAt": "2026-11-03T13:09:19.885Z",
+  "latest": "2026-11-03",
   "dates": [
+    "2026-11-03",
     "2026-11-02",
     "2026-11-01",
     "2026-10-31",
@@ -55,6 +56,32 @@
     "2026-09-13"
   ],
   "days": [
+    {
+      "date": "2026-11-03",
+      "count": 10,
+      "totalGain": 43589,
+      "top": {
+        "full_name": "thedotmack/claude-mem",
+        "slug": "thedotmack-claude-mem",
+        "weeklyGain": 6828
+      },
+      "categories": [
+        "framework",
+        "tool"
+      ],
+      "slugs": [
+        "thedotmack-claude-mem",
+        "stablyai-orca",
+        "leonxlnx-taste-skill",
+        "affaan-m-ecc",
+        "dietrichgebert-ponytail",
+        "graphify-labs-graphify",
+        "panniantong-agent-reach",
+        "calesthio-openmontage",
+        "paperclipai-paperclip",
+        "tt-a1i-archify"
+      ]
+    },
     {
       "date": "2026-11-02",
       "count": 10,
