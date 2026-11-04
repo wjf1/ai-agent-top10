@@ -167,7 +167,7 @@ ai-agent-top10
 
 - **`T3.4′` 历史保留策略**：触发式，当前不实施（详见 PLAN.md）。
 - **`T2.5` GraphQL 批量查询**：延后保留。
-- **CI 侧 LLM 密钥未配置**：每日新增解读仍为规则兜底版（v0.9.2 起中文页显示中文方向标签，不再是英文原文）；配置方法见「五、接力开发指引」的运维建议。
+- **CI 侧 LLM 密钥未配置**：每日新增解读仍为规则兜底版（v0.9.2 起中文页显示中文方向标签，不再是英文原文）；配置方法见「五、接力开发指引」的**运维状态（2026-11-04 已配置）**：`secrets.LLM_API_KEY` + `vars.LLM_BASE_URL`（火山方舟 OpenAI 兼容端点 https://ark.cn-beijing.volces.com/api/coding/v3）+ `vars.LLM_MODEL`（glm-5.3-flash）三件套已写入，daily 工作流 Preflight 实测输出「解读服务已配置」，run success（41865966154）。此后每日新增的解读走真实 LLM（不再回落规则模板）；如需撤销：`gh secret delete LLM_API_KEY -R wjf1/ai-agent-top10`，并在方舟控制台轮换该 key（与 ZCode 本机 provider 共用同一把）。
 
 ### 历史交付记录
 
