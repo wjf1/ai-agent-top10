@@ -1,6 +1,6 @@
 {
   "date": "2026-11-04",
-  "generatedAt": "2026-11-04T13:24:16.683Z",
+  "generatedAt": "2026-11-04T16:19:06.445Z",
   "windowDays": 7,
   "poolSize": 43,
   "scoringVersion": "2.1.0",
@@ -26,18 +26,18 @@
         "claude",
         "claude-agent-sdk"
       ],
-      "stars": 112468,
-      "forks": 9774,
-      "openIssues": 133,
+      "stars": 112580,
+      "forks": 9784,
+      "openIssues": 136,
       "contributors": 327,
       "releases90d": 30,
       "prActivity": 200,
       "issueActivity": 200,
-      "weeklyGain": 7525,
-      "dailyGain": 1075,
-      "growthRate": 6.7,
-      "forksGain": 608,
-      "forksGrowthRate": 6.2,
+      "weeklyGain": 7623,
+      "dailyGain": 1089,
+      "growthRate": 6.8,
+      "forksGain": 618,
+      "forksGrowthRate": 6.3,
       "gainSource": "snapshot",
       "gainExact": true,
       "gainUnreliable": false,
@@ -50,39 +50,39 @@
         "innovation": 78,
         "practical": 100,
         "ecosystem": 48,
-        "health": 90,
+        "health": 89,
         "forksGrowth": 83,
         "activity": 100,
         "overall": 84
       },
       "why": {
-        "zh": "近 7 天新增 7,525 star（日均约 1,075，相对存量增速 6.7%），累计 112,468 star、9,774 fork。窗口内被 fork 608 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，327 位贡献者共同维护。",
-        "en": "Gained 7,525 stars over the last 7 days (~1,075/day, 6.7% of its base), now at 112,468 stars and 9,774 forks. 608 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 327 contributors."
+        "zh": "近 7 天新增 7,623 star（日均约 1,089，相对存量增速 6.8%），累计 112,580 star、9,784 fork。窗口内被 fork 618 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，327 位贡献者共同维护。",
+        "en": "Gained 7,623 stars over the last 7 days (~1,089/day, 6.8% of its base), now at 112,580 stars and 9,784 forks. 618 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 327 contributors."
       },
       "intro": {
-        "zh": "「thedotmack/claude-mem」的仓库自述是 “Persistent Context Across Sessions for Every Agent – Captures everything your agent does during sessions, compresses it with AI, and injects relevant context back into future sessions. Works with Claude Code, OpenClaw, Codex, Gemini, Hermes, Copilot, OpenCode + More”；它属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 AI Agent、Anthropic、Claude、Claude Code 等方向；主要使用 TypeScript。",
-        "en": "Persistent Context Across Sessions for Every Agent – Captures everything your agent does during sessions, compresses it with AI, and injects relevant context back into future sessions. Works with Claude Code, OpenClaw, Codex, Gemini, Hermes, Copilot, OpenCode + More. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in TypeScript, focused on AI Agents, Anthropic, Claude, Claude Code."
+        "zh": "给 AI 编程助手装上跨会话记忆：自动记录 agent 每次会话做了什么，用 AI 压缩成语义摘要，下次会话再把相关上下文注入回去。支持 Claude Code、Codex、Gemini CLI、Copilot 等工具，装一次就能让 agent 记住项目来龙去脉，不用每次重新交代背景。",
+        "en": "Gives your AI coding assistant persistent memory across sessions: it automatically captures what your agent does, compresses it with AI into semantic summaries, and injects relevant context back into future sessions. Works with Claude Code, Codex, Gemini CLI, Copilot and more — install once and your agent remembers the project without you re-explaining."
       },
       "cardLine": {
-        "zh": "方向：AI Agent、Anthropic、Claude",
-        "en": "Persistent Context Across Sessions for Every Agent – Captures everything your agent does…"
+        "zh": "给 AI 编程助手装上跨会话记忆，自动记录、压缩并回注上下文。",
+        "en": "Persistent cross-session memory for AI coding agents: capture, compress and re-inject context."
       },
       "highlights": [
         {
-          "zh": "327 位公开贡献者",
-          "en": "327 public contributors"
+          "zh": "自动捕获会话中的工具使用与决策，压缩成语义摘要存档。",
+          "en": "Automatically captures tool usage and decisions during sessions, compressing them into semantic summaries."
         },
         {
-          "zh": "近 90 天发布 30 个版本",
-          "en": "30 release(s) in the last 90 days"
+          "zh": "新会话自动注入相关上下文，agent 不用每次重新熟悉项目。",
+          "en": "Relevant context is injected into new sessions, so agents don't re-learn your project every time."
         },
         {
-          "zh": "宽松许可证（Apache-2.0），商用门槛低",
-          "en": "Permissive license (Apache-2.0) — easy commercial use"
+          "zh": "支持 Claude Code、Codex、Gemini、Copilot 等多种 agent 工具。",
+          "en": "Works with Claude Code, Codex, Gemini, Copilot and many other agent tools."
         },
         {
-          "zh": "7 天内新增 608 次 fork",
-          "en": "608 new forks in the window"
+          "zh": "记忆提供方可自选：托管服务、自己的 OpenRouter/Gemini key 或 Anthropic 计划。",
+          "en": "Pick your memory provider: the hosted service, your own OpenRouter/Gemini key, or your Anthropic plan."
         }
       ],
       "cons": [],
@@ -101,7 +101,7 @@
         }
       ],
       "quickstart": "# 摘自 thedotmack/claude-mem 的 README\nnpx claude-mem install --ide grok-bot",
-      "interpretationSource": "rules",
+      "interpretationSource": "llm",
       "firstSeen": "2026-11-04",
       "scoringVersion": "2.1.0"
     },
@@ -126,18 +126,18 @@
         "codex",
         "ghostty"
       ],
-      "stars": 115041,
-      "forks": 7270,
-      "openIssues": 8133,
+      "stars": 115185,
+      "forks": 7278,
+      "openIssues": 8162,
       "contributors": 469,
       "releases90d": 30,
       "prActivity": 200,
       "issueActivity": 200,
-      "weeklyGain": 5658,
-      "dailyGain": 808.3,
-      "growthRate": 4.9,
-      "forksGain": 412,
-      "forksGrowthRate": 5.7,
+      "weeklyGain": 5784,
+      "dailyGain": 826.3,
+      "growthRate": 5,
+      "forksGain": 420,
+      "forksGrowthRate": 5.8,
       "gainSource": "snapshot",
       "gainExact": true,
       "gainUnreliable": false,
@@ -156,43 +156,39 @@
         "overall": 83
       },
       "why": {
-        "zh": "近 7 天新增 5,658 star（日均约 808，相对存量增速 4.9%），累计 115,041 star、7,270 fork。窗口内被 fork 412 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，469 位贡献者共同维护。",
-        "en": "Gained 5,658 stars over the last 7 days (~808/day, 4.9% of its base), now at 115,041 stars and 7,270 forks. 412 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 469 contributors."
+        "zh": "近 7 天新增 5,784 star（日均约 826，相对存量增速 5%），累计 115,185 star、7,278 fork。窗口内被 fork 420 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，469 位贡献者共同维护。",
+        "en": "Gained 5,784 stars over the last 7 days (~826/day, 5% of its base), now at 115,185 stars and 7,278 forks. 420 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 469 contributors."
       },
       "intro": {
-        "zh": "「stablyai/orca」的仓库自述是 “Orca is the place for working with a fleet of agents (e.g. Grok Bot, Claude Code). Run any coding agent with your own subscription. Available on desktop, mobile and remote runtime.”；它属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 Agent IDE、AI Agent、自动化、Claude Code 等方向；主要使用 TypeScript。",
-        "en": "Orca is the place for working with a fleet of agents (e.g. Grok Bot, Claude Code). Run any coding agent with your own subscription. Available on desktop, mobile and remote runtime. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in TypeScript, focused on Agent IDE, AI Agents, Automation, Claude Code."
+        "zh": "一个专门管理 agent 车队的桌面工作台：把 Codex、Claude Code、OpenCode 等编程 agent 并排跑起来，每个都在独立的 git worktree 里干活，统一在一个界面追踪。手机上也能监控遥控，agent 干完活还会推送通知。适合同时开好几个 agent 干活的开发者。",
+        "en": "A desktop workbench for running a fleet of coding agents: run Codex, Claude Code, OpenCode and more side-by-side, each in its own git worktree, all tracked in one place. Monitor and steer from your phone, with notifications when agents finish. Built for developers juggling multiple agents at once."
       },
       "cardLine": {
-        "zh": "方向：Agent IDE、AI Agent、自动化",
-        "en": "Orca is the place for working with a fleet of agents (e.g. Grok Bot, Claude Code). Run…"
+        "zh": "编程 agent 编排工作台，多 agent 并行跑在独立 worktree 里统一管理。",
+        "en": "An orchestrator workbench that runs coding agents side-by-side in isolated worktrees."
       },
       "highlights": [
         {
-          "zh": "469 位公开贡献者",
-          "en": "469 public contributors"
+          "zh": "一条 prompt 同时发给五个 agent，各自在隔离 worktree 干活，比较结果择优合并。",
+          "en": "Fan one prompt across five agents, each in an isolated worktree, then compare and merge the winner."
         },
         {
-          "zh": "近 90 天发布 30 个版本",
-          "en": "30 release(s) in the last 90 days"
+          "zh": "手机端随时监控 agent 进度，任务完成即推送，可远程发后续指令。",
+          "en": "Monitor agents from your phone — get notified on completion and send follow-ups from anywhere."
         },
         {
-          "zh": "宽松许可证（MIT），商用门槛低",
-          "en": "Permissive license (MIT) — easy commercial use"
+          "zh": "内置 GitHub 和 Linear 视图，从任务直接开 worktree，评审不用切窗口。",
+          "en": "Native GitHub and Linear views: open a worktree from any task and review without context switching."
         },
         {
-          "zh": "7 天内新增 412 次 fork",
-          "en": "412 new forks in the window"
-        },
-        {
-          "zh": "新仓库，创建至今仅 232 天",
-          "en": "Young project — only 232 days old"
+          "zh": "点击真实浏览器里的 UI 元素，把 HTML、CSS 和截图直接塞进 agent 提示词。",
+          "en": "Click any UI element in a real Chromium window to send its HTML, CSS and screenshot into the agent's prompt."
         }
       ],
       "cons": [
         {
-          "zh": "开放 issue 8,133 个，相对 star 规模偏高",
-          "en": "8,133 open issues — high relative to its star count"
+          "zh": "开放 issue 8,162 个，相对 star 规模偏高",
+          "en": "8,162 open issues — high relative to its star count"
         }
       ],
       "fitFor": [
@@ -210,7 +206,7 @@
         }
       ],
       "quickstart": "# 摘自 stablyai/orca 的 README\n# macOS (Homebrew)\n# Always use the full name; bare `orca` is an unrelated Plotly cask.\nbrew install --cask stablyai/orca/orca\n# Upgrade an existing install\nbrew upgrade --cask stablyai/orca/orca\n\n# Arch Linux (AUR) — or stably-orca-git to build from source\nyay -S stably-orca-bin",
-      "interpretationSource": "rules",
+      "interpretationSource": "llm",
       "firstSeen": "2026-11-04",
       "scoringVersion": "2.1.0"
     },
@@ -235,18 +231,18 @@
         "design-system",
         "frontend"
       ],
-      "stars": 109810,
-      "forks": 7384,
+      "stars": 109889,
+      "forks": 7392,
       "openIssues": 13,
       "contributors": 21,
       "releases90d": 7,
       "prActivity": 36,
       "issueActivity": 55,
-      "weeklyGain": 5086,
-      "dailyGain": 726.6,
-      "growthRate": 4.6,
-      "forksGain": 357,
-      "forksGrowthRate": 4.8,
+      "weeklyGain": 5155,
+      "dailyGain": 736.4,
+      "growthRate": 4.7,
+      "forksGain": 365,
+      "forksGrowthRate": 4.9,
       "gainSource": "snapshot",
       "gainExact": true,
       "gainUnreliable": false,
@@ -265,37 +261,33 @@
         "overall": 64
       },
       "why": {
-        "zh": "近 7 天新增 5,086 star（日均约 727，相对存量增速 4.6%），累计 109,810 star、7,384 fork。窗口内被 fork 357 次，最近一次提交在 0 天前，近 30 天新建 PR 36 个、issue 55 个，21 位贡献者共同维护。",
-        "en": "Gained 5,086 stars over the last 7 days (~727/day, 4.6% of its base), now at 109,810 stars and 7,384 forks. 357 new forks in the window; last push 0 day(s) ago; 36 PRs and 55 issues opened in the last 30 days; 21 contributors."
+        "zh": "近 7 天新增 5,155 star（日均约 736，相对存量增速 4.7%），累计 109,889 star、7,392 fork。窗口内被 fork 365 次，最近一次提交在 0 天前，近 30 天新建 PR 36 个、issue 55 个，21 位贡献者共同维护。",
+        "en": "Gained 5,155 stars over the last 7 days (~736/day, 4.7% of its base), now at 109,889 stars and 7,392 forks. 365 new forks in the window; last push 0 day(s) ago; 36 PRs and 55 issues opened in the last 30 days; 21 contributors."
       },
       "intro": {
-        "zh": "「Leonxlnx/taste-skill」的仓库自述是 “Agent skills that give coding agents taste: art direction, reference images and a browser check instead of generic AI pages”；它属于工具 / 平台，常用来给现有工作流补齐 Agent 与自动化能力；聚焦 Agent 技能、AI Agent、Claude Code、Codex 等方向；主要使用 JavaScript。",
-        "en": "Agent skills that give coding agents taste: art direction, reference images and a browser check instead of generic AI pages. A Tool / Platform project for adding agent capability and automation to an existing workflow, mainly written in JavaScript, focused on Agent Skills, AI Agents, Claude Code, Codex."
+        "zh": "一个让编程 agent 有审美的技能包：接到需求先定艺术方向、找真实图片素材，再在真实浏览器里检查页面效果，而不是套模板生成千篇一律的 AI 落地页。基于对 247 个精选网站的研究，装进 Claude Code 或 Codex 后，一句 brief 就能产出有设计感的页面。",
+        "en": "An agent skill that gives coding agents taste: it picks an art direction, sources real images, and checks its own work in a real browser instead of assembling generic AI landing pages. Built from a study of 247 curated sites — install into Claude Code or Codex and hand it a brief."
       },
       "cardLine": {
-        "zh": "方向：Agent 技能、AI Agent、Claude Code",
-        "en": "Agent skills that give coding agents taste: art direction, reference images and a…"
+        "zh": "给编程 agent 装上审美：定艺术方向、配真实图片、浏览器自检页面。",
+        "en": "Gives coding agents taste: art direction, real images and a browser check instead of generic AI pages."
       },
       "highlights": [
         {
-          "zh": "21 位公开贡献者",
-          "en": "21 public contributors"
+          "zh": "基于 247 个精选网站的研究，从 20 个设计方向中抽三个供 agent 挑选。",
+          "en": "Built from a study of 247 curated sites; deals three of 20 researched directions for the agent to pick."
         },
         {
-          "zh": "近 90 天发布 7 个版本",
-          "en": "7 release(s) in the last 90 days"
+          "zh": "自动从开放图库找真实照片并标注来源，拒绝千篇一律的 AI 素材。",
+          "en": "Finds real photographs from open archives and credits them, instead of generic AI-looking assets."
         },
         {
-          "zh": "宽松许可证（MIT），商用门槛低",
-          "en": "Permissive license (MIT) — easy commercial use"
+          "zh": "在真实浏览器里按三种宽度检查页面，不合格就修，最多三轮。",
+          "en": "Checks the page in a real browser at three widths and fixes the top problems, up to three rounds."
         },
         {
-          "zh": "7 天内新增 357 次 fork",
-          "en": "357 new forks in the window"
-        },
-        {
-          "zh": "新仓库，创建至今仅 258 天",
-          "en": "Young project — only 258 days old"
+          "zh": "无需 API key，装好即用，支持 Claude Code、Codex 等编程助手。",
+          "en": "No API keys needed — install and go, with support for Claude Code, Codex and more."
         }
       ],
       "cons": [
@@ -315,7 +307,7 @@
         }
       ],
       "quickstart": "# 摘自 Leonxlnx/taste-skill 的 README\nnpx skills add https://github.com/Leonxlnx/taste-skill --skill \"design-taste-frontend\"",
-      "interpretationSource": "rules",
+      "interpretationSource": "llm",
       "firstSeen": "2026-11-04",
       "scoringVersion": "2.1.0"
     },
@@ -340,18 +332,18 @@
         "mcp",
         "productivity"
       ],
-      "stars": 296896,
-      "forks": 43896,
+      "stars": 297004,
+      "forks": 43907,
       "openIssues": 229,
       "contributors": 408,
       "releases90d": 4,
       "prActivity": 200,
       "issueActivity": 200,
-      "weeklyGain": 4879,
-      "dailyGain": 697,
-      "growthRate": 1.6,
-      "forksGain": 768,
-      "forksGrowthRate": 1.7,
+      "weeklyGain": 4974,
+      "dailyGain": 710.6,
+      "growthRate": 1.7,
+      "forksGain": 779,
+      "forksGrowthRate": 1.8,
       "gainSource": "snapshot",
       "gainExact": true,
       "gainUnreliable": false,
@@ -370,37 +362,33 @@
         "overall": 88
       },
       "why": {
-        "zh": "近 7 天新增 4,879 star（日均约 697，相对存量增速 1.6%），累计 296,896 star、43,896 fork。窗口内被 fork 768 次，最近一次提交在 2 天前，近 30 天新建 PR 200 个、issue 200 个，408 位贡献者共同维护。",
-        "en": "Gained 4,879 stars over the last 7 days (~697/day, 1.6% of its base), now at 296,896 stars and 43,896 forks. 768 new forks in the window; last push 2 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 408 contributors."
+        "zh": "近 7 天新增 4,974 star（日均约 711，相对存量增速 1.7%），累计 297,004 star、43,907 fork。窗口内被 fork 779 次，最近一次提交在 2 天前，近 30 天新建 PR 200 个、issue 200 个，408 位贡献者共同维护。",
+        "en": "Gained 4,974 stars over the last 7 days (~711/day, 1.7% of its base), now at 297,004 stars and 43,907 forks. 779 new forks in the window; last push 2 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 408 contributors."
       },
       "intro": {
-        "zh": "「affaan-m/ECC」的仓库自述是 “The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.”；它属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 AI Agent、Anthropic、Claude、Claude Code 等方向；主要使用 JavaScript。",
-        "en": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in JavaScript, focused on AI Agents, Anthropic, Claude, Claude Code."
+        "zh": "给 agent 编程助手配一套完整工程化系统：写代码前先规划、改完用测试验证、从全新上下文自查、记住重要信息，并把重复的成功经验沉淀成可复用技能。一次安装，Claude Code、Codex、Cursor 等工具都能用，还带 AgentShield 安全扫描。",
+        "en": "A complete engineering system for your coding agent: plan before building, verify with tests, review from fresh context, remember what matters, and turn repeated wins into reusable skills. Install once and it works with Claude Code, Codex, Cursor and more, with AgentShield security scanning built in."
       },
       "cardLine": {
-        "zh": "方向：AI Agent、Anthropic、Claude",
-        "en": "The agent harness performance optimization system. Skills, instincts, memory, security,…"
+        "zh": "agent 工程化系统：规划、测试、自查、记忆、安全扫描一次装齐。",
+        "en": "An engineering system for agents: planning, testing, self-review, memory and security in one install."
       },
       "highlights": [
         {
-          "zh": "408 位公开贡献者",
-          "en": "408 public contributors"
+          "zh": "内置 71 个 agent、314 个技能和 hooks 规则，覆盖开发全流程。",
+          "en": "Ships 71 agents, 314 skills plus hooks and rules covering the whole development loop."
         },
         {
-          "zh": "近 90 天发布 4 个版本",
-          "en": "4 release(s) in the last 90 days"
+          "zh": "强调先研究再开发：规划、测试验证、新上下文自查一条龙。",
+          "en": "Research-first development: plan, verify with tests, then self-review from a fresh context."
         },
         {
-          "zh": "宽松许可证（MIT），商用门槛低",
-          "en": "Permissive license (MIT) — easy commercial use"
+          "zh": "支持 Claude Code、Codex、Cursor、OpenCode 等多种编程助手。",
+          "en": "Works with Claude Code, Codex, Cursor, OpenCode and other coding assistants."
         },
         {
-          "zh": "7 天内新增 768 次 fork",
-          "en": "768 new forks in the window"
-        },
-        {
-          "zh": "新仓库，创建至今仅 291 天",
-          "en": "Young project — only 291 days old"
+          "zh": "自带 AgentShield 安全扫描，持续学习机制沉淀可复用技能。",
+          "en": "Includes AgentShield security scanning and continuous learning that turns wins into reusable skills."
         }
       ],
       "cons": [],
@@ -419,7 +407,7 @@
         }
       ],
       "quickstart": "# 摘自 affaan-m/ECC 的 README\nnpx ecc-universal@2.2.3 setup",
-      "interpretationSource": "rules",
+      "interpretationSource": "llm",
       "firstSeen": "2026-11-04",
       "scoringVersion": "2.1.0"
     },
@@ -444,17 +432,17 @@
         "developer-tools",
         "llm"
       ],
-      "stars": 184189,
-      "forks": 10164,
-      "openIssues": 162,
+      "stars": 184303,
+      "forks": 10167,
+      "openIssues": 163,
       "contributors": 132,
       "releases90d": 16,
       "prActivity": 190,
       "issueActivity": 200,
-      "weeklyGain": 4864,
-      "dailyGain": 694.9,
-      "growthRate": 2.6,
-      "forksGain": 378,
+      "weeklyGain": 4964,
+      "dailyGain": 709.1,
+      "growthRate": 2.7,
+      "forksGain": 381,
       "forksGrowthRate": 3.7,
       "gainSource": "snapshot",
       "gainExact": true,
@@ -474,37 +462,33 @@
         "overall": 74
       },
       "why": {
-        "zh": "近 7 天新增 4,864 star（日均约 695，相对存量增速 2.6%），累计 184,189 star、10,164 fork。窗口内被 fork 378 次，最近一次提交在 6 天前，近 30 天新建 PR 190 个、issue 200 个，132 位贡献者共同维护。",
-        "en": "Gained 4,864 stars over the last 7 days (~695/day, 2.6% of its base), now at 184,189 stars and 10,164 forks. 378 new forks in the window; last push 6 day(s) ago; 190 PRs and 200 issues opened in the last 30 days; 132 contributors."
+        "zh": "近 7 天新增 4,964 star（日均约 709，相对存量增速 2.7%），累计 184,303 star、10,167 fork。窗口内被 fork 381 次，最近一次提交在 6 天前，近 30 天新建 PR 190 个、issue 200 个，132 位贡献者共同维护。",
+        "en": "Gained 4,964 stars over the last 7 days (~709/day, 2.7% of its base), now at 184,303 stars and 10,167 forks. 381 new forks in the window; last push 6 day(s) ago; 190 PRs and 200 issues opened in the last 30 days; 132 contributors."
       },
       "intro": {
-        "zh": "「DietrichGebert/ponytail」的仓库自述是 “Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote.”；它属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 Agent 技能、AI Agent、Claude、Claude Code 等方向；主要使用 JavaScript。",
-        "en": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in JavaScript, focused on Agent Skills, AI Agents, Claude, Claude Code."
+        "zh": "把最懒的资深工程师塞进你的 AI agent：原则是能不写的代码就不写。要个日期选择器？别的 agent 装 335 行的库，它先看仓库里已有的组件和浏览器原生能力，10 行搞定。官方基准显示代码量、耗时、成本都明显下降，但该有的测试和安全检查一个不少。",
+        "en": "Puts the laziest senior dev inside your AI agent: write only what the task needs. Ask for a date picker and instead of installing a 335-line library, it combines the repo's existing components with the browser's native one in 10 lines. Benchmarks show less code, time and cost — without cutting tests or security."
       },
       "cardLine": {
-        "zh": "方向：Agent 技能、AI Agent、Claude",
-        "en": "Makes your AI agent think like the laziest senior dev in the room. The best code is the…"
+        "zh": "让 agent 学会「最懒资深工程师」思维：只写必要的代码，不堆功能。",
+        "en": "Makes your agent think like the laziest senior dev: write only the code the task needs."
       },
       "highlights": [
         {
-          "zh": "132 位公开贡献者",
-          "en": "132 public contributors"
+          "zh": "官方基准：耗时、成本、token 分别下降 41%、26%、45%，代码更精简。",
+          "en": "Benchmarks: 41% less time, 26% less cost, 45% fewer tokens, with leaner code."
         },
         {
-          "zh": "近 90 天发布 16 个版本",
-          "en": "16 release(s) in the last 90 days"
+          "zh": "98% 的高风险逻辑带测试交付（不用时仅 68%），安全任务 30 次全过。",
+          "en": "98% of risky logic ships with a test (vs 68% without), and all 30 security-task runs passed."
         },
         {
-          "zh": "宽松许可证（MIT），商用门槛低",
-          "en": "Permissive license (MIT) — easy commercial use"
+          "zh": "/ponytail-review 不只看 diff，还读改动涉及的代码，给出具体修复建议。",
+          "en": "/ponytail-review reads the code your change touches, not just the diff, and says how to fix each finding."
         },
         {
-          "zh": "7 天内新增 378 次 fork",
-          "en": "378 new forks in the window"
-        },
-        {
-          "zh": "新仓库，创建至今仅 146 天",
-          "en": "Young project — only 146 days old"
+          "zh": "/ponytail-audit 先梳理仓库入口和数据流，再按优先级排序该修什么。",
+          "en": "/ponytail-audit maps entry points and data flow first, then ranks what to fix."
         }
       ],
       "cons": [],
@@ -523,7 +507,7 @@
         }
       ],
       "quickstart": "# 摘自 DietrichGebert/ponytail 的 README\n/plugin marketplace add DietrichGebert/ponytail",
-      "interpretationSource": "rules",
+      "interpretationSource": "llm",
       "firstSeen": "2026-11-04",
       "scoringVersion": "2.1.0"
     },
@@ -548,18 +532,18 @@
         "codex",
         "cursor"
       ],
-      "stars": 142156,
-      "forks": 13587,
-      "openIssues": 1609,
+      "stars": 142268,
+      "forks": 13600,
+      "openIssues": 1610,
       "contributors": 369,
       "releases90d": 30,
       "prActivity": 200,
       "issueActivity": 200,
-      "weeklyGain": 4208,
-      "dailyGain": 601.1,
+      "weeklyGain": 4306,
+      "dailyGain": 615.1,
       "growthRate": 3,
-      "forksGain": 486,
-      "forksGrowthRate": 3.6,
+      "forksGain": 499,
+      "forksGrowthRate": 3.7,
       "gainSource": "snapshot",
       "gainExact": true,
       "gainUnreliable": false,
@@ -571,44 +555,40 @@
         "community": 65,
         "innovation": 82,
         "practical": 100,
-        "ecosystem": 71,
+        "ecosystem": 72,
         "health": 70,
         "forksGrowth": 85,
         "activity": 100,
         "overall": 84
       },
       "why": {
-        "zh": "近 7 天新增 4,208 star（日均约 601，相对存量增速 3%），累计 142,156 star、13,587 fork。窗口内被 fork 486 次，最近一次提交在 1 天前，近 30 天新建 PR 200 个、issue 200 个，369 位贡献者共同维护。",
-        "en": "Gained 4,208 stars over the last 7 days (~601/day, 3% of its base), now at 142,156 stars and 13,587 forks. 486 new forks in the window; last push 1 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 369 contributors."
+        "zh": "近 7 天新增 4,306 star（日均约 615，相对存量增速 3%），累计 142,268 star、13,600 fork。窗口内被 fork 499 次，最近一次提交在 1 天前，近 30 天新建 PR 200 个、issue 200 个，369 位贡献者共同维护。",
+        "en": "Gained 4,306 stars over the last 7 days (~615/day, 3% of its base), now at 142,268 stars and 13,600 forks. 499 new forks in the window; last push 1 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 369 contributors."
       },
       "intro": {
-        "zh": "「Graphify-Labs/graphify」的仓库自述是 “Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store.”；它属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 AI Agent、Claude Code、Codex、Cursor 等方向；主要使用 Python。",
-        "en": "Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in Python, focused on AI Agents, Claude Code, Codex, Cursor."
+        "zh": "在 AI 编程助手里输入 /graphify，它会把整个项目——代码、文档、SQL schema、PDF——解析成可查询的知识图谱，让你用提问代替翻文件 grep。代码解析用 tree-sitter AST 在本地完成，确定性、不调 LLM、数据不出机器，每条边都标明是直接提取还是推断。",
+        "en": "Type /graphify in your AI coding assistant and it maps your entire project — code, docs, SQL schemas, PDFs — into a queryable knowledge graph, so you ask questions instead of grepping files. Code is parsed locally with tree-sitter AST: deterministic, no LLM, nothing leaves your machine, and every edge is labeled extracted or inferred."
       },
       "cardLine": {
-        "zh": "方向：AI Agent、Claude Code、Codex",
-        "en": "Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable…"
+        "zh": "把代码库变成可查询的知识图谱，用提问代替翻文件找代码。",
+        "en": "Turns any codebase into a queryable knowledge graph — ask questions instead of grepping files."
       },
       "highlights": [
         {
-          "zh": "369 位公开贡献者",
-          "en": "369 public contributors"
+          "zh": "代码用 tree-sitter AST 本地解析，不调 LLM、数据不出机器。",
+          "en": "Code is parsed locally with tree-sitter AST — no LLM, nothing leaves your machine."
         },
         {
-          "zh": "近 90 天发布 30 个版本",
-          "en": "30 release(s) in the last 90 days"
+          "zh": "每条关系都标注 EXTRACTED 或 INFERRED，直接读到的和推断的分得清。",
+          "en": "Every edge is tagged EXTRACTED or INFERRED, so direct reads and inferences are clearly separated."
         },
         {
-          "zh": "宽松许可证（Apache-2.0），商用门槛低",
-          "en": "Permissive license (Apache-2.0) — easy commercial use"
+          "zh": "支持 Claude Code、Cursor、Codex、Gemini CLI 等 20+ 助手，跨平台可用。",
+          "en": "One install works with Claude Code, Cursor, Codex, Gemini CLI and 20+ more assistants."
         },
         {
-          "zh": "7 天内新增 486 次 fork",
-          "en": "486 new forks in the window"
-        },
-        {
-          "zh": "新仓库，创建至今仅 215 天",
-          "en": "Young project — only 215 days old"
+          "zh": "文档、PDF、图片、视频也能进图谱，语义关联一并建好。",
+          "en": "Docs, PDFs, images and video go into the graph too, with semantic connections built in."
         }
       ],
       "cons": [],
@@ -627,7 +607,7 @@
         }
       ],
       "quickstart": "# 摘自 Graphify-Labs/graphify 的 README\nbrew install python@3.12 uv",
-      "interpretationSource": "rules",
+      "interpretationSource": "llm",
       "firstSeen": "2026-11-04",
       "scoringVersion": "2.1.0"
     },
@@ -652,18 +632,18 @@
         "gsap",
         "html"
       ],
-      "stars": 78684,
-      "forks": 7243,
-      "openIssues": 240,
+      "stars": 78760,
+      "forks": 7254,
+      "openIssues": 244,
       "contributors": 121,
       "releases90d": 30,
       "prActivity": 200,
       "issueActivity": 200,
-      "weeklyGain": 3798,
-      "dailyGain": 542.6,
-      "growthRate": 4.8,
-      "forksGain": 493,
-      "forksGrowthRate": 6.8,
+      "weeklyGain": 3864,
+      "dailyGain": 552,
+      "growthRate": 4.9,
+      "forksGain": 504,
+      "forksGrowthRate": 6.9,
       "gainSource": "snapshot",
       "gainExact": true,
       "gainUnreliable": false,
@@ -675,44 +655,40 @@
         "community": 62,
         "innovation": 78,
         "practical": 100,
-        "ecosystem": 40,
+        "ecosystem": 41,
         "health": 82,
         "forksGrowth": 76,
         "activity": 100,
         "overall": 79
       },
       "why": {
-        "zh": "近 7 天新增 3,798 star（日均约 543，相对存量增速 4.8%），累计 78,684 star、7,243 fork。窗口内被 fork 493 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，121 位贡献者共同维护。",
-        "en": "Gained 3,798 stars over the last 7 days (~543/day, 4.8% of its base), now at 78,684 stars and 7,243 forks. 493 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 121 contributors."
+        "zh": "近 7 天新增 3,864 star（日均约 552，相对存量增速 4.9%），累计 78,760 star、7,254 fork。窗口内被 fork 504 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，121 位贡献者共同维护。",
+        "en": "Gained 3,864 stars over the last 7 days (~552/day, 4.9% of its base), now at 78,760 stars and 7,254 forks. 504 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 121 contributors."
       },
       "intro": {
-        "zh": "「heygen-com/hyperframes」的仓库自述是 “Write HTML. Render video. Built for agents.”；它属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 AI Agent、Claude Code、框架、MCP 协议 等方向；主要使用 TypeScript。",
-        "en": "Write HTML. Render video. Built for agents. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in TypeScript, focused on AI Agents, Claude Code, Framework, MCP."
+        "zh": "一个写 HTML 就能出视频的开源框架：把 HTML、CSS、媒体和可寻址动画渲染成确定性的 MP4。专为 agent 设计——装好技能后，直接跟 Claude Code 说「做个 10 秒产品介绍视频」，它就会走完规划、写页面、加动画、预览、渲染的完整流程。",
+        "en": "An open-source framework that turns HTML, CSS, media and seekable animations into deterministic MP4 videos. Built for agents — install the skills, then just ask Claude Code to make a 10-second product intro, and it runs the full loop: plan, write HTML, wire animations, lint, preview, render."
       },
       "cardLine": {
-        "zh": "方向：AI Agent、Claude Code、框架",
-        "en": "Write HTML. Render video. Built for agents."
+        "zh": "写 HTML 就能渲染成 MP4 视频，专为 AI agent 设计的开源框架。",
+        "en": "Write HTML, render deterministic MP4 video — an open-source framework built for agents."
       },
       "highlights": [
         {
-          "zh": "121 位公开贡献者",
-          "en": "121 public contributors"
+          "zh": "渲染结果确定性可复现，适合批量生产与自动化流水线。",
+          "en": "Rendering is deterministic and reproducible, fitting batch production and automation pipelines."
         },
         {
-          "zh": "近 90 天发布 30 个版本",
-          "en": "30 release(s) in the last 90 days"
+          "zh": "内置 9 个技能，教会 agent 规划、写页面、加媒体、预览、渲染全流程。",
+          "en": "Ships 9 skills that teach agents the full loop: plan, write HTML, add media, lint, preview, render."
         },
         {
-          "zh": "宽松许可证（Apache-2.0），商用门槛低",
-          "en": "Permissive license (Apache-2.0) — easy commercial use"
+          "zh": "支持 Claude Code、Codex、Cursor、Gemini CLI 等主流编程 agent。",
+          "en": "Works with Claude Code, Codex, Cursor, Gemini CLI and other coding agents."
         },
         {
-          "zh": "7 天内新增 493 次 fork",
-          "en": "493 new forks in the window"
-        },
-        {
-          "zh": "新仓库，创建至今仅 239 天",
-          "en": "Young project — only 239 days old"
+          "zh": "可用 CLI 本地渲染，也能作为在线视频创作服务的渲染内核。",
+          "en": "Use it locally via CLI, or as the rendering core behind hosted video authoring workflows."
         }
       ],
       "cons": [],
@@ -731,7 +707,7 @@
         }
       ],
       "quickstart": "# 摘自 heygen-com/hyperframes 的 README\nnpx skills add heygen-com/hyperframes",
-      "interpretationSource": "rules",
+      "interpretationSource": "llm",
       "firstSeen": "2026-11-04",
       "scoringVersion": "2.1.0"
     },
@@ -756,18 +732,18 @@
         "elevenlabs",
         "ffmpeg"
       ],
-      "stars": 76257,
-      "forks": 10112,
+      "stars": 76350,
+      "forks": 10125,
       "openIssues": 439,
       "contributors": 74,
       "releases90d": 0,
       "prActivity": 150,
       "issueActivity": 175,
-      "weeklyGain": 3203,
-      "dailyGain": 457.6,
-      "growthRate": 4.2,
-      "forksGain": 637,
-      "forksGrowthRate": 6.3,
+      "weeklyGain": 3284,
+      "dailyGain": 469.1,
+      "growthRate": 4.3,
+      "forksGain": 650,
+      "forksGrowthRate": 6.4,
       "gainSource": "snapshot",
       "gainExact": true,
       "gainUnreliable": false,
@@ -786,29 +762,33 @@
         "overall": 63
       },
       "why": {
-        "zh": "近 7 天新增 3,203 star（日均约 458，相对存量增速 4.2%），累计 76,257 star、10,112 fork。窗口内被 fork 637 次，最近一次提交在 1 天前，近 30 天新建 PR 150 个、issue 175 个，74 位贡献者共同维护。",
-        "en": "Gained 3,203 stars over the last 7 days (~458/day, 4.2% of its base), now at 76,257 stars and 10,112 forks. 637 new forks in the window; last push 1 day(s) ago; 150 PRs and 175 issues opened in the last 30 days; 74 contributors."
+        "zh": "近 7 天新增 3,284 star（日均约 469，相对存量增速 4.3%），累计 76,350 star、10,125 fork。窗口内被 fork 650 次，最近一次提交在 1 天前，近 30 天新建 PR 150 个、issue 175 个，74 位贡献者共同维护。",
+        "en": "Gained 3,284 stars over the last 7 days (~469/day, 4.3% of its base), now at 76,350 stars and 10,125 forks. 650 new forks in the window; last push 1 day(s) ago; 150 PRs and 175 issues opened in the last 30 days; 74 contributors."
       },
       "intro": {
-        "zh": "「calesthio/OpenMontage」的仓库自述是 “World's first open-source, agentic video production system. 12 production pipelines, 100+ tools, 700+ agent skill and production-knowledge files. Turn your AI coding assistant into a full video production studio.”；它属于工具 / 平台，常用来给现有工作流补齐 Agent 与自动化能力；聚焦 Agent、Agentic AI、Claude、Copilot 助手 等方向；主要使用 Python。",
-        "en": "World's first open-source, agentic video production system. 12 production pipelines, 100+ tools, 700+ agent skill and production-knowledge files. Turn your AI coding assistant into a full video production studio. A Tool / Platform project for adding agent capability and automation to an existing workflow, mainly written in Python, focused on Agent, Agentic AI, Claude, Copilot."
+        "zh": "号称首个开源的 agentic 视频制作系统：用大白话描述你想要的视频，AI 编程助手就会完成调研、写脚本、生成素材、剪辑到最终合成。12 条制作流水线、100+ 工具、700+ 技能文件，能检索真实素材剪成片，而不只是把几张静态图动起来。",
+        "en": "Billed as the first open-source agentic video production system: describe what you want in plain language and your AI coding assistant handles research, scripting, asset generation, editing and final composition. 12 pipelines, 100+ tools and 700+ skill files — it retrieves real motion clips and edits them into a timeline, not just animating stills."
       },
       "cardLine": {
-        "zh": "方向：Agent、Agentic AI、Claude",
-        "en": "World's first open-source, agentic video production system. 12 production pipelines,…"
+        "zh": "开源 agentic 视频制作系统，一句话让编程助手跑完整个制作流程。",
+        "en": "The first open-source agentic video production system — one prompt, full production pipeline."
       },
       "highlights": [
         {
-          "zh": "74 位公开贡献者",
-          "en": "74 public contributors"
+          "zh": "12 条制作流水线、100+ 工具、700+ 技能与知识文件。",
+          "en": "12 production pipelines, 100+ tools and 700+ agent skill and knowledge files."
         },
         {
-          "zh": "7 天内新增 637 次 fork",
-          "en": "637 new forks in the window"
+          "zh": "从免费素材库检索真实动态片段，剪进时间线再渲染成片。",
+          "en": "Retrieves real motion clips from free stock and open archives, edits them into a timeline and renders."
         },
         {
-          "zh": "新仓库，创建至今仅 220 天",
-          "en": "Young project — only 220 days old"
+          "zh": "官方示例短片成本可低至 1.33 美元，含脚本、配音、字幕和配乐。",
+          "en": "Official example shorts cost as little as $1.33, with script, narration, captions and music."
+        },
+        {
+          "zh": "支持 Blender 物理动画、Remotion 合成、FFmpeg 拼装等技术栈。",
+          "en": "Supports Blender physics animation, Remotion composition and FFmpeg assembly."
         }
       ],
       "cons": [
@@ -832,7 +812,7 @@
         }
       ],
       "quickstart": "# 摘自 calesthio/OpenMontage 的 README\ngit clone https://github.com/calesthio/OpenMontage.git\ncd OpenMontage\nmake setup",
-      "interpretationSource": "rules",
+      "interpretationSource": "llm",
       "firstSeen": "2026-11-04",
       "scoringVersion": "2.1.0"
     },
@@ -857,17 +837,17 @@
         "cli",
         "cursor"
       ],
-      "stars": 108641,
-      "forks": 9693,
-      "openIssues": 272,
+      "stars": 108704,
+      "forks": 9701,
+      "openIssues": 274,
       "contributors": 45,
       "releases90d": 2,
       "prActivity": 86,
       "issueActivity": 131,
-      "weeklyGain": 2944,
-      "dailyGain": 420.6,
-      "growthRate": 2.7,
-      "forksGain": 364,
+      "weeklyGain": 3000,
+      "dailyGain": 428.6,
+      "growthRate": 2.8,
+      "forksGain": 372,
       "forksGrowthRate": 3.8,
       "gainSource": "snapshot",
       "gainExact": true,
@@ -887,37 +867,33 @@
         "overall": 68
       },
       "why": {
-        "zh": "近 7 天新增 2,944 star（日均约 421，相对存量增速 2.7%），累计 108,641 star、9,693 fork。窗口内被 fork 364 次，最近一次提交在 0 天前，近 30 天新建 PR 86 个、issue 131 个，45 位贡献者共同维护。",
-        "en": "Gained 2,944 stars over the last 7 days (~421/day, 2.7% of its base), now at 108,641 stars and 9,693 forks. 364 new forks in the window; last push 0 day(s) ago; 86 PRs and 131 issues opened in the last 30 days; 45 contributors."
+        "zh": "近 7 天新增 3,000 star（日均约 429，相对存量增速 2.8%），累计 108,704 star、9,701 fork。窗口内被 fork 372 次，最近一次提交在 0 天前，近 30 天新建 PR 86 个、issue 131 个，45 位贡献者共同维护。",
+        "en": "Gained 3,000 stars over the last 7 days (~429/day, 2.8% of its base), now at 108,704 stars and 9,701 forks. 372 new forks in the window; last push 0 day(s) ago; 86 PRs and 131 issues opened in the last 30 days; 45 contributors."
       },
       "intro": {
-        "zh": "「Panniantong/Agent-Reach」的仓库自述是 “Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — one CLI, zero API fees.”；它属于工具 / 平台，常用来给现有工作流补齐 Agent 与自动化能力；聚焦 AI Agent、自动化、Claude Code、命令行工具 等方向；主要使用 Python。",
-        "en": "Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — one CLI, zero API fees. A Tool / Platform project for adding agent capability and automation to an existing workflow, mainly written in Python, focused on AI Agents, Automation, Claude Code, CLI."
+        "zh": "给 AI agent 装上看全网的眼睛：一条命令让 agent 能搜小红书、读 B 站字幕、查雪球行情、翻 Reddit 和 Twitter——这些登录墙后、视频里、中文平台上的内容，普通 CLI agent 基本够不着。零 API 费用，装好即用，还能按需添加可选平台。",
+        "en": "Gives your AI agent eyes on the whole internet: one command lets it search XiaoHongShu, read Bilibili subtitles, check Xueqiu quotes, and browse Reddit and Twitter — content behind login walls, inside videos, or on Chinese platforms that CLI agents normally can't reach. Zero API fees, works out of the box."
       },
       "cardLine": {
-        "zh": "方向：AI Agent、自动化、Claude Code",
-        "en": "Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit,…"
+        "zh": "一条命令让 agent 够到全网：中文平台、登录墙内容、视频字幕都能读。",
+        "en": "One CLI gives your agent the whole internet: Chinese platforms, login-walled content, video transcripts."
       },
       "highlights": [
         {
-          "zh": "45 位公开贡献者",
-          "en": "45 public contributors"
+          "zh": "默认支持 B 站、GitHub、YouTube、V2EX、网页搜索，装好就能用。",
+          "en": "Bilibili, GitHub, YouTube, V2EX and web search work by default, right after install."
         },
         {
-          "zh": "近 90 天发布 2 个版本",
-          "en": "2 release(s) in the last 90 days"
+          "zh": "小红书、雪球、Boss 直聘等中文平台，一句话按需开启。",
+          "en": "Add Chinese platforms like XiaoHongShu, Xueqiu and Boss just by asking."
         },
         {
-          "zh": "宽松许可证（MIT），商用门槛低",
-          "en": "Permissive license (MIT) — easy commercial use"
+          "zh": "YouTube 字幕和播客语音转文字，视频内容也能进 agent 上下文。",
+          "en": "YouTube subtitles and podcast speech-to-text bring video content into the agent's context."
         },
         {
-          "zh": "7 天内新增 364 次 fork",
-          "en": "364 new forks in the window"
-        },
-        {
-          "zh": "新仓库，创建至今仅 253 天",
-          "en": "Young project — only 253 days old"
+          "zh": "登录用独立后台浏览器，不碰你的主浏览器和密码库。",
+          "en": "Logins run in a dedicated background browser — your main browser and password vault stay untouched."
         }
       ],
       "cons": [],
@@ -936,7 +912,7 @@
         }
       ],
       "quickstart": "# 摘自 Panniantong/Agent-Reach 的 README\n帮我安装 Agent Reach：https://raw.githubusercontent.com/Panniantong/Agent-Reach/main/docs/install.md",
-      "interpretationSource": "rules",
+      "interpretationSource": "llm",
       "firstSeen": "2026-11-04",
       "scoringVersion": "2.1.0"
     },
@@ -961,17 +937,17 @@
         "ai-governance",
         "ai-tools"
       ],
-      "stars": 110993,
-      "forks": 18382,
-      "openIssues": 6576,
+      "stars": 111029,
+      "forks": 18384,
+      "openIssues": 6590,
       "contributors": 235,
       "releases90d": 11,
       "prActivity": 200,
       "issueActivity": 200,
-      "weeklyGain": 2477,
-      "dailyGain": 353.9,
-      "growthRate": 2.2,
-      "forksGain": 463,
+      "weeklyGain": 2509,
+      "dailyGain": 358.4,
+      "growthRate": 2.3,
+      "forksGain": 465,
       "forksGrowthRate": 2.5,
       "gainSource": "snapshot",
       "gainExact": true,
@@ -991,43 +967,39 @@
         "overall": 82
       },
       "why": {
-        "zh": "近 7 天新增 2,477 star（日均约 354，相对存量增速 2.2%），累计 110,993 star、18,382 fork。窗口内被 fork 463 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，235 位贡献者共同维护。",
-        "en": "Gained 2,477 stars over the last 7 days (~354/day, 2.2% of its base), now at 110,993 stars and 18,382 forks. 463 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 235 contributors."
+        "zh": "近 7 天新增 2,509 star（日均约 358，相对存量增速 2.3%），累计 111,029 star、18,384 fork。窗口内被 fork 465 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，235 位贡献者共同维护。",
+        "en": "Gained 2,509 stars over the last 7 days (~358/day, 2.3% of its base), now at 111,029 stars and 18,384 forks. 465 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 235 contributors."
       },
       "intro": {
-        "zh": "「paperclipai/paperclip」的仓库自述是 “The open-source app everyone uses to manage agents at work”；它属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 Agent 技能、Agentic AI、AI Agent、Claude 等方向；主要使用 TypeScript。",
-        "en": "The open-source app everyone uses to manage agents at work. A Framework / SDK project for embedding agent capabilities into your own product or workflow, mainly written in TypeScript, focused on Agent Skills, Agentic AI, AI Agents, Claude."
+        "zh": "一个开源的 AI agent 管理平台：如果说 OpenClaw 是员工，Paperclip 就是公司本身。用 Node.js 服务加 React 界面编排一队 agent，定业务目标、分角色、设预算，在仪表盘里追踪进度和成本。适合同时开二十个 Claude Code 终端却记不清谁在干嘛的人。",
+        "en": "An open-source platform for managing AI agents at work: if OpenClaw is an employee, Paperclip is the company. A Node.js server and React UI that orchestrates a team of agents — assign business goals, roles and budgets, then track progress and costs from one dashboard. For anyone running twenty Claude Code terminals and losing track."
       },
       "cardLine": {
-        "zh": "方向：Agent 技能、Agentic AI、AI Agent",
-        "en": "The open-source app everyone uses to manage agents at work"
+        "zh": "开源 agent 编排平台：定目标、分角色、控预算，像管公司一样管 agent。",
+        "en": "Open-source agent orchestration: assign goals, roles and budgets — manage agents like a company."
       },
       "highlights": [
         {
-          "zh": "235 位公开贡献者",
-          "en": "235 public contributors"
+          "zh": "兼容 OpenClaw、Claude Code、Codex、Cursor 等，能收心跳的都能「入职」。",
+          "en": "Works with OpenClaw, Claude Code, Codex, Cursor and more — if it can receive a heartbeat, it's hired."
         },
         {
-          "zh": "近 90 天发布 11 个版本",
-          "en": "11 release(s) in the last 90 days"
+          "zh": "内置组织架构、预算管控和治理机制，agent 自主运转可审计。",
+          "en": "Built-in org charts, budgets and governance keep autonomous agents auditable."
         },
         {
-          "zh": "宽松许可证（MIT），商用门槛低",
-          "en": "Permissive license (MIT) — easy commercial use"
+          "zh": "像任务管理器一样用：定目标、组团队、审批后放手让 agent 干。",
+          "en": "Feels like a task manager: define the goal, hire the team, approve, then let agents run."
         },
         {
-          "zh": "7 天内新增 463 次 fork",
-          "en": "463 new forks in the window"
-        },
-        {
-          "zh": "新仓库，创建至今仅 247 天",
-          "en": "Young project — only 247 days old"
+          "zh": "支持自定义进程、HTTP 端点和适配器扩展，手机上也能管理。",
+          "en": "Extensible via custom processes, HTTP endpoints and adapters — manageable from your phone."
         }
       ],
       "cons": [
         {
-          "zh": "开放 issue 6,576 个，相对 star 规模偏高",
-          "en": "6,576 open issues — high relative to its star count"
+          "zh": "开放 issue 6,590 个，相对 star 规模偏高",
+          "en": "6,590 open issues — high relative to its star count"
         }
       ],
       "fitFor": [
@@ -1045,7 +1017,7 @@
         }
       ],
       "quickstart": "# 摘自 paperclipai/paperclip 的 README\nnpx paperclipai@latest onboard --yes",
-      "interpretationSource": "rules",
+      "interpretationSource": "llm",
       "firstSeen": "2026-11-04",
       "scoringVersion": "2.1.0"
     }

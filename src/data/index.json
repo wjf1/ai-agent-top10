@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T13:27:53.403Z",
+  "generatedAt": "2026-11-04T16:21:26.818Z",
   "latest": "2026-11-04",
   "dates": [
     "2026-11-04",
@@ -60,11 +60,11 @@
     {
       "date": "2026-11-04",
       "count": 10,
-      "totalGain": 44642,
+      "totalGain": 45463,
       "top": {
         "full_name": "thedotmack/claude-mem",
         "slug": "thedotmack-claude-mem",
-        "weeklyGain": 7525
+        "weeklyGain": 7623
       },
       "categories": [
         "framework",
