@@ -1,7 +1,8 @@
 {
-  "generatedAt": "2026-11-07T12:00:26.469Z",
-  "latest": "2026-11-07",
+  "generatedAt": "2026-11-08T12:22:47.603Z",
+  "latest": "2026-11-08",
   "dates": [
+    "2026-11-08",
     "2026-11-07",
     "2026-11-06",
     "2026-11-05",
@@ -60,6 +61,33 @@
     "2026-09-13"
   ],
   "days": [
+    {
+      "date": "2026-11-08",
+      "count": 10,
+      "totalGain": 36479,
+      "top": {
+        "full_name": "stablyai/orca",
+        "slug": "stablyai-orca",
+        "weeklyGain": 5994
+      },
+      "categories": [
+        "framework",
+        "tool",
+        "other"
+      ],
+      "slugs": [
+        "stablyai-orca",
+        "thedotmack-claude-mem",
+        "affaan-m-ecc",
+        "dietrichgebert-ponytail",
+        "leonxlnx-taste-skill",
+        "graphify-labs-graphify",
+        "hugohe3-ppt-master",
+        "panniantong-agent-reach",
+        "paperclipai-paperclip",
+        "tt-a1i-archify"
+      ]
+    },
     {
       "date": "2026-11-07",
       "count": 10,
