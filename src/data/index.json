@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-15T07:41:03.294Z",
+  "generatedAt": "2026-11-15T08:08:26.922Z",
   "latest": "2026-11-15",
   "dates": [
     "2026-11-15",
@@ -71,11 +71,11 @@
     {
       "date": "2026-11-15",
       "count": 10,
-      "totalGain": 34971,
+      "totalGain": 35062,
       "top": {
         "full_name": "stablyai/orca",
         "slug": "stablyai-orca",
-        "weeklyGain": 6307
+        "weeklyGain": 6324
       },
       "categories": [
         "framework",
@@ -85,8 +85,8 @@
       "slugs": [
         "stablyai-orca",
         "dietrichgebert-ponytail",
-        "leonxlnx-taste-skill",
         "affaan-m-ecc",
+        "leonxlnx-taste-skill",
         "graphify-labs-graphify",
         "addyosmani-agent-skills",
         "thedotmack-claude-mem",
