@@ -45,6 +45,16 @@ const LLM_SYSTEM_PROMPT = `你是「AI Agent 日报」的编辑，为 GitHub 项
 function resolveProvider(cfg, { prefix = "" } = {}) {
   const scoped = (name) => (prefix ? process.env[`${prefix}${name}`] : undefined);
   const apiKeyEnv = cfg.apiKeyEnv || "LLM_API_KEY";
+  if (prefix) {
+    // 备用 provider：只认专用前缀环境变量（LLM_FALLBACK_*）与 config.fallback 块，
+    // 绝不回落到主 provider 的 LLM_BASE_URL / LLM_MODEL —— 否则备用通道会继承主端点
+    // （实测：主为火山时备用也打火山，Pollinations 配置被完全架空）。
+    return {
+      baseUrl: scoped("BASE_URL") || cfg.baseUrl || "",
+      model: scoped("MODEL") || cfg.model || "",
+      apiKey: scoped("API_KEY") || process.env[apiKeyEnv] || "",
+    };
+  }
   return {
     baseUrl: scoped("BASE_URL") || process.env.LLM_BASE_URL || cfg.baseUrl || "https://api.openai.com/v1",
     model: scoped("MODEL") || process.env.LLM_MODEL || cfg.model || "gpt-4o-mini",
