@@ -14,10 +14,12 @@
 ### 修复
 
 - **LLM 解读调用重试 + 超时放宽（`scripts/lib/interpret.mjs`）**：火山方舟端点从 GitHub Actions 海外 runner 访问普遍偏慢，单次 45s 超时且无重试，频繁触发 "This operation was aborted" 使整天解读回落规则模板（11-14 实测仍复现）。默认超时放宽至 90s，主 / 备 provider 失败后按指数退避重试（`retries` 默认 2 次、`retryBaseMs` 默认 8s），瞬时故障自愈后才真正回落规则版。
+- **接入 GitHub Models 作为备用解读 provider**：dispatch 实跑证实火山方舟国内端点从 Actions 海外 runner 直连 `fetch failed`（非慢、是不可达），重试后仍回落规则版。`daily.yml` 的 fallback key 在未配置专用 secret 时回落 `GITHUB_TOKEN`（workflow 增加 `models: read` 权限），备用端点 / 模型经仓库变量指向 GitHub Models 免费档（`https://models.github.ai/inference` + `openai/gpt-4o-mini`，公开仓库免费）；主 provider 仍为火山方舟，本机 / 国内环境可用时优先走主。
 
 ### 验证
 
-- `npm test` **94/94 通过**；`npm run check`（test + validate + build）通过，构建产物含 `sitemap-index.xml` 且 URL 前缀正确。
+- `npm test` **94/94 通过**；`npm run check`（test + validate + build）通过，构建产物含 `sitemap-index.xml` 且 URL 前缀正确（线上 `sitemap-index.xml` 已 200）。
+- dispatch 实跑：重试链路按设计退避（retry 1/2 → 8s → retry 2/2 → 16s）；fallback 配置后二次 dispatch 验证 GitHub Models 解读产出。
 
 ---
 

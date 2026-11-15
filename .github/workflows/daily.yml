@@ -16,6 +16,8 @@ permissions:
   contents: write
   pages: write
   id-token: write
+  # GitHub Models fallback（LLM_FALLBACK_* 未配专用 key 时回落 GITHUB_TOKEN）需要 models: read
+  models: read
 
 concurrency:
   # PR 校验按 PR 号分组，不占用生产部署的 pages 队列（否则会互相排队）
@@ -95,7 +97,9 @@ jobs:
           LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
           LLM_MODEL: ${{ vars.LLM_MODEL }}
           # 备用解读服务（可选）：主服务失败时自动切换。三个变量都可留空。
-          LLM_FALLBACK_API_KEY: ${{ secrets.LLM_FALLBACK_API_KEY }}
+          # 未配置专用 key 时回落 GITHUB_TOKEN + GitHub Models（公开仓库免费额度，
+          # 海外 runner 天然可达——火山方舟国内端点从 Actions 抓取实测 fetch failed）。
+          LLM_FALLBACK_API_KEY: ${{ secrets.LLM_FALLBACK_API_KEY || github.token }}
           LLM_FALLBACK_BASE_URL: ${{ vars.LLM_FALLBACK_BASE_URL }}
           LLM_FALLBACK_MODEL: ${{ vars.LLM_FALLBACK_MODEL }}
 
