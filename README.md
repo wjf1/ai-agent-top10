@@ -25,6 +25,7 @@
 | [数据流与架构](#数据流与架构) | [Architecture](#architecture) |
 | [评分维度](#评分维度) | [Scoring dimensions](#scoring-dimensions) |
 | [页面路由](#页面路由) | [Routes](#routes) |
+| [入选徽章](#入选徽章) | [Featured badge](#featured-badge) |
 | [本地开发](#本地开发) | [Local development](#local-development) |
 | [配置项](#配置项) | [Configuration](#configuration) |
 | [数据导出](#数据导出) | [Data export](#data-export) |
@@ -183,6 +184,26 @@ comparable with today's 8-dimension ones.
 | `/data/latest.json` · `/data/latest.csv` · `/data/history.csv` · `/data/projects.json` | 开放数据 |
 
 ---
+
+## 入选徽章
+
+项目入选任意一期榜单后，欢迎把徽章挂到你的 README（自愿、非官方认可）——一行 markdown 即可：
+
+```markdown
+[![featured in AI Agent Top10](https://raw.githubusercontent.com/wjf1/ai-agent-top10/main/docs/badge.svg)](https://wjf1.github.io/ai-agent-top10/)
+```
+
+徽章是自托管静态 SVG（[`docs/badge.svg`](docs/badge.svg)），无第三方服务依赖；确认入选与完整指引见 [`docs/backlink.md`](docs/backlink.md)。
+
+## Featured badge
+
+Once featured on any edition, you are welcome to hang the badge on your README (optional, community marker) — one line of markdown:
+
+```markdown
+[![featured in AI Agent Top10](https://raw.githubusercontent.com/wjf1/ai-agent-top10/main/docs/badge.svg)](https://wjf1.github.io/ai-agent-top10/)
+```
+
+The badge is a self-hosted static SVG ([`docs/badge.svg`](docs/badge.svg)) with no third-party dependency; see [`docs/backlink.md`](docs/backlink.md) for how to check whether your project has been featured.
 
 ## 本地开发
 
