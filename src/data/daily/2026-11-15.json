@@ -1,6 +1,6 @@
 {
   "date": "2026-11-15",
-  "generatedAt": "2026-11-15T08:16:23.711Z",
+  "generatedAt": "2026-11-15T08:56:11.709Z",
   "windowDays": 7,
   "poolSize": 41,
   "scoringVersion": "2.1.0",
@@ -26,17 +26,17 @@
         "ghostty",
         "grok-bot"
       ],
-      "stars": 125251,
-      "forks": 7944,
-      "openIssues": 8505,
+      "stars": 125274,
+      "forks": 7946,
+      "openIssues": 8496,
       "contributors": 468,
       "releases90d": 30,
       "prActivity": 200,
       "issueActivity": 200,
-      "weeklyGain": 6330,
-      "dailyGain": 904.3,
+      "weeklyGain": 6353,
+      "dailyGain": 907.6,
       "growthRate": 5.1,
-      "forksGain": 399,
+      "forksGain": 401,
       "forksGrowthRate": 5,
       "gainSource": "snapshot",
       "gainExact": true,
@@ -51,13 +51,13 @@
         "practical": 100,
         "ecosystem": 58,
         "health": 64,
-        "forksGrowth": 76,
+        "forksGrowth": 77,
         "activity": 100,
         "overall": 84
       },
       "why": {
-        "zh": "近 7 天新增 6,330 star（日均约 904，相对存量增速 5.1%），累计 125,251 star、7,944 fork。窗口内被 fork 399 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，468 位贡献者共同维护。",
-        "en": "Gained 6,330 stars over the last 7 days (~904/day, 5.1% of its base), now at 125,251 stars and 7,944 forks. 399 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 468 contributors."
+        "zh": "近 7 天新增 6,353 star（日均约 908，相对存量增速 5.1%），累计 125,274 star、7,946 fork。窗口内被 fork 401 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，468 位贡献者共同维护。",
+        "en": "Gained 6,353 stars over the last 7 days (~908/day, 5.1% of its base), now at 125,274 stars and 7,946 forks. 401 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 468 contributors."
       },
       "intro": {
         "zh": "Orca 是一款 AI 编码工作流工具，能让你在同一台电脑或云端并行运行多种编码代理（如 Claude Code、Codex）。它提供聊天、终端、浏览器和 CLI 等多种交互方式，支持多工作树、远程运行和移动端通知。",
@@ -87,8 +87,8 @@
       ],
       "cons": [
         {
-          "zh": "开放 issue 8,505 个，相对 star 规模偏高",
-          "en": "8,505 open issues — high relative to its star count"
+          "zh": "开放 issue 8,496 个，相对 star 规模偏高",
+          "en": "8,496 open issues — high relative to its star count"
         }
       ],
       "fitFor": [
@@ -131,15 +131,15 @@
         "developer-tools",
         "llm"
       ],
-      "stars": 191057,
+      "stars": 191076,
       "forks": 10684,
       "openIssues": 238,
       "contributors": 132,
       "releases90d": 15,
       "prActivity": 167,
       "issueActivity": 200,
-      "weeklyGain": 4423,
-      "dailyGain": 631.9,
+      "weeklyGain": 4442,
+      "dailyGain": 634.6,
       "growthRate": 2.3,
       "forksGain": 349,
       "forksGrowthRate": 3.3,
@@ -161,8 +161,8 @@
         "overall": 74
       },
       "why": {
-        "zh": "近 7 天新增 4,423 star（日均约 632，相对存量增速 2.3%），累计 191,057 star、10,684 fork。窗口内被 fork 349 次，最近一次提交在 17 天前，近 30 天新建 PR 167 个、issue 200 个，132 位贡献者共同维护。",
-        "en": "Gained 4,423 stars over the last 7 days (~632/day, 2.3% of its base), now at 191,057 stars and 10,684 forks. 349 new forks in the window; last push 17 day(s) ago; 167 PRs and 200 issues opened in the last 30 days; 132 contributors."
+        "zh": "近 7 天新增 4,442 star（日均约 635，相对存量增速 2.3%），累计 191,076 star、10,684 fork。窗口内被 fork 349 次，最近一次提交在 17 天前，近 30 天新建 PR 167 个、issue 200 个，132 位贡献者共同维护。",
+        "en": "Gained 4,442 stars over the last 7 days (~635/day, 2.3% of its base), now at 191,076 stars and 10,684 forks. 349 new forks in the window; last push 17 day(s) ago; 167 PRs and 200 issues opened in the last 30 days; 132 contributors."
       },
       "intro": {
         "zh": "Ponytail 让 AI 代理像懒惰的资深开发者一样工作，只写必要代码，减少行数、时间和成本。它通过分析现有代码，生成最小化、可测试且安全的实现。",
@@ -231,17 +231,17 @@
         "mcp",
         "productivity"
       ],
-      "stars": 303380,
-      "forks": 44727,
+      "stars": 303398,
+      "forks": 44730,
       "openIssues": 281,
       "contributors": 408,
       "releases90d": 4,
       "prActivity": 200,
       "issueActivity": 200,
-      "weeklyGain": 3954,
-      "dailyGain": 564.9,
+      "weeklyGain": 3972,
+      "dailyGain": 567.4,
       "growthRate": 1.3,
-      "forksGain": 494,
+      "forksGain": 497,
       "forksGrowthRate": 1.1,
       "gainSource": "snapshot",
       "gainExact": true,
@@ -261,8 +261,8 @@
         "overall": 88
       },
       "why": {
-        "zh": "近 7 天新增 3,954 star（日均约 565，相对存量增速 1.3%），累计 303,380 star、44,727 fork。窗口内被 fork 494 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，408 位贡献者共同维护。",
-        "en": "Gained 3,954 stars over the last 7 days (~565/day, 1.3% of its base), now at 303,380 stars and 44,727 forks. 494 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 408 contributors."
+        "zh": "近 7 天新增 3,972 star（日均约 567，相对存量增速 1.3%），累计 303,398 star、44,730 fork。窗口内被 fork 497 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，408 位贡献者共同维护。",
+        "en": "Gained 3,972 stars over the last 7 days (~567/day, 1.3% of its base), now at 303,398 stars and 44,730 forks. 497 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 408 contributors."
       },
       "intro": {
         "zh": "ECC 是一套面向 AI 代理的性能优化系统，提供计划、测试、回顾、记忆和安全扫描等功能，帮助代理更高效、可靠地编写代码。",
@@ -331,17 +331,17 @@
         "design-system",
         "frontend"
       ],
-      "stars": 115786,
-      "forks": 7773,
+      "stars": 115799,
+      "forks": 7774,
       "openIssues": 9,
       "contributors": 24,
       "releases90d": 9,
       "prActivity": 26,
       "issueActivity": 55,
-      "weeklyGain": 3936,
-      "dailyGain": 562.3,
+      "weeklyGain": 3949,
+      "dailyGain": 564.1,
       "growthRate": 3.4,
-      "forksGain": 251,
+      "forksGain": 252,
       "forksGrowthRate": 3.2,
       "gainSource": "snapshot",
       "gainExact": true,
@@ -361,8 +361,8 @@
         "overall": 62
       },
       "why": {
-        "zh": "近 7 天新增 3,936 star（日均约 562，相对存量增速 3.4%），累计 115,786 star、7,773 fork。窗口内被 fork 251 次，最近一次提交在 6 天前，近 30 天新建 PR 26 个、issue 55 个，24 位贡献者共同维护。",
-        "en": "Gained 3,936 stars over the last 7 days (~562/day, 3.4% of its base), now at 115,786 stars and 7,773 forks. 251 new forks in the window; last push 6 day(s) ago; 26 PRs and 55 issues opened in the last 30 days; 24 contributors."
+        "zh": "近 7 天新增 3,949 star（日均约 564，相对存量增速 3.4%），累计 115,799 star、7,774 fork。窗口内被 fork 252 次，最近一次提交在 6 天前，近 30 天新建 PR 26 个、issue 55 个，24 位贡献者共同维护。",
+        "en": "Gained 3,949 stars over the last 7 days (~564/day, 3.4% of its base), now at 115,799 stars and 7,774 forks. 252 new forks in the window; last push 6 day(s) ago; 26 PRs and 55 issues opened in the last 30 days; 24 contributors."
       },
       "intro": {
         "zh": "Taste Skill 是一款让 AI 编码助手能像专业设计师一样快速生成公司官网的插件。它会自动挑选真实照片、品牌图标、产品 UI，并在浏览器里验证页面效果，省去手工排版的繁琐。",
@@ -432,17 +432,17 @@
         "codex",
         "cursor"
       ],
-      "stars": 147959,
-      "forks": 14191,
+      "stars": 147977,
+      "forks": 14194,
       "openIssues": 1633,
       "contributors": 391,
       "releases90d": 30,
       "prActivity": 200,
       "issueActivity": 200,
-      "weeklyGain": 3744,
-      "dailyGain": 534.9,
+      "weeklyGain": 3762,
+      "dailyGain": 537.4,
       "growthRate": 2.5,
-      "forksGain": 387,
+      "forksGain": 390,
       "forksGrowthRate": 2.7,
       "gainSource": "snapshot",
       "gainExact": true,
@@ -462,8 +462,8 @@
         "overall": 85
       },
       "why": {
-        "zh": "近 7 天新增 3,744 star（日均约 535，相对存量增速 2.5%），累计 147,959 star、14,191 fork。窗口内被 fork 387 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，391 位贡献者共同维护。",
-        "en": "Gained 3,744 stars over the last 7 days (~535/day, 2.5% of its base), now at 147,959 stars and 14,191 forks. 387 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 391 contributors."
+        "zh": "近 7 天新增 3,762 star（日均约 537，相对存量增速 2.5%），累计 147,977 star、14,194 fork。窗口内被 fork 390 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，391 位贡献者共同维护。",
+        "en": "Gained 3,762 stars over the last 7 days (~537/day, 2.5% of its base), now at 147,977 stars and 14,194 forks. 390 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 391 contributors."
       },
       "intro": {
         "zh": "Graphify 能把任何代码库、文档、SQL 模式、配置文件和 PDF 转成可查询的知识图谱。只需一条命令，AI 助手就能在本地解析 AST，生成可追溯的图结构，让你不再需要 grep。",
@@ -530,18 +530,18 @@
         "cursor",
         "skills"
       ],
-      "stars": 117683,
-      "forks": 12314,
+      "stars": 117689,
+      "forks": 12315,
       "openIssues": 124,
       "contributors": 88,
       "releases90d": 9,
       "prActivity": 89,
       "issueActivity": 98,
-      "weeklyGain": 3676,
-      "dailyGain": 525.1,
+      "weeklyGain": 3682,
+      "dailyGain": 526,
       "growthRate": 3.1,
-      "forksGain": 400,
-      "forksGrowthRate": 3.2,
+      "forksGain": 401,
+      "forksGrowthRate": 3.3,
       "gainSource": "snapshot",
       "gainExact": true,
       "gainUnreliable": false,
@@ -560,8 +560,8 @@
         "overall": 70
       },
       "why": {
-        "zh": "近 7 天新增 3,676 star（日均约 525，相对存量增速 3.1%），累计 117,683 star、12,314 fork。窗口内被 fork 400 次，最近一次提交在 1 天前，近 30 天新建 PR 89 个、issue 98 个，88 位贡献者共同维护。",
-        "en": "Gained 3,676 stars over the last 7 days (~525/day, 3.1% of its base), now at 117,683 stars and 12,314 forks. 400 new forks in the window; last push 1 day(s) ago; 89 PRs and 98 issues opened in the last 30 days; 88 contributors."
+        "zh": "近 7 天新增 3,682 star（日均约 526，相对存量增速 3.1%），累计 117,689 star、12,315 fork。窗口内被 fork 401 次，最近一次提交在 1 天前，近 30 天新建 PR 89 个、issue 98 个，88 位贡献者共同维护。",
+        "en": "Gained 3,682 stars over the last 7 days (~526/day, 3.1% of its base), now at 117,689 stars and 12,315 forks. 401 new forks in the window; last push 1 day(s) ago; 89 PRs and 98 issues opened in the last 30 days; 88 contributors."
       },
       "intro": {
         "zh": "Agent Skills 是一套面向 AI 编码助手的生产级工程技能。它把高级工程师的工作流程、质量门和最佳实践打包成可直接调用的命令，让 AI 在整个开发生命周期中保持一致。",
@@ -626,17 +626,17 @@
         "claude",
         "claude-agent-sdk"
       ],
-      "stars": 117187,
-      "forks": 10173,
+      "stars": 117193,
+      "forks": 10175,
       "openIssues": 161,
       "contributors": 354,
       "releases90d": 30,
       "prActivity": 200,
       "issueActivity": 200,
-      "weeklyGain": 2505,
-      "dailyGain": 357.9,
+      "weeklyGain": 2511,
+      "dailyGain": 358.7,
       "growthRate": 2.1,
-      "forksGain": 219,
+      "forksGain": 221,
       "forksGrowthRate": 2.2,
       "gainSource": "snapshot",
       "gainExact": true,
@@ -656,8 +656,8 @@
         "overall": 80
       },
       "why": {
-        "zh": "近 7 天新增 2,505 star（日均约 358，相对存量增速 2.1%），累计 117,187 star、10,173 fork。窗口内被 fork 219 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，354 位贡献者共同维护。",
-        "en": "Gained 2,505 stars over the last 7 days (~358/day, 2.1% of its base), now at 117,187 stars and 10,173 forks. 219 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 354 contributors."
+        "zh": "近 7 天新增 2,511 star（日均约 359，相对存量增速 2.1%），累计 117,193 star、10,175 fork。窗口内被 fork 221 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，354 位贡献者共同维护。",
+        "en": "Gained 2,511 stars over the last 7 days (~359/day, 2.1% of its base), now at 117,193 stars and 10,175 forks. 221 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 354 contributors."
       },
       "intro": {
         "zh": "Claude-Mem 是一款让 AI 代理在多次会话中保留上下文的工具。它在后台记录代理的所有操作，压缩后在下一次会话中自动注入相关信息，避免重复提问和错误。",
@@ -726,15 +726,15 @@
         "data-extraction",
         "html-to-markdown"
       ],
-      "stars": 201873,
+      "stars": 201881,
       "forks": 10586,
       "openIssues": 801,
       "contributors": 171,
       "releases90d": 0,
       "prActivity": 200,
       "issueActivity": 200,
-      "weeklyGain": 2213,
-      "dailyGain": 316.1,
+      "weeklyGain": 2221,
+      "dailyGain": 317.3,
       "growthRate": 1.1,
       "forksGain": 78,
       "forksGrowthRate": 0.7,
@@ -756,8 +756,8 @@
         "overall": 70
       },
       "why": {
-        "zh": "近 7 天新增 2,213 star（日均约 316，相对存量增速 1.1%），累计 201,873 star、10,586 fork。窗口内被 fork 78 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，171 位贡献者共同维护。",
-        "en": "Gained 2,213 stars over the last 7 days (~316/day, 1.1% of its base), now at 201,873 stars and 10,586 forks. 78 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 171 contributors."
+        "zh": "近 7 天新增 2,221 star（日均约 317，相对存量增速 1.1%），累计 201,881 star、10,586 fork。窗口内被 fork 78 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，171 位贡献者共同维护。",
+        "en": "Gained 2,221 stars over the last 7 days (~317/day, 1.1% of its base), now at 201,881 stars and 10,586 forks. 78 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 171 contributors."
       },
       "intro": {
         "zh": "「firecrawl/firecrawl」的仓库自述是 “Supercharge your AI agents with data from the web and beyond. Building the library for superintelligence. 🔥”；它属于框架 / SDK，可把 Agent 能力集成进自研产品或工作流；聚焦 AI Agent、网页抓取、大语言模型 等方向；主要使用 TypeScript。",
@@ -827,15 +827,15 @@
         "pptx",
         "presentation"
       ],
-      "stars": 76954,
+      "stars": 76963,
       "forks": 6010,
       "openIssues": 1,
       "contributors": 28,
       "releases90d": 18,
       "prActivity": 14,
       "issueActivity": 27,
-      "weeklyGain": 2208,
-      "dailyGain": 315.4,
+      "weeklyGain": 2217,
+      "dailyGain": 316.7,
       "growthRate": 2.9,
       "forksGain": 151,
       "forksGrowthRate": 2.5,
@@ -857,8 +857,8 @@
         "overall": 60
       },
       "why": {
-        "zh": "近 7 天新增 2,208 star（日均约 315，相对存量增速 2.9%），累计 76,954 star、6,010 fork。窗口内被 fork 151 次，最近一次提交在 0 天前，近 30 天新建 PR 14 个、issue 27 个，28 位贡献者共同维护。",
-        "en": "Gained 2,208 stars over the last 7 days (~315/day, 2.9% of its base), now at 76,954 stars and 6,010 forks. 151 new forks in the window; last push 0 day(s) ago; 14 PRs and 27 issues opened in the last 30 days; 28 contributors."
+        "zh": "近 7 天新增 2,217 star（日均约 317，相对存量增速 2.9%），累计 76,963 star、6,010 fork。窗口内被 fork 151 次，最近一次提交在 0 天前，近 30 天新建 PR 14 个、issue 27 个，28 位贡献者共同维护。",
+        "en": "Gained 2,217 stars over the last 7 days (~317/day, 2.9% of its base), now at 76,963 stars and 6,010 forks. 151 new forks in the window; last push 0 day(s) ago; 14 PRs and 27 issues opened in the last 30 days; 28 contributors."
       },
       "intro": {
         "zh": "「hugohe3/ppt-master」的仓库自述是 “AI turns documents or topics into real, native PowerPoint decks—with native shapes, transitions and animations, data-backed charts and tables on demand, audio narration from speaker notes, and support for your own .pptx templates. · by Hugo He”；它是 AI Agent 生态里的通用项目；聚焦 AI Agent 等方向；主要使用 Python。",
@@ -923,17 +923,17 @@
         "elevenlabs",
         "ffmpeg"
       ],
-      "stars": 80562,
-      "forks": 10865,
+      "stars": 80570,
+      "forks": 10866,
       "openIssues": 342,
       "contributors": 118,
       "releases90d": 0,
       "prActivity": 122,
       "issueActivity": 146,
-      "weeklyGain": 2105,
-      "dailyGain": 300.7,
+      "weeklyGain": 2113,
+      "dailyGain": 301.9,
       "growthRate": 2.6,
-      "forksGain": 410,
+      "forksGain": 411,
       "forksGrowthRate": 3.8,
       "gainSource": "snapshot",
       "gainExact": true,
@@ -953,8 +953,8 @@
         "overall": 63
       },
       "why": {
-        "zh": "近 7 天新增 2,105 star（日均约 301，相对存量增速 2.6%），累计 80,562 star、10,865 fork。窗口内被 fork 410 次，最近一次提交在 6 天前，近 30 天新建 PR 122 个、issue 146 个，118 位贡献者共同维护。",
-        "en": "Gained 2,105 stars over the last 7 days (~301/day, 2.6% of its base), now at 80,562 stars and 10,865 forks. 410 new forks in the window; last push 6 day(s) ago; 122 PRs and 146 issues opened in the last 30 days; 118 contributors."
+        "zh": "近 7 天新增 2,113 star（日均约 302，相对存量增速 2.6%），累计 80,570 star、10,866 fork。窗口内被 fork 411 次，最近一次提交在 6 天前，近 30 天新建 PR 122 个、issue 146 个，118 位贡献者共同维护。",
+        "en": "Gained 2,113 stars over the last 7 days (~302/day, 2.6% of its base), now at 80,570 stars and 10,866 forks. 411 new forks in the window; last push 6 day(s) ago; 122 PRs and 146 issues opened in the last 30 days; 118 contributors."
       },
       "intro": {
         "zh": "OpenMontage 是首个开源的代理式视频制作系统。只需用一句话描述你想要的影片，系统就会自动完成研究、脚本、素材生成、剪辑与最终渲染。非常适合想用 AI 快速产出短视频或宣传片的创作者。",
