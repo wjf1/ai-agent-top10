@@ -1,0 +1,280 @@
+---
+/** 评分方法论页：公开 8 维加权打分的完整口径。所有数值读自 config/scoring.json 与最新一期榜单，不在此手抄，保证与 SSOT 同源。 */
+import Base from "../../layouts/Base.astro";
+import { config, scoringVersion } from "../../lib/config.mjs";
+import { index, loadDay, type ScoreSet } from "../../lib/load-days";
+import { strings } from "../../lib/data.ts";
+import { REPO_URL, dayPath, projectPath, scoringPath } from "../../lib/routes.ts";
+
+export function getStaticPaths() {
+  return [{ params: { lang: undefined } }, { params: { lang: "en" } }];
+}
+
+const lang = (Astro.params.lang === "en" ? "en" : "zh") as "zh" | "en";
+const zh = lang === "zh";
+const t = strings(lang);
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const dims = config.dimensions as {
+  key: string;
+  weight: number;
+  zh: string;
+  en: string;
+  descZh: string;
+  descEn: string;
+  params?: Record<string, number>;
+}[];
+const sv = scoringVersion();
+const configUrl = `${REPO_URL}/blob/main/config/scoring.json`;
+
+// 计算示例：最新一期第 1 名，逐维度加权。口径与 src/lib/scoring.mjs 的 scoreProject 一致：
+// 只计数值可信的维度，overall = round(Σ(维度分 × 权重) / Σ权重)，clamp 到 0–100。
+const exampleDate = index.latest;
+const day = exampleDate ? await loadDay(exampleDate) : null;
+const example = day?.entries?.[0] ?? null;
+const exampleRows = example
+  ? dims
+      .filter((d) => typeof example.scores[d.key as keyof ScoreSet] === "number")
+      .map((d) => {
+        const score = example.scores[d.key as keyof ScoreSet] as number;
+        return { d, score, weighted: score * d.weight };
+      })
+  : [];
+const weightSum = exampleRows.reduce((s, r) => s + r.d.weight, 0);
+const weightedSum = exampleRows.reduce((s, r) => s + r.weighted, 0);
+const overall = weightSum > 0 ? Math.max(0, Math.min(100, Math.round(weightedSum / weightSum))) : 0;
+const maxWeight = Math.max(...dims.map((d) => d.weight));
+
+const pct = (w: number) => `${Number((w * 100).toFixed(1))}%`;
+const f2 = (n: number) => n.toFixed(2);
+
+const pageTitle = zh ? "评分方法论" : "Scoring Methodology";
+const desc = zh
+  ? "8 个维度的加权评分口径全公开：权重表、计分公式参数与最新一期第 1 名的真实计算示例，全部与 config/scoring.json 同源。"
+  : "The full 8-dimension weighted scoring methodology: weights, formula parameters and a real worked example from the latest #1, all sourced from config/scoring.json.";
+---
+
+<Base {lang} langHref={scoringPath(B, zh ? "en" : "zh")} title={pageTitle} {desc} active="scoring">
+  <section class="hero">
+    <span class="date-chip">scoringVersion {sv}</span>
+    <h1>{pageTitle}</h1>
+    <p class="sub">
+      {zh
+        ? "本页把榜单的综合分如何产生完整讲清楚：8 个维度的权重、每个维度的计分公式参数，以及用最新一期第 1 名做的真实计算示例。所有数值直接读自 config/scoring.json 与当日榜单数据，不在页面里手工维护。"
+        : "This page explains exactly how the overall score is produced: the weights of the 8 dimensions, each dimension's formula parameters, and a real worked example using the latest #1. Every number is read from config/scoring.json and that day's data — nothing is hand-copied here."}
+    </p>
+  </section>
+
+  <section class="panel">
+    <h2>{zh ? "综合分怎么算" : "How the overall score works"}</h2>
+    <p class="formula"><code>overall = round( Σ (score<sub>i</sub> × weight<sub>i</sub>) / Σ weight<sub>i</sub> )</code></p>
+    <ul>
+      <li>
+        {zh
+          ? "每个维度先独立打分（0–100），再按权重加权平均；某维度数据不可靠时整条剔除、其余维度权重重新归一，而不是按 0 分计入。"
+          : "Each dimension is scored 0–100 independently, then averaged by weight. If a dimension's data is unreliable it is dropped entirely and the remaining weights renormalised — never counted as 0."}
+      </li>
+      <li>
+        {zh
+          ? "维度内部是若干子项的加权和：子项得分 = 系数 × 归一化因子（0–1），加总后收敛到 0–100。"
+          : "Inside a dimension, sub-items add up: item score = coefficient × normalised factor (0–1), then the sum is clamped to 0–100."}
+      </li>
+      <li>
+        {zh
+          ? "归一化因子有两类：分位因子取该指标在当日候选池中的相对位置（相对分，不是绝对门槛）；对数因子把 star / 贡献者这类长尾量级压到 0–1（约 1 万及以上封顶）。"
+          : "Two kinds of factors: percentile factors take the metric's relative position within that day's candidate pool (relative, not absolute thresholds); log factors compress long-tail magnitudes like stars / contributors into 0–1 (capped around 10k)."}
+      </li>
+      <li>
+        {zh
+          ? "参数名后缀约定：*Weight / *Percentile 是子项系数（子项满分即该系数）；*MissFactor 是指标缺失时的折扣；*Days 是时间窗口；*Target 是归一化目标值（达到即满分）；base 是维度保底分。"
+          : "Parameter naming: *Weight / *Percentile are item coefficients (the item's max equals the coefficient); *MissFactor discounts a missing metric; *Days is a window length; *Target is the normalisation target (full marks at that value); base is the dimension floor."}
+      </li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <h2>{t.dimensions} · {t.weight}</h2>
+    <div class="table-wrap">
+      <table class="stable">
+        <thead>
+          <tr>
+            <th>{t.dimensions}</th>
+            <th class="num">{t.weight}</th>
+            <th class="bar-col"></th>
+            <th>{zh ? "一句话说明" : "In one line"}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {dims.map((d) => (
+            <tr>
+              <td class="dim-name">
+                {zh ? d.zh : d.en}
+                <small>{zh ? d.en : d.zh}</small>
+              </td>
+              <td class="num weight">{pct(d.weight)}</td>
+              <td class="bar-col">
+                <span class="bar" aria-hidden="true"><span style={`width:${(d.weight / maxWeight) * 100}%`} /></span>
+              </td>
+              <td class="desc">{zh ? d.descZh : d.descEn}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="muted-note">
+      {zh
+        ? `8 个维度的权重合计 100%（${dims.map((d) => `${zh ? d.shortZh : d.shortEn} ${pct(d.weight)}`).join(" · ")}）。`
+        : `The 8 weights sum to 100% (${dims.map((d) => `${d.shortEn} ${pct(d.weight)}`).join(" · ")}).`}
+    </p>
+  </section>
+
+  <section class="panel">
+    <h2>{zh ? "各维度计分口径（公式参数）" : "Per-dimension scoring details (formula parameters)"}</h2>
+    <div class="dims-grid">
+      {dims.map((d) => (
+        <div class="dim-card">
+          <h3>
+            {zh ? d.zh : d.en}
+            <span class="w-chip">{pct(d.weight)}</span>
+          </h3>
+          <p class="dim-desc">{zh ? d.descZh : d.descEn}</p>
+          {d.params && (
+            <dl class="params">
+              {Object.entries(d.params).map(([k, v]) => (
+                <div class="param-row">
+                  <dt><code>{k}</code></dt>
+                  <dd>{v}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+        </div>
+      ))}
+    </div>
+    <p class="muted-note">
+      {zh
+        ? "参数值原样取自 config/scoring.json；它们如何进入公式见上方「综合分怎么算」。"
+        : "Parameter values are taken verbatim from config/scoring.json; see “How the overall score works” above for how they enter the formulas."}
+    </p>
+  </section>
+
+  <section class="panel">
+    <h2>{zh ? "计算示例：最新一期第 1 名" : "Worked example: latest issue's #1"}</h2>
+    {example && exampleDate ? (
+      <>
+        <p class="example-lede">
+          {zh
+            ? `以 ${exampleDate} 日榜第 ${example.rank} 名 `
+            : `Take rank #${example.rank} of the ${exampleDate} daily issue, `}
+          <a href={projectPath(B, lang, exampleDate, example.slug)}>{example.name}</a>
+          {zh ? " 为例。得分取自该期 JSON 的 scores 字段，加权口径与评分引擎一致：" : ". Scores come straight from that issue's JSON scores field; the weighting matches the scoring engine:"}
+        </p>
+        <div class="table-wrap">
+          <table class="stable example">
+            <thead>
+              <tr>
+                <th>{t.dimensions}</th>
+                <th class="num">{zh ? "得分" : "Score"}</th>
+                <th class="num">{t.weight}</th>
+                <th class="num">{zh ? "加权贡献" : "Weighted"}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {exampleRows.map((r) => (
+                <tr>
+                  <td>{zh ? r.d.zh : r.d.en}</td>
+                  <td class="num">{r.score}</td>
+                  <td class="num">{pct(r.d.weight)}</td>
+                  <td class="num">{f2(r.weighted)}</td>
+                </tr>
+              ))}
+              <tr class="total">
+                <td>{zh ? "合计 / 综合分" : "Total / Overall"}</td>
+                <td class="num" colspan="2">Σ weight = {pct(weightSum)} · Σ weighted = {f2(weightedSum)}</td>
+                <td class="num">{overall}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted-note">
+          {zh
+            ? `四舍五入后综合分为 ${overall}，与该期榜单页展示的 ${example.scores.overall} 分一致。若某维度当日数据不可靠，它会从合计中剔除并重新归一权重（本例 8 维齐全）。`
+            : `Rounded, the overall score is ${overall}, matching the ${example.scores.overall} shown on that issue's page. Unreliable dimensions would be dropped and the remaining weights renormalised (all 8 are present in this example).`}
+          {" "}
+          <a href={dayPath(B, lang, exampleDate)}>{zh ? "查看当日榜单" : "View this issue"}</a>
+        </p>
+      </>
+    ) : (
+      <p class="muted-note">{zh ? "暂无可用榜单数据。" : "No ranking data available yet."}</p>
+    )}
+  </section>
+
+  <section class="panel version-note">
+    <h2>{zh ? `版本口径（scoringVersion ${sv}）` : `Versioning (scoringVersion ${sv})`}</h2>
+    <p>
+      {zh
+        ? "评分引擎带语义化版本号：维度权重、公式参数发生不兼容变更（或增删维度）时递增。每期榜单与每个条目都会把生成时使用的 scoringVersion 写入数据落盘，历史数据保留当时的版本号——因此不同版本的历史分数不具可比性，跨期对比请确认口径一致。"
+        : "The scoring engine carries a semantic version, incremented whenever weights or formula parameters change incompatibly (or dimensions are added / removed). Every issue and entry stores the scoringVersion used at generation time, and historical data keeps its own version — scores from different versions are not directly comparable, so check the version before comparing across periods."}
+    </p>
+    <p>
+      {zh ? "单一事实来源是仓库里的 " : "The single source of truth is "}
+      <code>config/scoring.json</code>
+      {zh ? "（本页所有数值的出处），可在 " : " (where every number on this page comes from), see it on "}
+      <a href={configUrl} target="_blank" rel="noopener noreferrer">GitHub</a>
+      {zh ? " 查看；调整权重 / 阈值无需改动任何代码。" : "; adjusting weights / thresholds requires no code changes."}
+    </p>
+  </section>
+</Base>
+
+<style>
+  .formula { margin: 4px 0 12px; }
+  .formula code { font-size: 14px; color: var(--ink); }
+  .formula sub { font-size: 10px; }
+  .panel ul { margin: 0; padding-left: 18px; font-size: 13.5px; color: var(--muted); }
+  .panel ul li { margin: 6px 0; }
+  .panel { margin-bottom: 18px; }
+
+  .table-wrap { overflow-x: auto; margin: 12px 0 0; }
+  .stable { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .stable th, .stable td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .stable th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--muted); font-weight: 600; white-space: nowrap; }
+  .stable tbody tr:last-child td { border-bottom: none; }
+  .stable .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .stable td.dim-name { font-weight: 600; white-space: nowrap; }
+  .stable td.dim-name small { display: block; font-weight: 400; color: var(--muted); font-size: 11.5px; }
+  .stable td.weight { font-weight: 700; color: var(--accent); }
+  .stable td.desc { color: var(--muted); font-size: 12.5px; min-width: 220px; }
+  .bar-col { width: 110px; }
+  .bar { display: block; height: 8px; background: var(--accent-soft); border-radius: 999px; overflow: hidden; margin-top: 4px; }
+  .bar span { display: block; height: 100%; background: var(--accent); border-radius: 999px; }
+
+  .muted-note { color: var(--muted); font-size: 13px; margin: 12px 0 0; }
+  .muted-note a, .example-lede a { color: var(--accent); font-weight: 600; }
+
+  .dims-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 12px 0 0; }
+  .dim-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; background: var(--card-2, transparent); }
+  .dim-card h3 { margin: 0 0 6px; font-size: 14.5px; display: flex; align-items: center; gap: 8px; }
+  .w-chip { font-size: 12px; font-weight: 700; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 2px 10px; }
+  .dim-desc { margin: 0 0 10px; font-size: 13px; color: var(--muted); line-height: 1.55; }
+  .params { margin: 0; }
+  .param-row { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; border-bottom: 1px dashed var(--line); }
+  .param-row:last-child { border-bottom: none; }
+  .param-row dt { margin: 0; }
+  .param-row dt code { font-size: 12px; color: var(--ink); }
+  .param-row dd { margin: 0; font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+
+  .example-lede { margin: 4px 0 12px; font-size: 13.5px; }
+  .stable.example td, .stable.example th { padding: 7px 10px; }
+  .stable tr.total td { font-weight: 700; border-top: 2px solid var(--line); }
+
+  .version-note { margin-bottom: 50px; }
+  .version-note p { margin: 8px 0 0; font-size: 13.5px; color: var(--muted); line-height: 1.65; }
+  .version-note a { color: var(--accent); font-weight: 600; }
+  .version-note code { font-size: 12.5px; }
+
+  @media (max-width: 700px) {
+    .dims-grid { grid-template-columns: 1fr; }
+    .bar-col { display: none; }
+    .stable td.desc { min-width: 160px; }
+  }
+</style>

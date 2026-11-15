@@ -8,6 +8,11 @@
 
 ### 新增
 
+- **评分方法论公开页（`/scoring/` 与 `/en/scoring/`）**：8 维加权打分透明化——权重表（双语名 +
+  权重 + 说明 + 权重条）、公式规则（系数 × 归一化因子、分位 / 对数归一、MissFactor、剔除重归一）、
+  每维度公式参数原样展示、当日榜第一名真实计算示例（构建期从 `scoring.json` 与最新 daily 数据
+  读取，无手抄数值，页面复算与榜单 `overall` 一致）与 `scoringVersion` 版本口径。导航栏新增入口，
+  「数据导出」页的 `score_*` 字段说明改为内链方法论页。对标 artificialanalysis.ai 的方法论公开做法。
 - **入选徽章（Featured badge）**：新增自托管静态徽章 `docs/badge.svg`（无第三方服务依赖）与回挂指引 `docs/backlink.md`（含入选确认方式与一行 markdown 用法），README 中英双节新增「入选徽章 / Featured badge」——对标 trendshift / star-history 的「入选项目回挂徽章」增长循环，起步版。
 - **sitemap.xml 生成（`@astrojs/sitemap` 集成）**：740 页双语站点此前无 sitemap，搜索引擎只能靠内链爬取。集成后构建产出 `sitemap-index.xml` + 分片 sitemap（URL 按构建期 `BASE` 自动带 `/ai-agent-top10` 前缀），并新增 `public/robots.txt` 声明站点地图地址。
 - **每日巡检失败自动开 issue（`daily.yml` 新增 `alert` job）**：fetch / build 任一失败时自动创建当日失败 issue（含 Actions 日志链接，同日防重复）——替代此前的静默失败（2026-11-10 的失败靠下一次成功才被发现），对齐 coding-plan-radar 的「失败可见」机制。

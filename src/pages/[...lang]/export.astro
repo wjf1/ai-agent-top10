@@ -3,7 +3,7 @@
 import Base from "../../layouts/Base.astro";
 import { strings } from "../../lib/data.ts";
 import { index } from "../../lib/load-days";
-import { exportPath, rssPath } from "../../lib/routes.ts";
+import { exportPath, rssPath, scoringPath } from "../../lib/routes.ts";
 
 export function getStaticPaths() {
   return [{ params: { lang: undefined } }, { params: { lang: "en" } }];
@@ -72,7 +72,13 @@ const files = [
     <h2>{lang === "zh" ? "字段口径" : "Field notes"}</h2>
     <ul>
       <li>{lang === "zh" ? "weekly_gain：窗口内新增 star；优先取历史快照真实差值，快照缺失时回落到 stargazers 接口。" : "weekly_gain: stars gained in the window, from real snapshot deltas where possible, else the stargazers endpoint."}</li>
-      <li>{lang === "zh" ? "score_*：各维度 0-100 分，权重定义见仓库 config/scoring.json。" : "score_*: per-dimension 0-100 scores; weights live in config/scoring.json."}</li>
+      <li>
+        {lang === "zh" ? (
+          <>score_*：各维度 0-100 分，权重与计分口径见<a href={scoringPath(B, lang)}>评分方法论</a>（单一事实来源为仓库 config/scoring.json）。</>
+        ) : (
+          <>score_*: per-dimension 0-100 scores; see the <a href={scoringPath(B, lang)}>scoring methodology</a> for weights and formulas (single source of truth: config/scoring.json).</>
+        )}
+      </li>
       <li>{lang === "zh" ? "早期数据为 6 维，新增的 forksGrowth / activity 两维从启用后开始记录。" : "Older issues carry 6 dimensions; forksGrowth and activity were added later."}</li>
     </ul>
   </section>
@@ -86,4 +92,5 @@ const files = [
   .file-list p { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
   .license-note { margin-bottom: 50px; }
   .license-note ul { margin: 0; padding-left: 18px; font-size: 13.5px; color: var(--muted); }
+  .license-note a { color: var(--accent); font-weight: 600; }
 </style>

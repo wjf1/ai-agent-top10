@@ -61,6 +61,10 @@ export function exportPath(B: string, lang: Lang): string {
   return `${B}${prefix(lang)}/export/`;
 }
 
+export function scoringPath(B: string, lang: Lang): string {
+  return `${B}${prefix(lang)}/scoring/`;
+}
+
 export function rssPath(B: string, lang: Lang): string {
   return `${B}${prefix(lang)}/rss.xml`;
 }

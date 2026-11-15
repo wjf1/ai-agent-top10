@@ -2,7 +2,7 @@
 import "../styles/global.css";
 import Icon from "../components/Icon.astro";
 import { strings, type Lang } from "../lib/data.ts";
-import { REPO_URL, archivePath, comparePath, dayPath, exportPath, homePath, monthPath, rssPath, searchPath, weekPath } from "../lib/routes.ts";
+import { REPO_URL, archivePath, comparePath, dayPath, exportPath, homePath, monthPath, rssPath, scoringPath, searchPath, weekPath } from "../lib/routes.ts";
 
 interface Props {
   lang?: Lang;
@@ -10,7 +10,7 @@ interface Props {
   desc?: string;
   langHref?: string;
   /** 当前激活的导航项，用于高亮 */
-  active?: "home" | "day" | "week" | "month" | "archive" | "search" | "compare" | "export";
+  active?: "home" | "day" | "week" | "month" | "archive" | "search" | "compare" | "export" | "scoring";
   date?: string | null;
   /** 社交分享图（相对站点根的路径，如 /og/zh-firecrawl-mcp.png）；缺省回落首页图 */
   ogImage?: string;
@@ -33,6 +33,7 @@ const nav = [
   { key: "search", href: searchPath(B, lang), label: t.searchPage },
   { key: "compare", href: comparePath(B, lang), label: t.compare },
   { key: "export", href: exportPath(B, lang), label: t.exportData },
+  { key: "scoring", href: scoringPath(B, lang), label: t.scoringPage },
 ];
 ---
 
