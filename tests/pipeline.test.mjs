@@ -1050,28 +1050,27 @@ test("T1.3: 备用 provider 分批请求——匿名档输出上限下逐批合�
       },
     ],
   };
+  const skippedOnce = new Set();
   globalThis.fetch = async (url, init) => {
     if (url.includes("fallback.example")) {
       const body = JSON.parse(init.body);
       const userPayload = JSON.parse(body.messages[1].content);
       bodies.push(body);
+      // 模拟 GPT-OSS 偶发批次不完整：acme/c 首次被请求时故意缺失一次
+      let entries = userPayload.map((p) => ({
+        full_name: p.full_name,
+        intro: { zh: "介绍", en: "Intro" },
+        cardLine: { zh: "一行", en: "Line" },
+        highlights: [{ zh: "亮点", en: "Highlight" }],
+      }));
+      if (entries.some((e) => e.full_name === "acme/c") && !skippedOnce.has("acme/c")) {
+        skippedOnce.add("acme/c");
+        entries = entries.filter((e) => e.full_name !== "acme/c");
+      }
       return {
         ok: true,
         json: async () => ({
-          choices: [
-            {
-              message: {
-                content: JSON.stringify({
-                  entries: userPayload.map((p) => ({
-                    full_name: p.full_name,
-                    intro: { zh: "介绍", en: "Intro" },
-                    cardLine: { zh: "一行", en: "Line" },
-                    highlights: [{ zh: "亮点", en: "Highlight" }],
-                  })),
-                }),
-              },
-            },
-          ],
+          choices: [{ message: { content: JSON.stringify({ entries }) } }],
         }),
       };
     }
@@ -1092,11 +1091,16 @@ test("T1.3: 备用 provider 分批请求——匿名档输出上限下逐批合�
       // 注入空转 sleep：批间 interBatchDelayMs=45s 不拖慢测试，仅记录调用
       sleepFn: async (ms) => waits.push(ms),
     });
-    assert.equal(bodies.length, 2, "4 条目按 fallback.chunkSize=3 应拆成 2 批");
+    assert.equal(bodies.length, 3, "批次 1+2 之后应对缺失的 acme/c 补一轮（共 3 次请求）");
     assert.deepEqual(bodies[0].messages[1].content.includes("acme/a"), true, "第 1 批应含首条目");
     assert.deepEqual(bodies[1].messages[1].content.includes("acme/d"), true, "第 2 批应含第 4 条目");
-    assert.deepEqual(waits, [45000], "批间应等待 config.fallback.interBatchDelayMs");
-    assert.equal(map.size, 4, "各批条目应以 full_name 合并无丢失");
+    assert.deepEqual(
+      JSON.parse(bodies[2].messages[1].content).map((p) => p.full_name),
+      ["acme/c"],
+      "补缺轮应只包含仍缺失的条目"
+    );
+    assert.deepEqual(waits, [45000, 45000], "批间与补缺轮前应各等待一次 interBatchDelayMs");
+    assert.equal(map.size, 4, "补缺轮命中后各批条目应以 full_name 合并无丢失");
   } finally {
     globalThis.fetch = originalFetch;
     for (const [k, v] of Object.entries(envBackup)) {

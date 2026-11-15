@@ -210,13 +210,25 @@ export async function llmInterpretation(projects, { log = console.log, cachePath
     // 批间等待跨过限速窗口；某批失败不阻塞后续批次，缺多少补多少。
     const chunkSize = Math.max(1, fallbackCfg.chunkSize ?? pendingPayload.length);
     const interBatch = fallbackCfg.interBatchDelayMs ?? 0;
-    for (let i = 0; i < pendingPayload.length; i += chunkSize) {
-      if (i > 0 && interBatch) await sleepFn(interBatch);
-      const chunk = pendingPayload.slice(i, i + chunkSize);
-      const part = await requestWithRetry(fallback, chunk, fallbackRunCfg, log);
-      if (part) for (const [fullName, data] of part) fetchedAll.set(fullName, data);
-      const missing = chunk.filter((q) => !fetchedAll.has(q.full_name)).length;
-      if (missing) log(`interpretation: fallback batch ${Math.floor(i / chunkSize) + 1}: ${missing}/${chunk.length} entr(ies) still missing`);
+    const runBatches = async (list) => {
+      for (let i = 0; i < list.length; i += chunkSize) {
+        if (i > 0 && interBatch) await sleepFn(interBatch);
+        const chunk = list.slice(i, i + chunkSize);
+        const part = await requestWithRetry(fallback, chunk, fallbackRunCfg, log);
+        if (part) for (const [fullName, data] of part) fetchedAll.set(fullName, data);
+        const missing = chunk.filter((q) => !fetchedAll.has(q.full_name)).length;
+        if (missing) log(`interpretation: fallback batch ${Math.floor(i / chunkSize) + 1}: ${missing}/${chunk.length} entr(ies) still missing`);
+      }
+    };
+    await runBatches(pendingPayload);
+    // 缺口补一轮：GPT-OSS 偶发批次输出不完整（实测 3 条只回 1 条），对缺失条目
+    // 整体重跑一遍分批（缓存与首批命中的不会重复请求）；只补一轮，避免无限消耗。
+    const stillMissing = pendingPayload.filter((q) => !fetchedAll.has(q.full_name));
+    if (stillMissing.length) {
+      log(`interpretation: fallback retrying ${stillMissing.length} missing entr(ies) in one more sweep`);
+      // 补缺轮与最后一批之间同样要跨过限速窗口
+      if (interBatch) await sleepFn(interBatch);
+      await runBatches(stillMissing);
     }
   }
   if (!fetchedAll.size) {
