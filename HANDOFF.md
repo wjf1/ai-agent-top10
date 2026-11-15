@@ -13,7 +13,7 @@
 - **当前发布版本**：`v0.9.2`（2026-10-10 发布，中文页卡片文案语言归属修复 + 10-05 起中文解读回填）
 - **当前 Git 分支**：`main`（与远端 `origin/main` 保持同步，工作区 Clean）
 - **最新 Release**：[GitHub Release v0.9.2](https://github.com/wjf1/ai-agent-top10/releases/tag/v0.9.2)
-- **CI/CD 状态**：GitHub Actions `daily-update` 工作流自动化运行通过（构建耗时 ~25s，全自动部署至 GitHub Pages）。**注意：CI 仓库未配置 `secrets.LLM_API_KEY`**，每日抓取产出的解读为规则兜底版；如需每日新增也有中文一句话解读，需在仓库配置该密钥（详见「五、接力开发指引」）。
+- **CI/CD 状态**：GitHub Actions `daily-update` 工作流自动化运行通过（构建耗时 ~25s，全自动部署至 GitHub Pages）。`secrets.LLM_API_KEY` + `vars.LLM_BASE_URL`（火山方舟）+ `vars.LLM_MODEL`（glm-5.3-flash）已于 2026-11-04 配置；海外 runner 访问火山端点偏慢，2026-11-15 起 `interpret.mjs` 默认超时放宽至 90s 并带指数退避重试（`retries` 默认 2），瞬时失败自愈后才回落规则模板；fetch/build 失败会自动开 issue 告警（对齐 coding-plan-radar）。
 - **进行中的计划**：《ai-agent-top10 优化开发方案及实施计划》经 [PLAN.md](./PLAN.md) 可行性清理后共 6 项任务，**已全部处置完毕**：T3.1 / T3.2 / T3.3 / A1 由 v0.9.0 交付，A2 由 v0.9.1 交付；T3.4′ 触发式当前不实施，T2.5 GraphQL 延后保留，另有 7 项前提不成立已删除。当前无待办开发任务，新会话可直接从「新需求规划」切入。
 
 ---

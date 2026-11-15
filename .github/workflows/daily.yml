@@ -156,3 +156,31 @@ jobs:
 
       - id: deploy
         uses: actions/deploy-pages@v4
+
+  # ------------------------------------------------------------------
+  # job 3：告警 —— fetch / build 任一失败时开 issue（对齐 coding-plan-radar 的
+  # 「失败可见」机制，替代此前的静默失败：11-10 的失败靠下一次成功才被发现）。
+  # 当日已有同标题 issue 时不重复开。
+  # ------------------------------------------------------------------
+  alert:
+    needs: [fetch, build]
+    if: always() && contains(needs.*.result, 'failure')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+    steps:
+      - name: 失败时开 issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="每日巡检失败 $(date -u +%F)"
+          EXISTING=$(gh issue list --repo "$GITHUB_REPOSITORY" \
+            --search "in:title $TITLE" --state open --json number --jq 'length')
+          if [ "$EXISTING" != "0" ]; then
+            echo "已存在当日失败 issue，跳过创建"
+            exit 0
+          fi
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title "$TITLE" \
+            --body "daily-update 工作流失败：fetch=${{ needs.fetch.result }}，build=${{ needs.build.result }}。请查看 [Actions 日志](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) 排查。"

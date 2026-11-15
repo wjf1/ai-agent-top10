@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://wjf1.github.io/ai-agent-top10/sitemap-index.xml

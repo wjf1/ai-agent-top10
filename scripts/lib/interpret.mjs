@@ -59,7 +59,9 @@ async function requestInterpretation(provider, payload, cfg, log) {
     return null;
   }
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), cfg.timeoutMs ?? 45000);
+  // 90s：火山方舟等国内端点从 GitHub Actions 海外 runner 访问普遍偏慢，45s 常触发
+  // "This operation was aborted" 导致整天解读回落规则模板
+  const timer = setTimeout(() => controller.abort(), cfg.timeoutMs ?? 90000);
   try {
     const base = provider.baseUrl.replace(/\/$/, "");
     const res = await fetch(`${base}/chat/completions`, {
@@ -115,6 +117,21 @@ async function requestInterpretation(provider, payload, cfg, log) {
   }
 }
 
+/** 带重试的请求：超时/5xx/限流等瞬时失败均值得重试；指数退避（retryBaseMs × 次数） */
+async function requestWithRetry(provider, payload, cfg, log) {
+  const attempts = 1 + (cfg.retries ?? 2);
+  for (let i = 1; i <= attempts; i++) {
+    const out = await requestInterpretation(provider, payload, cfg, log);
+    if (out) return out;
+    if (i < attempts) {
+      const delay = (cfg.retryBaseMs ?? 8000) * i;
+      log(`interpretation: retry ${i}/${attempts - 1} in ${delay}ms`);
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+  return null;
+}
+
 /**
  * @param {Array} projects 待生成解读的榜单项目
  * @param {object} opts { log, cachePath, useCache }
@@ -165,10 +182,10 @@ export async function llmInterpretation(projects, { log = console.log, cachePath
   const fallback = resolveProvider(fallbackCfg, { prefix: "LLM_FALLBACK_" });
   const hasFallback = !!(fallbackCfg.baseUrl || process.env.LLM_FALLBACK_BASE_URL);
 
-  let fetched = await requestInterpretation(primary, pendingPayload, cfg, log);
+  let fetched = await requestWithRetry(primary, pendingPayload, cfg, log);
   if (!fetched && hasFallback) {
     log("interpretation: primary failed, trying fallback provider");
-    fetched = await requestInterpretation(fallback, pendingPayload, cfg, log);
+    fetched = await requestWithRetry(fallback, pendingPayload, cfg, log);
   }
   if (!fetched) {
     log("interpretation: falling back to rules");

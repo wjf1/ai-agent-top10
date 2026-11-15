@@ -4,6 +4,23 @@
 
 ---
 
+## [Unreleased]
+
+### 新增
+
+- **sitemap.xml 生成（`@astrojs/sitemap` 集成）**：740 页双语站点此前无 sitemap，搜索引擎只能靠内链爬取。集成后构建产出 `sitemap-index.xml` + 分片 sitemap（URL 按构建期 `BASE` 自动带 `/ai-agent-top10` 前缀），并新增 `public/robots.txt` 声明站点地图地址。
+- **每日巡检失败自动开 issue（`daily.yml` 新增 `alert` job）**：fetch / build 任一失败时自动创建当日失败 issue（含 Actions 日志链接，同日防重复）——替代此前的静默失败（2026-11-10 的失败靠下一次成功才被发现），对齐 coding-plan-radar 的「失败可见」机制。
+
+### 修复
+
+- **LLM 解读调用重试 + 超时放宽（`scripts/lib/interpret.mjs`）**：火山方舟端点从 GitHub Actions 海外 runner 访问普遍偏慢，单次 45s 超时且无重试，频繁触发 "This operation was aborted" 使整天解读回落规则模板（11-14 实测仍复现）。默认超时放宽至 90s，主 / 备 provider 失败后按指数退避重试（`retries` 默认 2 次、`retryBaseMs` 默认 8s），瞬时故障自愈后才真正回落规则版。
+
+### 验证
+
+- `npm test` **94/94 通过**；`npm run check`（test + validate + build）通过，构建产物含 `sitemap-index.xml` 且 URL 前缀正确。
+
+---
+
 ## [0.9.2] — 2026-10-10
 
 修复中文页卡片一行「显示英文自述且被截断」的问题。规则兜底版把仓库自述同时写进中英两侧，而英文自述进中文页既读不通、又会被 90 显示单位截断（如 `Makes your AI agent think like the laziest senior dev in the room. The best code is the…`）。CI 未配置 LLM 密钥，2026-10-05 起连续 5 天产出的日榜全部命中该问题。
