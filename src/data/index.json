@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-15T06:11:02.527Z",
+  "generatedAt": "2026-11-15T06:39:45.609Z",
   "latest": "2026-11-15",
   "dates": [
     "2026-11-15",
@@ -71,11 +71,11 @@
     {
       "date": "2026-11-15",
       "count": 10,
-      "totalGain": 34679,
+      "totalGain": 34790,
       "top": {
         "full_name": "stablyai/orca",
         "slug": "stablyai-orca",
-        "weeklyGain": 6268
+        "weeklyGain": 6281
       },
       "categories": [
         "framework",
