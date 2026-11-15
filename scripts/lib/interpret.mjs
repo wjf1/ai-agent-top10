@@ -71,6 +71,8 @@ async function requestInterpretation(provider, payload, cfg, log) {
         model: provider.model,
         temperature: cfg.temperature ?? 0.4,
         response_format: { type: "json_object" },
+        // provider 专属参数透传（如 Pollinations 的 GPT-OSS 需要 reasoning_effort: "low"）
+        ...(cfg.extraBody ?? {}),
         messages: [
           { role: "system", content: LLM_SYSTEM_PROMPT },
           { role: "user", content: JSON.stringify(payload) },
@@ -185,7 +187,15 @@ export async function llmInterpretation(projects, { log = console.log, cachePath
   let fetched = await requestWithRetry(primary, pendingPayload, cfg, log);
   if (!fetched && hasFallback) {
     log("interpretation: primary failed, trying fallback provider");
-    fetched = await requestWithRetry(fallback, pendingPayload, cfg, log);
+    // 备用 provider 可有自己的参数透传与重试节奏（如 Pollinations 匿名档 45s/IP 限速，
+    // 重试间隔必须跨过限速窗口）；未配置时沿用主配置。
+    const fallbackRunCfg = {
+      ...cfg,
+      extraBody: { ...(cfg.extraBody ?? {}), ...(fallbackCfg.extraBody ?? {}) },
+      retryBaseMs: fallbackCfg.retryBaseMs ?? cfg.retryBaseMs,
+      retries: fallbackCfg.retries ?? cfg.retries,
+    };
+    fetched = await requestWithRetry(fallback, pendingPayload, fallbackRunCfg, log);
   }
   if (!fetched) {
     log("interpretation: falling back to rules");

@@ -14,12 +14,12 @@
 ### 修复
 
 - **LLM 解读调用重试 + 超时放宽（`scripts/lib/interpret.mjs`）**：火山方舟端点从 GitHub Actions 海外 runner 访问普遍偏慢，单次 45s 超时且无重试，频繁触发 "This operation was aborted" 使整天解读回落规则模板（11-14 实测仍复现）。默认超时放宽至 90s，主 / 备 provider 失败后按指数退避重试（`retries` 默认 2 次、`retryBaseMs` 默认 8s），瞬时故障自愈后才真正回落规则版。
-- **备用解读 provider 通道就绪**：dispatch 实跑证实火山方舟国内端点从 Actions 海外 runner 直连 `fetch failed`（非慢、是不可达），重试后仍回落规则版。`daily.yml` 支持 `LLM_FALLBACK_API_KEY/BASE_URL/MODEL` 三件套备用 provider（未配置专用 secret 时曾尝试回落 `GITHUB_TOKEN` + GitHub Models，实测 **GitHub Models 已于 2026-07-30 完全退役**、端点恒返 200 "OK" 非 JSON——该免费回落路径废弃，`LLM_FALLBACK_*` 现需配置一把海外可达的 OpenAI 兼容 key 才能启用）；主 provider 仍为火山方舟，本机 / 国内环境可用时优先走主。
+- **接入 Pollinations.AI 作为免费备用解读 provider**：dispatch 实跑证实火山方舟国内端点从 Actions 海外 runner 直连 `fetch failed`（非慢、是不可达）；GitHub Models 已于 2026-07-30 完全退役（端点恒返 200 "OK" 非 JSON）不可用作兜底。最终接入开源 AGPL 的 **Pollinations.AI**（匿名无鉴权、限速 45s/IP，secret 只需任意非空占位值）：GPT-OSS 20B 为 reasoning 模型，10 条目解读实测必须 `reasoning_effort: "low"`（否则 `output_token_limit_exceeded`），为此 `interpret.mjs` 新增 provider 级 `extraBody` 透传与 fallback 专属 `retryBaseMs`（45s，保证重试跨过限速窗口），主 provider 行为不变。主 provider 仍为火山方舟（本机 / 国内环境优先）；备用端点 / 模型 / 参数写入 `config/scoring.json` 的 `fallback` 块。
 
 ### 验证
 
 - `npm test` **94/94 通过**；`npm run check`（test + validate + build）通过，构建产物含 `sitemap-index.xml` 且 URL 前缀正确（线上 `sitemap-index.xml` 已 200）。
-- dispatch 实跑：重试链路按设计退避（retry 1/2 → 8s → retry 2/2 → 16s）、主备切换正常触发；备用通道因 GitHub Models 退役，待配置海外可达 key 后再验证端到端产出。
+- dispatch 实跑：重试链路按设计退避（retry 1/2 → 8s → retry 2/2 → 16s）、主备切换正常触发；Pollinations 备用通道经本机端到端实测（10 条目完整 JSON、34.5s、finish stop），云端 dispatch 结果见后续 run 记录。`npm test` **95/95**（新增 extraBody 透传用例）。
 
 ---
 

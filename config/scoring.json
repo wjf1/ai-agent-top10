@@ -279,12 +279,14 @@
     "temperature": 0.4,
     "readmeExcerptLength": 2600,
     "fallback": {
-      "$comment": "备用 provider：主服务超时 / 报错 / 返回空时自动切换。可用 LLM_FALLBACK_BASE_URL / LLM_FALLBACK_MODEL / LLM_FALLBACK_API_KEY 环境变量覆盖；未配置 baseUrl 则跳过。",
+      "$comment": "备用 provider：主服务超时 / 报错 / 返回空时自动切换。可用 LLM_FALLBACK_BASE_URL / LLM_FALLBACK_MODEL / LLM_FALLBACK_API_KEY 环境变量覆盖；未配置 baseUrl 则跳过。当前指向 Pollinations.AI（开源 AGPL、匿名无鉴权，限速 45s/IP）：GPT-OSS 20B 是 reasoning 模型，10 条目解读必须 reasoning_effort=low 压推理，否则 output_token_limit_exceeded；retryBaseMs≥45s 保证重试跨过限速窗口。LLM_FALLBACK_API_KEY 只需任意非空占位值（如 anonymous）。",
       "provider": "openai",
       "model": "",
-      "baseUrl": "",
+      "baseUrl": "https://text.pollinations.ai/openai",
       "apiKeyEnv": "LLM_FALLBACK_API_KEY",
-      "timeoutMs": 60000
+      "timeoutMs": 120000,
+      "extraBody": { "reasoning_effort": "low" },
+      "retryBaseMs": 45000
     }
   }
 }

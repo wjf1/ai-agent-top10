@@ -965,6 +965,66 @@ test("T1.3: 主 provider 失败时自动切换到备用 provider，并返回可�
   }
 });
 
+test("T1.3: 备用 provider 透传 config.fallback.extraBody（Pollinations reasoning_effort）", async () => {
+  const originalFetch = globalThis.fetch;
+  const envBackup = {};
+  for (const k of ["LLM_BASE_URL", "LLM_API_KEY", "LLM_FALLBACK_BASE_URL", "LLM_FALLBACK_MODEL", "LLM_FALLBACK_API_KEY"]) {
+    envBackup[k] = process.env[k];
+  }
+  const bodies = [];
+  const okBody = {
+    choices: [
+      {
+        message: {
+          content: JSON.stringify({
+            entries: [
+              {
+                full_name: "acme/x",
+                intro: { zh: "介绍", en: "Intro" },
+                cardLine: { zh: "一行", en: "Line" },
+                highlights: [{ zh: "亮点", en: "Highlight" }],
+              },
+            ],
+          }),
+        },
+      },
+    ],
+  };
+  globalThis.fetch = async (url, init) => {
+    if (url.includes("fallback.example")) {
+      bodies.push(JSON.parse(init.body));
+      return { ok: true, json: async () => okBody };
+    }
+    return { ok: false, status: 500 };
+  };
+  process.env.LLM_BASE_URL = "https://primary.example/v1";
+  process.env.LLM_API_KEY = "primary-key";
+  process.env.LLM_FALLBACK_BASE_URL = "https://fallback.example/v1";
+  process.env.LLM_FALLBACK_MODEL = "openai-fast";
+  process.env.LLM_FALLBACK_API_KEY = "fallback-key";
+
+  try {
+    const map = await llmInterpretation([{ full_name: "acme/x", description: "d", readmeExcerpt: "r" }], {
+      log: () => {},
+      useCache: false,
+    });
+    assert.equal(map.size, 1, "备用 provider 命中后应返回解读");
+    assert.equal(bodies.length, 1, "备用服务应恰好被请求一次");
+    assert.equal(
+      bodies[0].reasoning_effort,
+      "low",
+      "备用请求体应透传 config.fallback.extraBody 的 reasoning_effort（GPT-OSS 压推理必需）"
+    );
+    assert.equal(bodies[0].response_format.type, "json_object", "JSON 输出契约不应被 extraBody 覆盖丢失");
+  } finally {
+    globalThis.fetch = originalFetch;
+    for (const [k, v] of Object.entries(envBackup)) {
+      if (v === undefined) delete process.env[k];
+      else process.env[k] = v;
+    }
+  }
+});
+
 test("T1.8: scoringVersion 来自配置且是语义化版本号", async () => {
   const { scoringVersion } = await import("../src/lib/config.mjs");
   const v = scoringVersion();
