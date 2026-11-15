@@ -149,7 +149,7 @@ async function requestWithRetry(provider, payload, cfg, log) {
  * @param {object} opts { log, cachePath, useCache }
  * @returns {Promise<Map<string, object>>} full_name -> 解读对象（失败时为空 Map）
  */
-export async function llmInterpretation(projects, { log = console.log, cachePath, useCache = true } = {}) {
+export async function llmInterpretation(projects, { log = console.log, cachePath, useCache = true, sleepFn = (ms) => new Promise((r) => setTimeout(r, ms)) } = {}) {
   const cfg = config.interpretation ?? {};
 
   if (cfg.provider === "none") {
@@ -195,6 +195,7 @@ export async function llmInterpretation(projects, { log = console.log, cachePath
   const hasFallback = !!(fallbackCfg.baseUrl || process.env.LLM_FALLBACK_BASE_URL);
 
   let fetched = await requestWithRetry(primary, pendingPayload, cfg, log);
+  let fetchedAll = fetched ?? new Map();
   if (!fetched && hasFallback) {
     log("interpretation: primary failed, trying fallback provider");
     // 备用 provider 可有自己的参数透传与重试节奏（如 Pollinations 匿名档 45s/IP 限速，
@@ -205,16 +206,27 @@ export async function llmInterpretation(projects, { log = console.log, cachePath
       retryBaseMs: fallbackCfg.retryBaseMs ?? cfg.retryBaseMs,
       retries: fallbackCfg.retries ?? cfg.retries,
     };
-    fetched = await requestWithRetry(fallback, pendingPayload, fallbackRunCfg, log);
+    // 匿名档单次输出 token 上限小（实测 10 条目只产出 1 条）→ 分批请求，
+    // 批间等待跨过限速窗口；某批失败不阻塞后续批次，缺多少补多少。
+    const chunkSize = Math.max(1, fallbackCfg.chunkSize ?? pendingPayload.length);
+    const interBatch = fallbackCfg.interBatchDelayMs ?? 0;
+    for (let i = 0; i < pendingPayload.length; i += chunkSize) {
+      if (i > 0 && interBatch) await sleepFn(interBatch);
+      const chunk = pendingPayload.slice(i, i + chunkSize);
+      const part = await requestWithRetry(fallback, chunk, fallbackRunCfg, log);
+      if (part) for (const [fullName, data] of part) fetchedAll.set(fullName, data);
+      const missing = chunk.filter((q) => !fetchedAll.has(q.full_name)).length;
+      if (missing) log(`interpretation: fallback batch ${Math.floor(i / chunkSize) + 1}: ${missing}/${chunk.length} entr(ies) still missing`);
+    }
   }
-  if (!fetched) {
+  if (!fetchedAll.size) {
     log("interpretation: falling back to rules");
     return out;
   }
 
   // 3) 合并新结果并写回缓存
   let cacheDirty = false;
-  for (const [fullName, data] of fetched) {
+  for (const [fullName, data] of fetchedAll) {
     out.set(fullName, data);
     const p = pending.find((q) => q.full_name === fullName);
     if (p && useCache) {

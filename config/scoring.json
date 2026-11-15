@@ -286,7 +286,9 @@
       "apiKeyEnv": "LLM_FALLBACK_API_KEY",
       "timeoutMs": 120000,
       "extraBody": { "reasoning_effort": "low" },
-      "retryBaseMs": 45000
+      "retryBaseMs": 45000,
+      "chunkSize": 3,
+      "interBatchDelayMs": 45000
     }
   }
 }

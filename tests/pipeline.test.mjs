@@ -1025,6 +1025,87 @@ test("T1.3: 备用 provider 透传 config.fallback.extraBody（Pollinations reas
   }
 });
 
+test("T1.3: 备用 provider 分批请求——匿名档输出上限下逐批合并且批间等待可注入", async () => {
+  const originalFetch = globalThis.fetch;
+  const envBackup = {};
+  for (const k of ["LLM_BASE_URL", "LLM_API_KEY", "LLM_FALLBACK_BASE_URL", "LLM_FALLBACK_MODEL", "LLM_FALLBACK_API_KEY"]) {
+    envBackup[k] = process.env[k];
+  }
+  const bodies = [];
+  const okBody = {
+    choices: [
+      {
+        message: {
+          content: JSON.stringify({
+            entries: [
+              {
+                full_name: "acme/x",
+                intro: { zh: "介绍", en: "Intro" },
+                cardLine: { zh: "一行", en: "Line" },
+                highlights: [{ zh: "亮点", en: "Highlight" }],
+              },
+            ],
+          }),
+        },
+      },
+    ],
+  };
+  globalThis.fetch = async (url, init) => {
+    if (url.includes("fallback.example")) {
+      const body = JSON.parse(init.body);
+      const userPayload = JSON.parse(body.messages[1].content);
+      bodies.push(body);
+      return {
+        ok: true,
+        json: async () => ({
+          choices: [
+            {
+              message: {
+                content: JSON.stringify({
+                  entries: userPayload.map((p) => ({
+                    full_name: p.full_name,
+                    intro: { zh: "介绍", en: "Intro" },
+                    cardLine: { zh: "一行", en: "Line" },
+                    highlights: [{ zh: "亮点", en: "Highlight" }],
+                  })),
+                }),
+              },
+            },
+          ],
+        }),
+      };
+    }
+    return { ok: false, status: 500 };
+  };
+  process.env.LLM_BASE_URL = "https://primary.example/v1";
+  process.env.LLM_API_KEY = "primary-key";
+  process.env.LLM_FALLBACK_BASE_URL = "https://fallback.example/v1";
+  process.env.LLM_FALLBACK_MODEL = "openai-fast";
+  process.env.LLM_FALLBACK_API_KEY = "fallback-key";
+
+  try {
+    const four = ["a", "b", "c", "d"].map((n) => ({ full_name: `acme/${n}`, description: "d", readmeExcerpt: "r" }));
+    const waits = [];
+    const map = await llmInterpretation(four, {
+      log: () => {},
+      useCache: false,
+      // 注入空转 sleep：批间 interBatchDelayMs=45s 不拖慢测试，仅记录调用
+      sleepFn: async (ms) => waits.push(ms),
+    });
+    assert.equal(bodies.length, 2, "4 条目按 fallback.chunkSize=3 应拆成 2 批");
+    assert.deepEqual(bodies[0].messages[1].content.includes("acme/a"), true, "第 1 批应含首条目");
+    assert.deepEqual(bodies[1].messages[1].content.includes("acme/d"), true, "第 2 批应含第 4 条目");
+    assert.deepEqual(waits, [45000], "批间应等待 config.fallback.interBatchDelayMs");
+    assert.equal(map.size, 4, "各批条目应以 full_name 合并无丢失");
+  } finally {
+    globalThis.fetch = originalFetch;
+    for (const [k, v] of Object.entries(envBackup)) {
+      if (v === undefined) delete process.env[k];
+      else process.env[k] = v;
+    }
+  }
+});
+
 test("T1.8: scoringVersion 来自配置且是语义化版本号", async () => {
   const { scoringVersion } = await import("../src/lib/config.mjs");
   const v = scoringVersion();
