@@ -13,7 +13,7 @@
 - **当前发布版本**：`v0.9.2`（2026-10-10 发布，中文页卡片文案语言归属修复 + 10-05 起中文解读回填）
 - **当前 Git 分支**：`main`（与远端 `origin/main` 保持同步，工作区 Clean）
 - **最新 Release**：[GitHub Release v0.9.2](https://github.com/wjf1/ai-agent-top10/releases/tag/v0.9.2)
-- **CI/CD 状态**：GitHub Actions `daily-update` 工作流自动化运行通过（构建耗时 ~25s，全自动部署至 GitHub Pages）。`secrets.LLM_API_KEY` + `vars.LLM_BASE_URL`（火山方舟）+ `vars.LLM_MODEL`（glm-5.3-flash）已于 2026-11-04 配置；海外 runner 访问火山端点实测 `fetch failed`（不可达，非慢），2026-11-15 起 `interpret.mjs` 默认超时放宽至 90s 并带指数退避重试（`retries` 默认 2），且备用 provider 落到 **GitHub Models**（`vars.LLM_FALLBACK_BASE_URL=https://models.github.ai/inference` + `vars.LLM_FALLBACK_MODEL=openai/gpt-4o-mini`，key 未配专用 secret 时回落 `GITHUB_TOKEN`，workflow 需 `models: read` 权限）——主端点不可达时解读自动兜底；fetch/build 失败会自动开 issue 告警（对齐 coding-plan-radar）。
+- **CI/CD 状态**：GitHub Actions `daily-update` 工作流自动化运行通过（构建耗时 ~25s，全自动部署至 GitHub Pages）。`secrets.LLM_API_KEY` + `vars.LLM_BASE_URL`（火山方舟）+ `vars.LLM_MODEL`（glm-5.3-flash）已于 2026-11-04 配置；海外 runner 访问火山端点实测 `fetch failed`（不可达，非慢），2026-11-15 起 `interpret.mjs` 默认超时放宽至 90s 并带指数退避重试（`retries` 默认 2）。**云端 LLM 解读待解**：GitHub Models 已于 2026-07-30 退役（端点恒返 200 "OK" 非 JSON）无法作免费兜底，`LLM_FALLBACK_API_KEY/BASE_URL/MODEL` 三件套机制就绪，需配置一把海外可达的 OpenAI 兼容 key（DeepSeek / Groq / Gemini OpenAI 兼容层等均可）后每日云端解读才生效；本机仍可 `npm run backfill:interpretations --llm` 走 9090 网关回填解读；fetch/build 失败会自动开 issue 告警（对齐 coding-plan-radar）。
 - **进行中的计划**：《ai-agent-top10 优化开发方案及实施计划》经 [PLAN.md](./PLAN.md) 可行性清理后共 6 项任务，**已全部处置完毕**：T3.1 / T3.2 / T3.3 / A1 由 v0.9.0 交付，A2 由 v0.9.1 交付；T3.4′ 触发式当前不实施，T2.5 GraphQL 延后保留，另有 7 项前提不成立已删除。当前无待办开发任务，新会话可直接从「新需求规划」切入。
 
 ---
