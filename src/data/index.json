@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-15T09:07:49.568Z",
+  "generatedAt": "2026-11-15T13:08:00.782Z",
   "latest": "2026-11-15",
   "dates": [
     "2026-11-15",
@@ -71,11 +71,11 @@
     {
       "date": "2026-11-15",
       "count": 10,
-      "totalGain": 35238,
+      "totalGain": 31546,
       "top": {
         "full_name": "stablyai/orca",
         "slug": "stablyai-orca",
-        "weeklyGain": 6354
+        "weeklyGain": 5686
       },
       "categories": [
         "framework",
@@ -90,8 +90,8 @@
         "graphify-labs-graphify",
         "addyosmani-agent-skills",
         "thedotmack-claude-mem",
-        "firecrawl-firecrawl",
         "hugohe3-ppt-master",
+        "firecrawl-firecrawl",
         "openmontageinc-openmontage"
       ]
     },
