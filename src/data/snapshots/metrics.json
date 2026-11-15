@@ -95437,10 +95437,10 @@
   },
   "2026-11-15": {
     "stablyai/orca": {
-      "stars": 125202,
+      "stars": 125206,
       "forks": 7938,
-      "watchers": 125202,
-      "openIssues": 8509,
+      "watchers": 125206,
+      "openIssues": 8490,
       "license": "MIT",
       "licensePermissive": true,
       "hasDocs": true,
@@ -95486,9 +95486,9 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "DietrichGebert/ponytail": {
-      "stars": 191027,
+      "stars": 191028,
       "forks": 10682,
-      "watchers": 191027,
+      "watchers": 191028,
       "openIssues": 237,
       "license": "MIT",
       "licensePermissive": true,
@@ -95525,9 +95525,9 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "Leonxlnx/taste-skill": {
-      "stars": 115764,
+      "stars": 115766,
       "forks": 7772,
-      "watchers": 115764,
+      "watchers": 115766,
       "openIssues": 9,
       "license": "MIT",
       "licensePermissive": true,
@@ -95565,17 +95565,17 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "affaan-m/ECC": {
-      "stars": 303329,
+      "stars": 303333,
       "forks": 44720,
-      "watchers": 303329,
-      "openIssues": 280,
+      "watchers": 303333,
+      "openIssues": 281,
       "license": "MIT",
       "licensePermissive": true,
       "hasDocs": true,
       "hasHomepage": true,
       "hasExamples": true,
       "ageDays": 301,
-      "pushDaysAgo": 6,
+      "pushDaysAgo": 0,
       "orgVerified": false,
       "ownerType": "User",
       "downloadsSignal": false,
@@ -95602,9 +95602,9 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "Graphify-Labs/graphify": {
-      "stars": 147908,
-      "forks": 14183,
-      "watchers": 147908,
+      "stars": 147917,
+      "forks": 14185,
+      "watchers": 147917,
       "openIssues": 1633,
       "license": "Apache-2.0",
       "licensePermissive": true,
@@ -95651,9 +95651,9 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "addyosmani/agent-skills": {
-      "stars": 117658,
+      "stars": 117660,
       "forks": 12311,
-      "watchers": 117658,
+      "watchers": 117660,
       "openIssues": 124,
       "license": "MIT",
       "licensePermissive": true,
@@ -95686,9 +95686,9 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "thedotmack/claude-mem": {
-      "stars": 117169,
+      "stars": 117171,
       "forks": 10173,
-      "watchers": 117169,
+      "watchers": 117171,
       "openIssues": 160,
       "license": "Apache-2.0",
       "licensePermissive": true,
@@ -95783,9 +95783,9 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "hugohe3/ppt-master": {
-      "stars": 76919,
-      "forks": 6008,
-      "watchers": 76919,
+      "stars": 76927,
+      "forks": 6007,
+      "watchers": 76927,
       "openIssues": 1,
       "license": "MIT",
       "licensePermissive": true,
@@ -95822,9 +95822,9 @@
       "extendedCollectedAt": "2026-11-13T13:32:08.780Z"
     },
     "OpenMontageInc/OpenMontage": {
-      "stars": 80547,
-      "forks": 10859,
-      "watchers": 80547,
+      "stars": 80552,
+      "forks": 10860,
+      "watchers": 80552,
       "openIssues": 342,
       "license": "AGPL-3.0",
       "licensePermissive": false,
@@ -95870,10 +95870,10 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "cheaper-inference/OmniRoute": {
-      "stars": 87543,
+      "stars": 87546,
       "forks": 13422,
-      "watchers": 87543,
-      "openIssues": 563,
+      "watchers": 87546,
+      "openIssues": 556,
       "license": "MIT",
       "licensePermissive": true,
       "hasDocs": true,
@@ -95919,9 +95919,9 @@
       "extendedCollectedAt": "2026-11-13T13:32:08.780Z"
     },
     "tt-a1i/archify": {
-      "stars": 96509,
+      "stars": 96510,
       "forks": 6592,
-      "watchers": 96509,
+      "watchers": 96510,
       "openIssues": 359,
       "license": "Apache-2.0",
       "licensePermissive": true,
@@ -95968,10 +95968,10 @@
       "extendedCollectedAt": "2026-11-13T13:32:08.780Z"
     },
     "NousResearch/hermes-agent": {
-      "stars": 263455,
+      "stars": 263454,
       "forks": 59386,
-      "watchers": 263455,
-      "openIssues": 53147,
+      "watchers": 263454,
+      "openIssues": 53149,
       "license": "MIT",
       "licensePermissive": true,
       "hasDocs": true,
@@ -96013,7 +96013,7 @@
       "stars": 113975,
       "forks": 18907,
       "watchers": 113975,
-      "openIssues": 6685,
+      "openIssues": 6686,
       "license": "MIT",
       "licensePermissive": true,
       "hasDocs": true,
@@ -96059,9 +96059,9 @@
       "extendedCollectedAt": "2026-11-13T13:32:08.780Z"
     },
     "Panniantong/Agent-Reach": {
-      "stars": 111855,
+      "stars": 111856,
       "forks": 10029,
-      "watchers": 111855,
+      "watchers": 111856,
       "openIssues": 110,
       "license": "MIT",
       "licensePermissive": true,
@@ -96105,9 +96105,9 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "career-ops-hq/career-ops": {
-      "stars": 82625,
+      "stars": 82626,
       "forks": 15133,
-      "watchers": 82625,
+      "watchers": 82626,
       "openIssues": 418,
       "license": "MIT",
       "licensePermissive": true,
@@ -96154,9 +96154,9 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "ai-job-search-dev/ai-job-search": {
-      "stars": 71783,
+      "stars": 71787,
       "forks": 23144,
-      "watchers": 71783,
+      "watchers": 71787,
       "openIssues": 49,
       "license": "MIT",
       "licensePermissive": true,
@@ -96195,9 +96195,9 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "earendil-works/pi": {
-      "stars": 122065,
+      "stars": 122066,
       "forks": 15735,
-      "watchers": 122065,
+      "watchers": 122066,
       "openIssues": 260,
       "license": "MIT",
       "licensePermissive": true,
@@ -96232,7 +96232,7 @@
       "hasDocs": true,
       "hasHomepage": true,
       "hasExamples": true,
-      "ageDays": 241,
+      "ageDays": 242,
       "pushDaysAgo": 0,
       "orgVerified": false,
       "ownerType": "User",
@@ -96272,9 +96272,9 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "msitarzewski/agency-agents": {
-      "stars": 168402,
-      "forks": 27316,
-      "watchers": 168402,
+      "stars": 168403,
+      "forks": 27317,
+      "watchers": 168403,
       "openIssues": 251,
       "license": "MIT",
       "licensePermissive": true,
@@ -96300,9 +96300,9 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "nexu-io/open-design": {
-      "stars": 107681,
+      "stars": 107682,
       "forks": 12243,
-      "watchers": 107681,
+      "watchers": 107682,
       "openIssues": 1404,
       "license": "Apache-2.0",
       "licensePermissive": true,
@@ -96495,7 +96495,7 @@
       "stars": 81737,
       "forks": 9636,
       "watchers": 81737,
-      "openIssues": 593,
+      "openIssues": 594,
       "license": "MIT",
       "licensePermissive": true,
       "hasDocs": true,
@@ -96541,9 +96541,9 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "Shubhamsaboo/awesome-llm-apps": {
-      "stars": 144658,
+      "stars": 144659,
       "forks": 21292,
-      "watchers": 144658,
+      "watchers": 144659,
       "openIssues": 7,
       "license": "Apache-2.0",
       "licensePermissive": true,
@@ -96574,9 +96574,9 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "ComposioHQ/awesome-claude-skills": {
-      "stars": 79524,
+      "stars": 79525,
       "forks": 9706,
-      "watchers": 79524,
+      "watchers": 79525,
       "openIssues": 1899,
       "license": null,
       "licensePermissive": false,
@@ -96660,9 +96660,9 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "infiniflow/ragflow": {
-      "stars": 94163,
+      "stars": 94164,
       "forks": 11322,
-      "watchers": 94163,
+      "watchers": 94164,
       "openIssues": 1290,
       "license": "Apache-2.0",
       "licensePermissive": true,
@@ -96793,9 +96793,9 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "langchain-ai/langchain": {
-      "stars": 149531,
+      "stars": 149532,
       "forks": 25133,
-      "watchers": 149531,
+      "watchers": 149532,
       "openIssues": 742,
       "license": "MIT",
       "licensePermissive": true,
@@ -96886,6 +96886,50 @@
       "metricsStale": true,
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
+    "heygen-com/hyperframes": {
+      "stars": 84435,
+      "forks": 7810,
+      "watchers": 84435,
+      "openIssues": 299,
+      "license": "Apache-2.0",
+      "licensePermissive": true,
+      "hasDocs": true,
+      "hasHomepage": true,
+      "hasExamples": true,
+      "ageDays": 250,
+      "pushDaysAgo": 0,
+      "orgVerified": true,
+      "ownerType": "Organization",
+      "downloadsSignal": false,
+      "topics": [
+        "ai",
+        "ai-agents",
+        "animation",
+        "claude-code",
+        "ffmpeg",
+        "framework",
+        "gsap",
+        "html",
+        "html-to-video",
+        "mcp",
+        "motion-graphics",
+        "puppeteer",
+        "rendering",
+        "typescript",
+        "video-editor"
+      ],
+      "contributors": 135,
+      "contributorsCapped": false,
+      "contributorsPartial": false,
+      "releases90d": 30,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "activityWindowDays": 30,
+      "activityKnown": true,
+      "activityCapped": true,
+      "metricsStale": true,
+      "extendedCollectedAt": "2026-11-13T13:32:08.780Z"
+    },
     "bytedance/deer-flow": {
       "stars": 85351,
       "forks": 12026,
@@ -96937,7 +96981,7 @@
       "stars": 156655,
       "forks": 10412,
       "watchers": 156655,
-      "openIssues": 1337,
+      "openIssues": 1338,
       "license": "MIT",
       "licensePermissive": true,
       "hasDocs": true,
@@ -97011,9 +97055,9 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "ZhuLinsen/daily_stock_analysis": {
-      "stars": 72306,
-      "forks": 57500,
-      "watchers": 72306,
+      "stars": 72308,
+      "forks": 57501,
+      "watchers": 72308,
       "openIssues": 36,
       "license": "MIT",
       "licensePermissive": true,
@@ -97050,7 +97094,7 @@
       "stars": 70914,
       "forks": 5845,
       "watchers": 70914,
-      "openIssues": 2877,
+      "openIssues": 2873,
       "license": null,
       "licensePermissive": false,
       "hasDocs": false,
@@ -97091,9 +97135,9 @@
       "extendedCollectedAt": "2026-11-15T06:04:44.639Z"
     },
     "x1xhlol/system-prompts-and-models-of-ai-tools": {
-      "stars": 144673,
+      "stars": 144674,
       "forks": 34686,
-      "watchers": 144673,
+      "watchers": 144674,
       "openIssues": 162,
       "license": "GPL-3.0",
       "licensePermissive": false,
