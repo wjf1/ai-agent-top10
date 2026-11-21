@@ -1,0 +1,1000 @@
+{
+  "date": "2026-11-21",
+  "generatedAt": "2026-11-21T13:48:57.316Z",
+  "windowDays": 7,
+  "poolSize": 43,
+  "scoringVersion": "2.1.0",
+  "entries": [
+    {
+      "rank": 1,
+      "slug": "stablyai-orca",
+      "full_name": "stablyai/orca",
+      "name": "orca",
+      "owner": "stablyai",
+      "url": "https://github.com/stablyai/orca",
+      "homepage": "https://orca.dev/",
+      "language": "TypeScript",
+      "category": "framework",
+      "description": "Orca lets you run a fleet of bots with your own subscription (e.g. Claude Code, Grok, Agy, Codex). Available on desktop, mobile and remote runtime.",
+      "topics": [
+        "agent-ide",
+        "ai-agents",
+        "automation",
+        "bot",
+        "claude-code",
+        "codex",
+        "ghostty",
+        "grok-bot"
+      ],
+      "stars": 131574,
+      "forks": 8366,
+      "openIssues": 8971,
+      "contributors": 468,
+      "releases90d": 30,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 6040,
+      "dailyGain": 862.9,
+      "growthRate": 4.6,
+      "forksGain": 468,
+      "forksGrowthRate": 5.6,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "gainUnreliable": false,
+      "gainLowerBound": false,
+      "gainCapped": false,
+      "rankChange": 0,
+      "scores": {
+        "heat": 100,
+        "community": 71,
+        "innovation": 85,
+        "practical": 100,
+        "ecosystem": 60,
+        "health": 64,
+        "forksGrowth": 82,
+        "activity": 100,
+        "overall": 85
+      },
+      "why": {
+        "zh": "近 7 天新增 6,040 star（日均约 863，相对存量增速 4.6%），累计 131,574 star、8,366 fork。窗口内被 fork 468 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，468 位贡献者共同维护。",
+        "en": "Gained 6,040 stars over the last 7 days (~863/day, 4.6% of its base), now at 131,574 stars and 8,366 forks. 468 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 468 contributors."
+      },
+      "intro": {
+        "zh": "Orca 是一个开源 Agent IDE，让你用自己的 Claude Code、Codex 等订阅跑一支机器人舰队。在 Slack、Linear 或 GitHub 里派活，回来就能收到测试过的 PR；桌面、手机、远程运行时都能用，笔记本合盖任务也不停。",
+        "en": "Orca is an open-source agent IDE that lets you run a fleet of bots on your own Claude Code or Codex subscription. Hand a task to a bot in Slack, Linear, or GitHub and come back to a tested pull request. It works on desktop, mobile, and remote runtimes, so work keeps going even when your laptop sleeps."
+      },
+      "cardLine": {
+        "zh": "开源 Agent IDE，用自己的订阅跑机器人舰队，派活收 PR。",
+        "en": "Open-source agent IDE: run a bot fleet on your own subscription, delegate and get PRs back."
+      },
+      "highlights": [
+        {
+          "zh": "在 Slack、Linear、GitHub 里让 bot 修 bug，回来直接拿测试过的 PR",
+          "en": "Ask a bot in Slack, Linear, or GitHub to fix a bug and get back a tested PR"
+        },
+        {
+          "zh": "同一对话可在 Chat 界面和终端 CLI 间切换，上下文不丢",
+          "en": "Move a conversation between the Chat UI and raw CLI without losing context"
+        },
+        {
+          "zh": "并行 worktree 隔离环境，多个 agent 互不干扰同时干活",
+          "en": "Parallel worktrees isolate environments so multiple agents work side by side"
+        },
+        {
+          "zh": "手机 App 远程盯任务，agent 需要你时收到推送随时回复",
+          "en": "Mobile app pings you when an agent needs input so work keeps moving"
+        }
+      ],
+      "cons": [
+        {
+          "zh": "开放 issue 8,971 个，相对 star 规模偏高",
+          "en": "8,971 open issues — high relative to its star count"
+        }
+      ],
+      "fitFor": [
+        {
+          "zh": "探索多智能体协作、角色分工与复杂流水线编排的架构师",
+          "en": "Architects exploring multi-agent collaboration, role assignments, and pipeline orchestration"
+        },
+        {
+          "zh": "希望借助 AI 辅助编程、自动化代码审查或工程提效的开发团队",
+          "en": "Development teams implementing AI coding assistants, automated code review, or dev productivity"
+        },
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        }
+      ],
+      "quickstart": "# 摘自 stablyai/orca 的 README\n# macOS (Homebrew)\n# Always use the full name; bare `orca` is an unrelated Plotly cask.\nbrew install --cask stablyai/orca/orca\n# Upgrade an existing install\nbrew upgrade --cask stablyai/orca/orca\n# Release candidates (conflicts with the stable cask; uninstall it first)\nbrew install --cask stablyai/orca/orca@rc\n\n# Arch Linux (AUR) — or stably-orca-git to build from source\nyay -S stably-orca-bin",
+      "interpretationSource": "llm",
+      "firstSeen": "2026-11-21",
+      "scoringVersion": "2.1.0"
+    },
+    {
+      "rank": 2,
+      "slug": "affaan-m-ecc",
+      "full_name": "affaan-m/ECC",
+      "name": "ECC",
+      "owner": "affaan-m",
+      "url": "https://github.com/affaan-m/ECC",
+      "homepage": "https://ecc.tools/",
+      "language": "JavaScript",
+      "category": "framework",
+      "description": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.",
+      "topics": [
+        "ai-agents",
+        "anthropic",
+        "claude",
+        "claude-code",
+        "developer-tools",
+        "llm",
+        "mcp",
+        "productivity"
+      ],
+      "stars": 308124,
+      "forks": 45345,
+      "openIssues": 152,
+      "contributors": 401,
+      "releases90d": 4,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 4786,
+      "dailyGain": 683.7,
+      "growthRate": 1.6,
+      "forksGain": 699,
+      "forksGrowthRate": 1.5,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "gainUnreliable": false,
+      "gainLowerBound": false,
+      "gainCapped": false,
+      "rankChange": 0,
+      "scores": {
+        "heat": 98,
+        "community": 66,
+        "innovation": 82,
+        "practical": 100,
+        "ecosystem": 75,
+        "health": 86,
+        "forksGrowth": 99,
+        "activity": 100,
+        "overall": 89
+      },
+      "why": {
+        "zh": "近 7 天新增 4,786 star（日均约 684，相对存量增速 1.6%），累计 308,124 star、45,345 fork。窗口内被 fork 699 次，最近一次提交在 2 天前，近 30 天新建 PR 200 个、issue 200 个，401 位贡献者共同维护。",
+        "en": "Gained 4,786 stars over the last 7 days (~684/day, 1.6% of its base), now at 308,124 stars and 45,345 forks. 699 new forks in the window; last push 2 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 401 contributors."
+      },
+      "intro": {
+        "zh": "ECC 给 Claude Code、Codex、Cursor 等 agent 装上一套工程化系统：先规划再动手、用测试验证改动、从新上下文自审代码，还能记住重点、把重复经验沉淀成可复用技能。装一次，处处生效。",
+        "en": "ECC gives agents on Claude Code, Codex, Cursor and beyond a coordinated engineering system: plan before building, verify with tests, review its own work from fresh context, remember what matters, and turn repeated wins into reusable skills. Install once and it becomes part of how your agent works."
+      },
+      "cardLine": {
+        "zh": "给 coding agent 装上规划、验证、记忆与安全扫描的工程系统。",
+        "en": "An engineering system for coding agents: planning, verification, memory, and security scanning."
+      },
+      "highlights": [
+        {
+          "zh": "内置 72 个 agent、328 个技能，覆盖规划、审查、测试等环节",
+          "en": "Ships 72 agents and 328 skills covering planning, review, and testing"
+        },
+        {
+          "zh": "AgentShield 做安全扫描，hooks、规则、记忆、持续学习一体化",
+          "en": "AgentShield security scanning plus hooks, rules, memory, and continuous learning"
+        },
+        {
+          "zh": "MIT 开源免费，支持 Claude Code、Codex、Cursor 等多种工具",
+          "en": "MIT-licensed and free, working with Claude Code, Codex, Cursor, and more"
+        },
+        {
+          "zh": "先规划再写码、用测试验证、再从新上下文自审，流程一次配好",
+          "en": "Plans first, verifies with tests, then self-reviews from fresh context"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "希望借助 AI 辅助编程、自动化代码审查或工程提效的开发团队",
+          "en": "Development teams implementing AI coding assistants, automated code review, or dev productivity"
+        },
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        },
+        {
+          "zh": "需要可扩展抽象层而非端到端方案的团队",
+          "en": "Teams wanting an extensible abstraction layer rather than a turnkey app"
+        }
+      ],
+      "quickstart": "# 摘自 affaan-m/ECC 的 README\nnpx ecc-universal@2.2.3 setup",
+      "interpretationSource": "llm",
+      "firstSeen": "2026-11-21",
+      "scoringVersion": "2.1.0"
+    },
+    {
+      "rank": 3,
+      "slug": "dietrichgebert-ponytail",
+      "full_name": "DietrichGebert/ponytail",
+      "name": "ponytail",
+      "owner": "DietrichGebert",
+      "url": "https://github.com/DietrichGebert/ponytail",
+      "homepage": "https://ponytail.dev/",
+      "language": "JavaScript",
+      "category": "framework",
+      "description": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote.",
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "cursor-rules",
+        "developer-tools",
+        "llm"
+      ],
+      "stars": 196045,
+      "forks": 11039,
+      "openIssues": 331,
+      "contributors": 132,
+      "releases90d": 15,
+      "prActivity": 156,
+      "issueActivity": 200,
+      "weeklyGain": 4760,
+      "dailyGain": 680,
+      "growthRate": 2.4,
+      "forksGain": 390,
+      "forksGrowthRate": 3.5,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "gainUnreliable": false,
+      "gainLowerBound": false,
+      "gainCapped": false,
+      "rankChange": 0,
+      "scores": {
+        "heat": 95,
+        "community": 39,
+        "innovation": 69,
+        "practical": 100,
+        "ecosystem": 59,
+        "health": 60,
+        "forksGrowth": 82,
+        "activity": 71,
+        "overall": 74
+      },
+      "why": {
+        "zh": "近 7 天新增 4,760 star（日均约 680，相对存量增速 2.4%），累计 196,045 star、11,039 fork。窗口内被 fork 390 次，最近一次提交在 23 天前，近 30 天新建 PR 156 个、issue 200 个，132 位贡献者共同维护。",
+        "en": "Gained 4,760 stars over the last 7 days (~680/day, 2.4% of its base), now at 196,045 stars and 11,039 forks. 390 new forks in the window; last push 23 day(s) ago; 156 PRs and 200 issues opened in the last 30 days; 132 contributors."
+      },
+      "intro": {
+        "zh": "Ponytail 让 AI agent 学「最懒资深工程师」的思路：只写任务必需的代码，但绝不砍验证、错误处理和安全。基准测试中代码量降到 53%、token 省 45%，风险逻辑带测试的比例反而从 68% 升到 98%。",
+        "en": "Ponytail teaches your agent to think like the laziest senior dev: write only what the task needs, but never cut validation, error handling, or security. In benchmarks, code dropped to 53% and tokens to 55%, while risky logic shipping with tests rose from 68% to 98%."
+      },
+      "cardLine": {
+        "zh": "让 agent 只写必要代码的技能，省 token 又不砍测试和安全。",
+        "en": "A skill that makes agents write only necessary code, without cutting tests or security."
+      },
+      "highlights": [
+        {
+          "zh": "典型案例：日期选择器从 335 行缩到 10 行，复用现有组件",
+          "en": "Signature case: a date picker cut from 335 lines to 10 by reusing what exists"
+        },
+        {
+          "zh": "/ponytail-review 像「出事要背锅」的资深工程师那样审代码",
+          "en": "/ponytail-review reads the code your change touches, not just the diff"
+        },
+        {
+          "zh": "/ponytail-audit 先摸清全仓库结构，再按优先级列出该修什么",
+          "en": "/ponytail-audit maps the whole repo first, then ranks what to fix"
+        },
+        {
+          "zh": "六项安全任务 30 次全过：代码更少，安全性不打折",
+          "en": "Passed all 30 runs on six security tasks: less code, no less safe"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "希望借助 AI 辅助编程、自动化代码审查或工程提效的开发团队",
+          "en": "Development teams implementing AI coding assistants, automated code review, or dev productivity"
+        },
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        },
+        {
+          "zh": "需要可扩展抽象层而非端到端方案的团队",
+          "en": "Teams wanting an extensible abstraction layer rather than a turnkey app"
+        }
+      ],
+      "quickstart": "# 摘自 DietrichGebert/ponytail 的 README\n/plugin marketplace add DietrichGebert/ponytail",
+      "interpretationSource": "llm",
+      "firstSeen": "2026-11-21",
+      "scoringVersion": "2.1.0"
+    },
+    {
+      "rank": 4,
+      "slug": "pbakaus-impeccable",
+      "full_name": "pbakaus/impeccable",
+      "name": "impeccable",
+      "owner": "pbakaus",
+      "url": "https://github.com/pbakaus/impeccable",
+      "homepage": "https://impeccable.style/",
+      "language": "Rust",
+      "category": "other",
+      "description": "The design vocabulary for your coding agent. Steer with polish and bolder, review with critique and audit, catch AI slop before it ships.",
+      "topics": [
+        "agent-skills",
+        "ai",
+        "anti-slop",
+        "design",
+        "slop"
+      ],
+      "stars": 114314,
+      "forks": 6797,
+      "openIssues": 69,
+      "contributors": 63,
+      "releases90d": 30,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 3858,
+      "dailyGain": 551.1,
+      "growthRate": 3.4,
+      "forksGain": 248,
+      "forksGrowthRate": 3.6,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "gainUnreliable": false,
+      "gainLowerBound": false,
+      "gainCapped": false,
+      "rankChange": null,
+      "scores": {
+        "heat": 93,
+        "community": 64,
+        "innovation": 59,
+        "practical": 100,
+        "ecosystem": 40,
+        "health": 89,
+        "forksGrowth": 65,
+        "activity": 100,
+        "overall": 77
+      },
+      "why": {
+        "zh": "近 7 天新增 3,858 star（日均约 551，相对存量增速 3.4%），累计 114,314 star、6,797 fork。窗口内被 fork 248 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，63 位贡献者共同维护。",
+        "en": "Gained 3,858 stars over the last 7 days (~551/day, 3.4% of its base), now at 114,314 stars and 6,797 forks. 248 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 63 contributors."
+      },
+      "intro": {
+        "zh": "Impeccable 给 coding agent 一套设计词汇：用 polish、bolder 等指令精确指挥界面风格，用 critique、audit 做设计评审。内置 62 条确定性规则当「AI slop 检测器」，不用 LLM、不要 API key，赶在上线前抓住千篇一律的 AI 页面。",
+        "en": "Impeccable gives your coding agent a design vocabulary: steer style with commands like polish and bolder, review with critique and audit. Its 62 deterministic rules act as an AI slop detector — no LLM, no API key — catching generic AI pages before they ship."
+      },
+      "cardLine": {
+        "zh": "给 coding agent 的设计词汇表，指挥风格、评审设计、拦截 AI slop。",
+        "en": "A design vocabulary for coding agents: steer style, review design, catch AI slop."
+      },
+      "highlights": [
+        {
+          "zh": "/impeccable bolder 定向加载打法，把「让它更醒目」说清楚",
+          "en": "/impeccable bolder loads a playbook for one move aimed at one target"
+        },
+        {
+          "zh": "critique 按可用性启发式打分排序，audit 查无障碍与响应式",
+          "en": "critique scores usability heuristics; audit checks accessibility and responsive behavior"
+        },
+        {
+          "zh": "62 条确定性规则检测 AI slop，无需 LLM 和 API key",
+          "en": "62 deterministic rules flag AI slop with no LLM and no API key"
+        },
+        {
+          "zh": "init 生成 PRODUCT.md、document 沉淀 DESIGN.md，改动不跑偏",
+          "en": "init writes PRODUCT.md and document captures DESIGN.md to keep changes on-brand"
+        }
+      ],
+      "cons": [],
+      "fitFor": [],
+      "quickstart": "# 摘自 pbakaus/impeccable 的 README\nnpx impeccable install",
+      "interpretationSource": "llm",
+      "firstSeen": "2026-11-21",
+      "scoringVersion": "2.1.0"
+    },
+    {
+      "rank": 5,
+      "slug": "leonxlnx-taste-skill",
+      "full_name": "Leonxlnx/taste-skill",
+      "name": "taste-skill",
+      "owner": "Leonxlnx",
+      "url": "https://github.com/Leonxlnx/taste-skill",
+      "homepage": "https://tasteskill.dev/",
+      "language": "JavaScript",
+      "category": "tool",
+      "description": "Agent skills that give coding agents taste: art direction, reference images and a browser check instead of generic AI pages",
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "anti-slop",
+        "claude-code",
+        "codex",
+        "cursor",
+        "design-system",
+        "frontend"
+      ],
+      "stars": 119569,
+      "forks": 8004,
+      "openIssues": 16,
+      "contributors": 24,
+      "releases90d": 9,
+      "prActivity": 22,
+      "issueActivity": 50,
+      "weeklyGain": 3708,
+      "dailyGain": 529.7,
+      "growthRate": 3.1,
+      "forksGain": 270,
+      "forksGrowthRate": 3.4,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "gainUnreliable": false,
+      "gainLowerBound": false,
+      "gainCapped": false,
+      "rankChange": -1,
+      "scores": {
+        "heat": 91,
+        "community": 36,
+        "innovation": 60,
+        "practical": 83,
+        "ecosystem": 44,
+        "health": 75,
+        "forksGrowth": 69,
+        "activity": 19,
+        "overall": 61
+      },
+      "why": {
+        "zh": "近 7 天新增 3,708 star（日均约 530，相对存量增速 3.1%），累计 119,569 star、8,004 fork。窗口内被 fork 270 次，最近一次提交在 13 天前，近 30 天新建 PR 22 个、issue 50 个，24 位贡献者共同维护。",
+        "en": "Gained 3,708 stars over the last 7 days (~530/day, 3.1% of its base), now at 119,569 stars and 8,004 forks. 270 new forks in the window; last push 13 day(s) ago; 22 PRs and 50 issues opened in the last 30 days; 24 contributors."
+      },
+      "intro": {
+        "zh": "Taste Skill 是一个 agent 技能，让 coding agent 做出 figma.com、x.ai 水准的公司官网，而不是套模板的通用落地页。真实照片、品牌图标、入场动画、克制的微交互，最后由真实浏览器里的检查器和 finish gate 逐条验收。",
+        "en": "Taste Skill is an agent skill that gets coding agents to build company websites at the figma.com and x.ai level instead of generic landing pages. Real photos, brand icons, hero entrances, quiet micro-interactions — all verified in a real browser by a checker and a finish gate."
+      },
+      "cardLine": {
+        "zh": "让 agent 做出 figma 级官网的技能，浏览器里逐条验收设计规则。",
+        "en": "An agent skill for figma-level company sites, verified rule by rule in a real browser."
+      },
+      "highlights": [
+        {
+          "zh": "用真实照片与品牌图标，拒绝占位图和千篇一律的 AI 页面",
+          "en": "Uses real photographs and brand icons instead of placeholders and generic AI pages"
+        },
+        {
+          "zh": "checker 和 finish gate 在真实浏览器里验证每条设计规则",
+          "en": "A checker and finish gate enforce the design rules in a real browser"
+        },
+        {
+          "zh": "无需 API key，内置 Wikimedia 图片可离线，Node 22+ 即可跑",
+          "en": "No API keys needed; bundled Wikimedia photos work offline on Node 22+"
+        },
+        {
+          "zh": "支持 Claude Code、Codex 插件安装，命名空间不与其他技能冲突",
+          "en": "Installs as a Claude Code or Codex plugin, namespaced to avoid collisions"
+        }
+      ],
+      "cons": [
+        {
+          "zh": "暂无独立文档系统（如 Wiki/Docs），查阅细节可能需通读 README",
+          "en": "No dedicated docs portal — onboarding relies primarily on README"
+        }
+      ],
+      "fitFor": [
+        {
+          "zh": "想给现有工作流加一层 Agent 自动化的团队",
+          "en": "Teams adding an agent-automation layer to an existing workflow"
+        },
+        {
+          "zh": "偏工具链方向、重视可观测性的工程师",
+          "en": "Engineers on the tooling side who value observability"
+        }
+      ],
+      "quickstart": "# 摘自 Leonxlnx/taste-skill 的 README\nnpx skills add https://github.com/Leonxlnx/taste-skill --skill \"design-taste-frontend\"",
+      "interpretationSource": "llm",
+      "firstSeen": "2026-11-21",
+      "scoringVersion": "2.1.0"
+    },
+    {
+      "rank": 6,
+      "slug": "firecrawl-firecrawl",
+      "full_name": "firecrawl/firecrawl",
+      "name": "firecrawl",
+      "owner": "firecrawl",
+      "url": "https://github.com/firecrawl/firecrawl",
+      "homepage": "https://firecrawl.dev/",
+      "language": "TypeScript",
+      "category": "tool",
+      "description": "Knowledge infrastructure to make your agents smarter. Search, scrape and access 550+ data providers through one API.",
+      "topics": [
+        "ai",
+        "ai-agents",
+        "ai-crawler",
+        "ai-scraping",
+        "ai-search",
+        "crawler",
+        "data-extraction",
+        "html-to-markdown"
+      ],
+      "stars": 205775,
+      "forks": 10756,
+      "openIssues": 895,
+      "contributors": 171,
+      "releases90d": 0,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 3581,
+      "dailyGain": 511.6,
+      "growthRate": 1.7,
+      "forksGain": 176,
+      "forksGrowthRate": 1.6,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "gainUnreliable": false,
+      "gainLowerBound": false,
+      "gainCapped": false,
+      "rankChange": 1,
+      "scores": {
+        "heat": 88,
+        "community": 67,
+        "innovation": 48,
+        "practical": 62,
+        "ecosystem": 71,
+        "health": 93,
+        "forksGrowth": 65,
+        "activity": 100,
+        "overall": 73
+      },
+      "why": {
+        "zh": "近 7 天新增 3,581 star（日均约 512，相对存量增速 1.7%），累计 205,775 star、10,756 fork。窗口内被 fork 176 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，171 位贡献者共同维护。",
+        "en": "Gained 3,581 stars over the last 7 days (~512/day, 1.7% of its base), now at 205,775 stars and 10,756 forks. 176 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 171 contributors."
+      },
+      "intro": {
+        "zh": "Firecrawl 是给 agent 用的知识基础设施：一个 API 搞定搜索、抓取和 550+ 数据源。本地版是单个二进制，把网页转成干净 markdown，还能作为 MCP server 接进 Claude Code、Cursor 等工具，让 agent 随手查资料。",
+        "en": "Firecrawl is knowledge infrastructure for your agents: search, scrape, and reach 550+ data providers through one API. The local build is a single binary that turns websites into clean markdown and plugs into Claude Code, Cursor and more as an MCP server."
+      },
+      "cardLine": {
+        "zh": "一个 API 让 agent 搜索、抓取网页并接入 550+ 数据源。",
+        "en": "One API for agents to search, scrape the web, and access 550+ data providers."
+      },
+      "highlights": [
+        {
+          "zh": "本地单二进制即可抓取、爬站、列 URL，无需数据库和容器",
+          "en": "A single local binary scrapes, crawls, and maps sites with no database or containers"
+        },
+        {
+          "zh": "init 自动发现 Claude Code、Cursor 等并配好 MCP server",
+          "en": "init finds Claude Code, Cursor and more, adding Firecrawl as an MCP server"
+        },
+        {
+          "zh": "JS 页面用本机 Chrome 渲染，PDF 和 Office 文档本地解析",
+          "en": "JS pages render via your local Chrome; PDFs and Office docs parse locally"
+        },
+        {
+          "zh": "serve 在本地起 Firecrawl v2 API，现有 SDK 改个地址就能用",
+          "en": "serve runs the Firecrawl v2 API locally so existing SDKs work unchanged"
+        }
+      ],
+      "cons": [
+        {
+          "zh": "暂无独立文档系统（如 Wiki/Docs），查阅细节可能需通读 README",
+          "en": "No dedicated docs portal — onboarding relies primarily on README"
+        },
+        {
+          "zh": "近 90 天未发布正式 Release 版本",
+          "en": "No formal releases in the last 90 days"
+        }
+      ],
+      "fitFor": [
+        {
+          "zh": "需要搭建知识库、文档问答或 RAG 检索链路的团队",
+          "en": "Teams building knowledge bases, doc Q&A, or RAG retrieval pipelines"
+        },
+        {
+          "zh": "需要网页自动化操作、跨系统流程 RPA 或数据采集的工程师",
+          "en": "Engineers requiring web browser automation, cross-system RPA, or web data extraction"
+        },
+        {
+          "zh": "想给现有工作流加一层 Agent 自动化的团队",
+          "en": "Teams adding an agent-automation layer to an existing workflow"
+        }
+      ],
+      "quickstart": "# 摘自 firecrawl/firecrawl 的 README\ncargo install firecrawl-local",
+      "interpretationSource": "llm",
+      "firstSeen": "2026-11-21",
+      "scoringVersion": "2.1.0"
+    },
+    {
+      "rank": 7,
+      "slug": "graphify-labs-graphify",
+      "full_name": "Graphify-Labs/graphify",
+      "name": "graphify",
+      "owner": "Graphify-Labs",
+      "url": "https://github.com/Graphify-Labs/graphify",
+      "homepage": "https://www.graphify.com/",
+      "language": "Python",
+      "category": "framework",
+      "description": "Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store.",
+      "topics": [
+        "ai-agents",
+        "antigravity",
+        "ast",
+        "claude-code",
+        "code-analysis",
+        "code-search",
+        "codex",
+        "cursor"
+      ],
+      "stars": 151437,
+      "forks": 14549,
+      "openIssues": 1696,
+      "contributors": 400,
+      "releases90d": 30,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 3462,
+      "dailyGain": 494.6,
+      "growthRate": 2.3,
+      "forksGain": 415,
+      "forksGrowthRate": 2.9,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "gainUnreliable": false,
+      "gainLowerBound": false,
+      "gainCapped": false,
+      "rankChange": -2,
+      "scores": {
+        "heat": 86,
+        "community": 65,
+        "innovation": 81,
+        "practical": 100,
+        "ecosystem": 74,
+        "health": 70,
+        "forksGrowth": 89,
+        "activity": 100,
+        "overall": 84
+      },
+      "why": {
+        "zh": "近 7 天新增 3,462 star（日均约 495，相对存量增速 2.3%），累计 151,437 star、14,549 fork。窗口内被 fork 415 次，最近一次提交在 1 天前，近 30 天新建 PR 200 个、issue 200 个，400 位贡献者共同维护。",
+        "en": "Gained 3,462 stars over the last 7 days (~495/day, 2.3% of its base), now at 151,437 stars and 14,549 forks. 415 new forks in the window; last push 1 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 400 contributors."
+      },
+      "intro": {
+        "zh": "Graphify 把整个代码库连同文档、SQL schema、PDF 一起变成可查询的知识图谱。在 Claude Code、Cursor 里输入 /graphify，用 tree-sitter 做确定性 AST 解析，全程本地、不依赖向量库，查关系不用再 grep。",
+        "en": "Graphify turns your codebase — plus docs, SQL schemas, and PDFs — into a queryable knowledge graph. Type /graphify in Claude Code or Cursor and it parses code deterministically with tree-sitter, fully local, no vector store, so you query relationships instead of grepping."
+      },
+      "cardLine": {
+        "zh": "把代码库变成可查询知识图谱，本地 AST 解析、不用向量库。",
+        "en": "Turns a codebase into a queryable knowledge graph with local AST parsing, no vector store."
+      },
+      "highlights": [
+        {
+          "zh": "每条边都标注 EXTRACTED 或 INFERRED，来源一目了然",
+          "en": "Every edge is tagged EXTRACTED or INFERRED so you know its source"
+        },
+        {
+          "zh": "代码解析全本地确定性完成，不调 LLM、数据不出机器",
+          "en": "Code parsing is deterministic and fully local: no LLM calls, nothing leaves your machine"
+        },
+        {
+          "zh": "问一个问题、追一条路径，替代在文件里反复 grep",
+          "en": "Ask a question or trace a path between two things instead of grepping files"
+        },
+        {
+          "zh": "支持 Claude Code、Cursor、Codex、Gemini CLI 等 20+ 助手",
+          "en": "Works with 20+ assistants including Claude Code, Cursor, Codex, and Gemini CLI"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "需要搭建知识库、文档问答或 RAG 检索链路的团队",
+          "en": "Teams building knowledge bases, doc Q&A, or RAG retrieval pipelines"
+        },
+        {
+          "zh": "希望借助 AI 辅助编程、自动化代码审查或工程提效的开发团队",
+          "en": "Development teams implementing AI coding assistants, automated code review, or dev productivity"
+        },
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        }
+      ],
+      "quickstart": "# 摘自 Graphify-Labs/graphify 的 README\nbrew install python@3.12 uv",
+      "interpretationSource": "llm",
+      "firstSeen": "2026-11-21",
+      "scoringVersion": "2.1.0"
+    },
+    {
+      "rank": 8,
+      "slug": "heygen-com-hyperframes",
+      "full_name": "heygen-com/hyperframes",
+      "name": "hyperframes",
+      "owner": "heygen-com",
+      "url": "https://github.com/heygen-com/hyperframes",
+      "homepage": "https://hyperframes.heygen.com/",
+      "language": "TypeScript",
+      "category": "framework",
+      "description": "AI video you can actually edit. HyperFrames is a free, open-source AI video editor. Describe any video and get a real project you can change down to the frame.",
+      "topics": [
+        "ai",
+        "ai-agents",
+        "animation",
+        "claude-code",
+        "ffmpeg",
+        "framework",
+        "gsap",
+        "html"
+      ],
+      "stars": 87688,
+      "forks": 8156,
+      "openIssues": 291,
+      "contributors": 148,
+      "releases90d": 30,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 3094,
+      "dailyGain": 442,
+      "growthRate": 3.5,
+      "forksGain": 374,
+      "forksGrowthRate": 4.6,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "gainUnreliable": false,
+      "gainLowerBound": false,
+      "gainCapped": false,
+      "rankChange": -2,
+      "scores": {
+        "heat": 84,
+        "community": 63,
+        "innovation": 77,
+        "practical": 100,
+        "ecosystem": 48,
+        "health": 81,
+        "forksGrowth": 76,
+        "activity": 100,
+        "overall": 79
+      },
+      "why": {
+        "zh": "近 7 天新增 3,094 star（日均约 442，相对存量增速 3.5%），累计 87,688 star、8,156 fork。窗口内被 fork 374 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，148 位贡献者共同维护。",
+        "en": "Gained 3,094 stars over the last 7 days (~442/day, 3.5% of its base), now at 87,688 stars and 8,156 forks. 374 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 148 contributors."
+      },
+      "intro": {
+        "zh": "HyperFrames 是免费开源的 AI 视频编辑框架：用 HTML、CSS 和媒体写出动画，渲染成逐帧可改的确定性 MP4。装好技能后直接对 Claude Code 说「做个 10 秒产品介绍」，生成的视频是真实工程，能改到每一帧。",
+        "en": "HyperFrames is a free, open-source framework for AI video you can actually edit: write HTML, CSS, and media, and it renders deterministic MP4s changeable down to the frame. Install the skills, then ask Claude Code for a 10-second product intro and get a real project back."
+      },
+      "cardLine": {
+        "zh": "用 HTML 写视频的开源框架，agent 生成可逐帧编辑的 MP4。",
+        "en": "An open-source framework that turns HTML into deterministic MP4s your agent can edit frame by frame."
+      },
+      "highlights": [
+        {
+          "zh": "HTML、CSS、媒体和可寻址动画渲染成确定性 MP4 输出",
+          "en": "Renders HTML, CSS, media, and seekable animations into deterministic MP4s"
+        },
+        {
+          "zh": "npx 一条命令装好技能，对 agent 说句话就能出视频",
+          "en": "One npx command installs the skills, then just describe the video you want"
+        },
+        {
+          "zh": "附带免费 Studio 桌面应用，Pro 版接入 HeyGen 的模型",
+          "en": "Includes a free Studio desktop app; Pro adds HeyGen's video, image, voice, and music models"
+        },
+        {
+          "zh": "提供 CLI、agent skills 和托管渲染核心三种使用方式",
+          "en": "Use it via CLI, agent skills, or as the rendering core behind hosted workflows"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "希望借助 AI 辅助编程、自动化代码审查或工程提效的开发团队",
+          "en": "Development teams implementing AI coding assistants, automated code review, or dev productivity"
+        },
+        {
+          "zh": "探索多模态交互、端到端语音与视觉感知代理的前沿创新团队",
+          "en": "Innovative teams exploring multimodal interactions, end-to-end voice, and vision agents"
+        },
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        }
+      ],
+      "quickstart": "# 摘自 heygen-com/hyperframes 的 README\nnpx skills add heygen-com/hyperframes",
+      "interpretationSource": "llm",
+      "firstSeen": "2026-11-21",
+      "scoringVersion": "2.1.0"
+    },
+    {
+      "rank": 9,
+      "slug": "hugohe3-ppt-master",
+      "full_name": "hugohe3/ppt-master",
+      "name": "ppt-master",
+      "owner": "hugohe3",
+      "url": "https://github.com/hugohe3/ppt-master",
+      "homepage": "https://hugohe3.github.io/ppt-master-examples/",
+      "language": "Python",
+      "category": "other",
+      "description": "AI turns documents or topics into real, native PowerPoint decks—with native shapes, transitions and animations, data-backed charts and tables on demand, audio narration from speaker notes, and support for your own .pptx templates. · by Hugo He",
+      "topics": [
+        "ai-agent",
+        "aippt",
+        "office",
+        "powerpoint",
+        "powerpoint-generation",
+        "ppt",
+        "pptx",
+        "presentation"
+      ],
+      "stars": 79021,
+      "forks": 6154,
+      "openIssues": 1,
+      "contributors": 29,
+      "releases90d": 18,
+      "prActivity": 19,
+      "issueActivity": 32,
+      "weeklyGain": 1977,
+      "dailyGain": 282.4,
+      "growthRate": 2.5,
+      "forksGain": 159,
+      "forksGrowthRate": 2.6,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "gainUnreliable": false,
+      "gainLowerBound": false,
+      "gainCapped": false,
+      "rankChange": 0,
+      "scores": {
+        "heat": 81,
+        "community": 54,
+        "innovation": 55,
+        "practical": 100,
+        "ecosystem": 23,
+        "health": 88,
+        "forksGrowth": 54,
+        "activity": 16,
+        "overall": 60
+      },
+      "why": {
+        "zh": "近 7 天新增 1,977 star（日均约 282，相对存量增速 2.5%），累计 79,021 star、6,154 fork。窗口内被 fork 159 次，最近一次提交在 1 天前，近 30 天新建 PR 19 个、issue 32 个，29 位贡献者共同维护。",
+        "en": "Gained 1,977 stars over the last 7 days (~282/day, 2.5% of its base), now at 79,021 stars and 6,154 forks. 159 new forks in the window; last push 1 day(s) ago; 19 PRs and 32 issues opened in the last 30 days; 29 contributors."
+      },
+      "intro": {
+        "zh": "PPT Master 让 AI 把文档或主题做成真正原生的 PowerPoint：形状、切换、动画都是原生元素，图表表格有数据支撑，还能按演讲者备注生成配音，支持套用你自己的 .pptx 模板，产出可在 PowerPoint 里继续编辑。",
+        "en": "PPT Master has AI turn documents or topics into real, native PowerPoint decks: native shapes, transitions, and animations, data-backed charts and tables on demand, audio narration from speaker notes, and support for your own .pptx templates — all editable in PowerPoint afterward."
+      },
+      "cardLine": {
+        "zh": "AI 把文档变成原生可编辑的 PPTX，带动画、图表和配音。",
+        "en": "AI turns documents into native, editable PPTX decks with animations, charts, and narration."
+      },
+      "highlights": [
+        {
+          "zh": "生成原生形状、切换和动画，不是截图式假 PPT",
+          "en": "Generates native shapes, transitions, and animations — not screenshot-style slides"
+        },
+        {
+          "zh": "图表和表格基于数据生成，需要时按需加入",
+          "en": "Charts and tables are data-backed and added on demand"
+        },
+        {
+          "zh": "按演讲者备注生成音频旁白，直接能拿去讲",
+          "en": "Creates audio narration from speaker notes, ready to present"
+        },
+        {
+          "zh": "支持导入自己的 .pptx 模板，保持团队既有风格",
+          "en": "Supports your own .pptx templates to keep your team's existing style"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "希望借助 AI 辅助编程、自动化代码审查或工程提效的开发团队",
+          "en": "Development teams implementing AI coding assistants, automated code review, or dev productivity"
+        }
+      ],
+      "quickstart": "# 摘自 hugohe3/ppt-master 的 README\n# macOS\nbrew install python\n\n# Ubuntu / Debian\nsudo apt install python3 python3-pip",
+      "interpretationSource": "llm",
+      "firstSeen": "2026-11-21",
+      "scoringVersion": "2.1.0"
+    },
+    {
+      "rank": 10,
+      "slug": "tt-a1i-archify",
+      "full_name": "tt-a1i/archify",
+      "name": "archify",
+      "owner": "tt-a1i",
+      "url": "https://github.com/tt-a1i/archify",
+      "homepage": "https://archify.si/",
+      "language": "JavaScript",
+      "category": "framework",
+      "description": "Turn any idea, plan, or codebase into a beautiful interactive diagram. An agent skill for Claude Code, Codex, and more.",
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "architecture-diagram",
+        "claude-code",
+        "claude-skills",
+        "codex",
+        "coding-agents",
+        "deepseek-harness"
+      ],
+      "stars": 98488,
+      "forks": 6729,
+      "openIssues": 366,
+      "contributors": 86,
+      "releases90d": 7,
+      "prActivity": 200,
+      "issueActivity": 200,
+      "weeklyGain": 1873,
+      "dailyGain": 267.6,
+      "growthRate": 1.9,
+      "forksGain": 143,
+      "forksGrowthRate": 2.1,
+      "gainSource": "snapshot",
+      "gainExact": true,
+      "gainUnreliable": false,
+      "gainLowerBound": false,
+      "gainCapped": false,
+      "rankChange": null,
+      "scores": {
+        "heat": 79,
+        "community": 59,
+        "innovation": 61,
+        "practical": 100,
+        "ecosystem": 35,
+        "health": 78,
+        "forksGrowth": 52,
+        "activity": 100,
+        "overall": 72
+      },
+      "why": {
+        "zh": "近 7 天新增 1,873 star（日均约 268，相对存量增速 1.9%），累计 98,488 star、6,729 fork。窗口内被 fork 143 次，最近一次提交在 0 天前，近 30 天新建 PR 200 个、issue 200 个，86 位贡献者共同维护。",
+        "en": "Gained 1,873 stars over the last 7 days (~268/day, 1.9% of its base), now at 98,488 stars and 6,729 forks. 143 new forks in the window; last push 0 day(s) ago; 200 PRs and 200 issues opened in the last 30 days; 86 contributors."
+      },
+      "intro": {
+        "zh": "Archify 是一个 agent 技能，把想法、计划或代码库变成可交互的 HTML 图表：一句话让 agent 读完仓库画出架构图，节点可点击、可跳源码。不用仓库也行，旅行行程、学习地图都能画，还能导出长图或 PDF 分享。",
+        "en": "Archify is an agent skill that turns an idea, plan, or codebase into interactive HTML diagrams: one sentence gets your agent to read a repo and map its architecture, with clickable nodes linking to source. No repo needed either — travel plans and learning maps work too, exportable as long images or PDF."
+      },
+      "cardLine": {
+        "zh": "把想法或代码库变成可交互图表的 agent 技能，可跳源码。",
+        "en": "An agent skill that turns ideas or codebases into interactive diagrams with source links."
+      },
+      "highlights": [
+        {
+          "zh": "一句话让 agent 读仓库，生成带源码链接的架构图",
+          "en": "One sentence gets a source-backed architecture diagram from your repo"
+        },
+        {
+          "zh": "追问式改图：加认证、高亮缓存未命中路径、换主题",
+          "en": "Iterate by asking: add auth, highlight the cache-miss path, switch themes"
+        },
+        {
+          "zh": "解释页结论先行，论断带编号引用并固定到具体 commit",
+          "en": "Explainers lead with the conclusion and cite sources pinned to a commit"
+        },
+        {
+          "zh": "单个 HTML 文件即分享，可导出 PNG 长图或打印成 PDF",
+          "en": "Share one HTML file, or export a PNG long image or print to PDF"
+        }
+      ],
+      "cons": [],
+      "fitFor": [
+        {
+          "zh": "希望借助 AI 辅助编程、自动化代码审查或工程提效的开发团队",
+          "en": "Development teams implementing AI coding assistants, automated code review, or dev productivity"
+        },
+        {
+          "zh": "要把 Agent 能力嵌进自己产品的开发者",
+          "en": "Developers embedding agent capabilities into their own product"
+        },
+        {
+          "zh": "需要可扩展抽象层而非端到端方案的团队",
+          "en": "Teams wanting an extensible abstraction layer rather than a turnkey app"
+        }
+      ],
+      "quickstart": "# 摘自 tt-a1i/archify 的 README\nInstall Archify for me by reading https://raw.githubusercontent.com/tt-a1i/archify/main/llms.txt",
+      "interpretationSource": "llm",
+      "firstSeen": "2026-11-21",
+      "scoringVersion": "2.1.0"
+    }
+  ]
+}
