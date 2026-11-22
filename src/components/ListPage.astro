@@ -13,15 +13,17 @@ interface Props {
   windowDays: number;
   langHref: string;
   active?: "search" | "archive";
+  /** 当前页面的规范路径（透传给 Base 的 canonical） */
+  canonicalPath?: string;
 }
 
-const { lang = "zh", title, subtitle, projects, windowDays, langHref, active = "search" } = Astro.props;
+const { lang = "zh", title, subtitle, projects, windowDays, langHref, active = "search", canonicalPath } = Astro.props;
 const t = strings(lang);
 const totalGain = projects.reduce((s, p) => s + p.gain, 0);
 const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
 ---
 
-<Base {lang} {langHref} {title} desc={subtitle} {active}>
+<Base {lang} {langHref} {title} desc={subtitle} {active} canonicalPath={canonicalPath}>
   <section class="hero" style="padding-bottom:0">
     <h1>{title}</h1>
     <p class="sub">{subtitle}</p>

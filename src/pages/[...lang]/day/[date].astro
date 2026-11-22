@@ -28,6 +28,7 @@ const nav = neighbours(date);
   entries={day?.entries ?? []}
   poolSize={day?.poolSize}
   archiveHref={archivePath(B, lang)}
+  canonicalPath={dayPath(B, lang, date)}
   langHref={dayPath(B, lang === "en" ? "zh" : "en", date)}
   prevHref={nav.prev ? dayPath(B, lang, nav.prev) : null}
   nextHref={nav.next ? dayPath(B, lang, nav.next) : homePath(B, lang)}

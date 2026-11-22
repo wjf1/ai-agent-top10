@@ -46,6 +46,7 @@ const files = [
 <Base
   {lang}
   langHref={exportPath(B, lang === "en" ? "zh" : "en")}
+  canonicalPath={exportPath(B, lang)}
   title={t.exportPage}
   desc={t.exportData}
   active="export"

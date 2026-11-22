@@ -50,11 +50,16 @@ const projects = sortProjects(applyPreset(all, parsed.preset), parsed.sort);
 const activePreset = PRESETS.find((p) => p.key === parsed.preset);
 const activeSort = SORTS.find((s) => s.key === parsed.sort);
 const activeLabel = [activePreset, activeSort].filter(Boolean).map((x: any) => (lang === "zh" ? x.zh : x.en)).join(" · ");
+
+// canonical 指向本视图自身的静态路径：按解析结果重拼（非法路径片段会回落到 /search/ 的规范页）
+const view = viewParts(parsed).join("/");
+const canonicalPath = view ? `${searchPath(B, lang)}${view}/` : searchPath(B, lang);
 ---
 
 <Base
   {lang}
   langHref={searchPath(B, lang === "en" ? "zh" : "en")}
+  canonicalPath={canonicalPath}
   title={`${t.searchPage}${activeLabel ? ` · ${activeLabel}` : ""}`}
   desc={t.search}
   active="search"

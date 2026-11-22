@@ -27,6 +27,7 @@ const projects = await recentProjects({ window: WINDOW });
 <Base
   {lang}
   langHref={searchPath(B, lang === "en" ? "zh" : "en")}
+  canonicalPath={searchPath(B, lang)}
   title={t.searchPage}
   desc={t.search}
   active="search"

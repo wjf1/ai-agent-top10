@@ -14,9 +14,14 @@ interface Props {
   date?: string | null;
   /** 社交分享图（相对站点根的路径，如 /og/zh-firecrawl-mcp.png）；缺省回落首页图 */
   ogImage?: string;
+  /**
+   * 当前页面的规范路径（含 BASE 前缀与语言前缀，如 /day/2026-11-15/）。
+   * 传入时用于拼 canonical，未传时回落语言首页——首页与默认视图无需传。
+   */
+  canonicalPath?: string;
 }
 
-const { lang = "zh", title, desc, langHref, active, date = null, ogImage } = Astro.props;
+const { lang = "zh", title, desc, langHref, active, date = null, ogImage, canonicalPath } = Astro.props;
 const t = strings(lang);
 const B = import.meta.env.BASE_URL.replace(/\/$/, "");
 const fullTitle = title ? `${title} · ${t.siteName}` : `${t.siteName} — ${t.tagline}`;
@@ -24,7 +29,8 @@ const fullTitle = title ? `${title} · ${t.siteName}` : `${t.siteName} — ${t.t
 const site = (import.meta.env.SITE ?? "").replace(/\/$/, "");
 const ogPath = ogImage ?? `${B}/og/home-${lang}.png`;
 const ogUrl = `${site}${ogPath}`;
-const canonical = new URL(`${B}/${lang === "en" ? "en/" : ""}`, `${site || "https://example.invalid"}/`).toString();
+// canonical 必须指向页面自身：非首页视图都要传 canonicalPath，否则整站的 canonical 会全部指向语言首页
+const canonical = new URL(canonicalPath ?? `${B}/${lang === "en" ? "en/" : ""}`, `${site || "https://example.invalid"}/`).toString();
 // 首页始终指向最新一期；若当前在某一期日报里，则“日榜”指向该期
 const dailyHref = date && active === "day" ? dayPath(B, lang, date) : homePath(B, lang);
 

@@ -39,6 +39,7 @@ const rows = days.map((d) => ({
   langHref={lang === "en" ? `${B}/archive/` : `${B}/en/archive/`}
   title={t.archive}
   active="archive"
+  canonicalPath={archivePath(B, lang)}
 >
   <section class="hero" style="padding-bottom:0">
     <h1>{t.archive}</h1>

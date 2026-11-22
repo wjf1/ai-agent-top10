@@ -30,6 +30,7 @@ const nav = periodNeighbours("monthly", board.endDate);
   scoringMixed={board.scoringMixed}
   scoringVersions={board.scoringVersions}
   archiveHref={archivePath(B, lang)}
+  canonicalPath={monthPath(B, lang)}
   langHref={monthPath(B, lang === "en" ? "zh" : "en")}
   prevHref={nav.prev ? monthPath(B, lang, nav.prev) : null}
   nextHref={nav.next ? monthPath(B, lang, nav.next) : null}

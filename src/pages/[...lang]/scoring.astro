@@ -54,7 +54,7 @@ const desc = zh
   : "The full 8-dimension weighted scoring methodology: weights, formula parameters and a real worked example from the latest #1, all sourced from config/scoring.json.";
 ---
 
-<Base {lang} langHref={scoringPath(B, zh ? "en" : "zh")} title={pageTitle} {desc} active="scoring">
+<Base {lang} langHref={scoringPath(B, zh ? "en" : "zh")} canonicalPath={scoringPath(B, lang)} title={pageTitle} {desc} active="scoring">
   <section class="hero">
     <span class="date-chip">scoringVersion {sv}</span>
     <h1>{pageTitle}</h1>

@@ -9,7 +9,7 @@ import { categoryLabel } from "../lib/categorize.mjs";
 import { caliberTag, detailLead, forkAnomaly, gainSourceTag, highlightsTitle, interpretationTag, momentReasons, scoreFactors } from "../lib/display.ts";
 import { scoringVersion } from "../lib/config.mjs";
 import { dimensionLabels, strings, type Lang } from "../lib/data.ts";
-import { archivePath, categoryPath, comparePath, dayPath } from "../lib/routes.ts";
+import { archivePath, categoryPath, comparePath, dayPath, projectPath } from "../lib/routes.ts";
 
 interface Props {
   entry: any;
@@ -42,6 +42,8 @@ const allDims = dimensionLabels(lang);
 const dims = allDims.filter((d) => typeof entry.scores?.[d.key] === "number");
 const listHref = dayPath(B, lang, date);
 const archiveHref = archivePath(B, lang);
+// canonical 指向本页自身路径（/project/<date>/<slug>/），不再回落语言首页
+const canonicalPath = projectPath(B, lang, date, entry.slug);
 
 const stats = [
   { label: t.stars, value: fmt(entry.stars) },
@@ -80,6 +82,7 @@ const anomaly = forkAnomaly(entry, t);
   active="day"
   date={date}
   {ogImage}
+  canonicalPath={canonicalPath}
 >
   <section class="detail-head">
     <div class="crumb">

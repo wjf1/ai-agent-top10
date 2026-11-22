@@ -23,12 +23,14 @@ const tabs = [
 ---
 
 <div class="period-bar">
-  <div class="segmented" role="tablist" aria-label={t.periodSwitcher}>
+  <!-- 日/周/月是三个平级页面的导航而非 tab 组件：没有 tabpanel、也没有方向键交互，
+       按 ARIA APG 约定不该用 tablist/tab。这里与 SearchView 的 chips 一致，
+       用普通链接 + aria-current 标记当前页。 -->
+  <div class="segmented" role="group" aria-label={t.periodSwitcher}>
     {tabs.map((tab) => (
       <a
-        role="tab"
-        aria-selected={tab.key === current}
         class:list={["seg", tab.key === current && "active"]}
+        aria-current={tab.key === current ? "page" : undefined}
         href={tab.key === current && current === "daily" && date ? dayPath(B, lang, date) : tab.href}
       >
         {tab.label}
@@ -48,7 +50,7 @@ const tabs = [
   .segmented { display: inline-flex; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 3px; gap: 2px; }
   .seg { font-size: 13px; padding: 6px 16px; border-radius: 9px; color: var(--muted); }
   .seg:hover { color: var(--accent); }
-  .seg.active { background: var(--accent); color: #fff; font-weight: 600; }
+  .seg.active { background: var(--accent); color: var(--accent-contrast); font-weight: 600; }
   .period-nav { display: flex; gap: 14px; font-size: 12.5px; }
   .period-nav a { color: var(--muted); }
   .period-nav a:hover { color: var(--accent); }

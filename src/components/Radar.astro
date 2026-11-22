@@ -153,8 +153,12 @@ const fontMain = size >= 200 ? 12 : 9.5;
     pointer-events: none;
     transform: translate(-50%, -120%);
   }
-  .radar-tip b { color: #fff; }
+  /* tooltip 底色随主题反转（浅色深底 / 暗色浅底），文字必须跟着令牌走：
+     硬编码 #fff 在暗色 #e8e9f2 底上对比仅 1.21:1，完全不可读（P1 修复） */
+  .radar-tip b { color: var(--tip-ink); }
   .radar-tip .v { color: #a5b4fc; font-weight: 700; }
+  /* 数值强调色同理：暗色浅底下 #a5b4fc 仅 1.65:1，换用浅色 accent 深值后 5.20:1（AA 通过） */
+  :global([data-theme="dark"]) .radar-tip .v { color: #4f46e5; }
 </style>
 
 <script>

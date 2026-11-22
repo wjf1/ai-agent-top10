@@ -33,6 +33,8 @@ interface Props {
   /** 周期窗口内聚合了多个评分引擎版本时给出提示 */
   scoringMixed?: boolean;
   scoringVersions?: string[];
+  /** 当前页面的规范路径（透传给 Base 的 canonical），首页视图不传保持回落语言首页 */
+  canonicalPath?: string;
 }
 
 const {
@@ -52,6 +54,7 @@ const {
   partialMetrics = false,
   scoringMixed = false,
   scoringVersions = [],
+  canonicalPath,
 } = Astro.props;
 
 const t = strings(lang);
@@ -85,7 +88,7 @@ const badgesFor = (e: any) => {
 const boardCaliber = !scoringMixed && entries[0] ? caliberTag(entries[0], scoringVersion(), t) : null;
 ---
 
-<Base lang={lang} langHref={langHref} title={`${date} ${periodLabel}`} desc={t.heroSub} active={activeNav} date={period === "daily" ? date : null}>
+<Base lang={lang} langHref={langHref} title={`${date} ${periodLabel}`} desc={t.heroSub} active={activeNav} date={period === "daily" ? date : null} canonicalPath={canonicalPath}>
   <section class="hero">
     <span class="date-chip"><Icon name="calendar" size={13} /> {date} · {periodLabel} · {rankDesc}</span>
     <h1>{title}</h1>

@@ -40,6 +40,7 @@ const nav = periodNeighbours("weekly", endDate);
   scoringMixed={board.scoringMixed}
   scoringVersions={board.scoringVersions}
   archiveHref={archivePath(B, lang)}
+  canonicalPath={weekPath(B, lang, endDate)}
   langHref={weekPath(B, lang === "en" ? "zh" : "en", endDate)}
   prevHref={nav.prev ? weekPath(B, lang, nav.prev) : null}
   nextHref={nav.next ? weekPath(B, lang, nav.next) : null}

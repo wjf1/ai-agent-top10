@@ -136,7 +136,19 @@ ai-agent-top10
 
 ---
 
-## 四、最近一轮变更与交付成果 (安全修复 · CI 令牌外发消除与权限最小化)
+## 四、最近一轮变更与交付成果 (前端审计 P1 修复 · canonical/对比度/ARIA，2026-11-22)
+
+前端设计审计发现的三项 P1 修复，均已实测验证：
+
+| 项 | 内容 |
+|---|---|
+| **canonical 页面级化** | `Base.astro` 原硬编码 canonical 为语言首页且不收页面级参数，1700+ 页面全部自认定首页重复内容。新增可选 prop `canonicalPath`（未传回落语言首页），12 个页面视图经 `src/lib/routes.ts` 统一传入自身路径（自带 BASE 与 `/en/` 前缀、保留尾斜杠）；构建后抽查 27+3 个中英页面 canonical 均指向各自真实 URL |
+| **暗色 accent 对比度** | 暗色 `--accent: #8b8bf5` 配白字实测 2.95:1 不达 AA。新增成对令牌 `--accent-contrast`（浅 `#ffffff` 6.29:1 / 暗 `#14161d` 6.12:1，注释写明实测值）并补真实 `--accent-ink`；`.btn`/`.seg.active`/`.fchip.active`×2/`.tb-new`/`.skip-link` 共 6 处改引用令牌；顺带修 Radar tooltip 硬编码白字（1.21:1 → `var(--tip-ink)` 14.94:1） |
+| **ARIA 修正** | PeriodSwitch 误用 `tablist/tab`（无 tabpanel、无方向键交互）→ 普通 `role="group"` + 链接 `aria-current="page"`，与 SearchView chips 做法一致 |
+
+**验证结论**：`npm test` 96/96 通过；`npm run build` 1722 页成功，dist CSS 确认两套 `--accent-contrast` 落盘、全站无 `role="tab` 残留。遗留待办（P2）：自定义 404 页、JSON-LD/hreflang、无 JS 时暗色兜底、日榜空态文案按 period 分支；另 `.dim-num` 调色板深色底白字（约 2.9:1）留待后续轮次。
+
+### 上一轮交付记录 (安全修复 · CI 令牌外发消除与权限最小化)
 
 **根因**：`daily.yml` 备用解读服务 key 写作 `secrets.LLM_FALLBACK_API_KEY || github.token`，secret 未配置时把带写权限的仓库令牌作为 Bearer 发给第三方匿名端点（Pollinations——本就无需真 key，纯属泄漏面）；workflow 顶层权限对全部 job 过宽。
 
