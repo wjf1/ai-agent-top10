@@ -198,8 +198,15 @@ export async function llmInterpretation(projects, { log = console.log, cachePath
 
   let fetched = await requestWithRetry(primary, pendingPayload, cfg, log);
   let fetchedAll = fetched ?? new Map();
-  if (!fetched && hasFallback) {
-    log("interpretation: primary failed, trying fallback provider");
+  const primaryMissing = pendingPayload.filter((q) => !fetchedAll.has(q.full_name));
+  // 主 provider 全败或部分成功（如 10 条只回 2 条）都让备用补缺——此前只有全败才切备用，
+  // 部分成功时其余条目直接落规则版；备用通道（Pollinations 匿名档）免费，补跑零成本。
+  if (hasFallback && primaryMissing.length) {
+    if (fetched) {
+      log(`interpretation: primary partial (${fetched.size}/${pendingPayload.length}), fallback fills ${primaryMissing.length} missing entr(ies)`);
+    } else {
+      log("interpretation: primary failed, trying fallback provider");
+    }
     // 备用 provider 可有自己的参数透传与重试节奏（如 Pollinations 匿名档 45s/IP 限速，
     // 重试间隔必须跨过限速窗口）；未配置时沿用主配置。
     const fallbackRunCfg = {
@@ -222,10 +229,10 @@ export async function llmInterpretation(projects, { log = console.log, cachePath
         if (missing) log(`interpretation: fallback batch ${Math.floor(i / chunkSize) + 1}: ${missing}/${chunk.length} entr(ies) still missing`);
       }
     };
-    await runBatches(pendingPayload);
+    await runBatches(primaryMissing);
     // 缺口补一轮：GPT-OSS 偶发批次输出不完整（实测 3 条只回 1 条），对缺失条目
     // 整体重跑一遍分批（缓存与首批命中的不会重复请求）；只补一轮，避免无限消耗。
-    const stillMissing = pendingPayload.filter((q) => !fetchedAll.has(q.full_name));
+    const stillMissing = primaryMissing.filter((q) => !fetchedAll.has(q.full_name));
     if (stillMissing.length) {
       log(`interpretation: fallback retrying ${stillMissing.length} missing entr(ies) in one more sweep`);
       // 补缺轮与最后一批之间同样要跨过限速窗口

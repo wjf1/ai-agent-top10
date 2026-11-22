@@ -3,10 +3,13 @@
  * 数据校验（CI 门禁，P1-A3）。
  *
  * 检查项：
- *   - 每个 daily/*.json 的结构、字段类型、评分范围、排名连续性
+ *   - 每个 daily/*.json 的结构、字段类型、评分范围、排名连续性（lib/schema.mjs）
  *   - index.json 与 daily/ 目录一致，latest 指向真实存在的日期
  *   - 快照文件可解析、日期键与日榜不矛盾
  *   - 外部输入未夹带 HTML 标签 / 伪协议 URL
+ *
+ * 检查逻辑本体在 lib/validate-core.mjs（纯函数，tests/validate-core.test.mjs 钉住行为，
+ * 门禁自身回归时 CI 也会变红）；本文件只负责文件系统读取与退出码。
  *
  * 退出码非 0 时 CI 必须停止，不得推送数据。
  */
@@ -15,131 +18,50 @@ import { fileURLToPath } from "node:url";
 
 import { checkDailyFile } from "./lib/schema.mjs";
 import { dataPaths, listDailyDates, readJson } from "./lib/persist.mjs";
+import {
+  checkEntryTextSafety,
+  checkIndexConsistency,
+  checkMetricSnapshot,
+  checkStarSnapshot,
+} from "./lib/validate-core.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const paths = dataPaths(ROOT);
 
 const problems = [];
 const warnings = [];
-const add = (list, msg) => list.push(msg);
 
 const dates = listDailyDates(paths);
-if (!dates.length) add(problems, "src/data/daily/ has no JSON files");
+if (!dates.length) problems.push("src/data/daily/ has no JSON files");
 
+const docByDate = new Map();
 for (const date of dates) {
   const doc = readJson(path.join(paths.dailyDir, `${date}.json`));
-  if (!doc) {
-    add(problems, `${date}: unreadable JSON`);
-    continue;
-  }
+  docByDate.set(date, doc);
+  if (!doc) continue;
   const { ok, errors } = checkDailyFile(doc, { expectedDate: date });
-  if (!ok) errors.forEach((e) => add(problems, `${date}: ${e}`));
-
-  for (const entry of doc.entries ?? []) {
-    const texts = [
-      entry.description ?? "",
-      entry.why?.zh ?? "",
-      entry.why?.en ?? "",
-      entry.intro?.zh ?? "",
-      entry.intro?.en ?? "",
-      entry.cardLine?.zh ?? "",
-      entry.cardLine?.en ?? "",
-      ...(entry.highlights ?? []).flatMap((h) => [h.zh ?? "", h.en ?? ""]),
-      ...(entry.cons ?? []).flatMap((c) => [c.zh ?? "", c.en ?? ""]),
-      ...(entry.fitFor ?? []).flatMap((f) => [f.zh ?? "", f.en ?? ""]),
-    ];
-    for (const text of texts) {
-      if (/<\s*(script|iframe|img|svg|object|embed|style)\b/i.test(text)) {
-        add(problems, `${date}/${entry.full_name}: raw HTML markup in text field`);
-      }
-      // 伪协议：净化层应已断链，若仍出现说明有旁路写入，CI 必须拦住（T1.6）
-      if (/\b(?:javascript|vbscript|livescript)\s*:/i.test(text) || /\bdata\s*:\s*text\/html/i.test(text)) {
-        add(problems, `${date}/${entry.full_name}: pseudo-protocol URL in text field`);
-      }
-      if (/\bon[a-z]+\s*=/i.test(text)) {
-        add(warnings, `${date}/${entry.full_name}: suspicious inline event handler text`);
-      }
-    }
-    for (const field of ["url", "homepage"]) {
-      const value = entry[field];
-      if (value && !/^https?:\/\//i.test(value)) {
-        add(problems, `${date}/${entry.full_name}.${field}: non-http(s) URL (${String(value).slice(0, 40)})`);
-      }
-    }
-  }
+  if (!ok) errors.forEach((e) => problems.push(`${date}: ${e}`));
+  const safety = checkEntryTextSafety(doc, date);
+  problems.push(...safety.problems);
+  warnings.push(...safety.warnings);
 }
 
 const index = readJson(paths.indexFile);
 if (!index) {
-  add(problems, "src/data/index.json missing or unreadable");
+  problems.push("src/data/index.json missing or unreadable");
 } else {
-  if (!Array.isArray(index.dates)) add(problems, "index.dates must be an array");
-  const missing = (index.dates ?? []).filter((d) => !dates.includes(d));
-  if (missing.length) add(problems, `index.dates references missing daily files: ${missing.join(", ")}`);
-  const unindexed = dates.filter((d) => !(index.dates ?? []).includes(d));
-  if (unindexed.length) add(problems, `daily files missing from index: ${unindexed.slice(0, 5).join(", ")}`);
-  if (index.latest && !dates.includes(index.latest)) {
-    add(problems, `index.latest (${index.latest}) has no daily file`);
-  }
-  if (index.latest && index.latest !== dates[0]) {
-    add(warnings, `index.latest (${index.latest}) is not the newest daily file (${dates[0]})`);
-  }
+  const idx = checkIndexConsistency(dates, index);
+  problems.push(...idx.problems);
+  warnings.push(...idx.warnings);
 }
 
-const starSnap = readJson(paths.starsFile, {});
-if (typeof starSnap !== "object" || starSnap === null) add(problems, "snapshots/stars.json unreadable");
-else {
-  for (const [date, repos] of Object.entries(starSnap)) {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) add(problems, `snapshots/stars.json: bad date key ${date}`);
-    if (typeof repos !== "object" || repos === null) {
-      add(problems, `snapshots/stars.json[${date}] is not an object`);
-      continue;
-    }
-    // T2.11：值必须是数字。此前只校验到「是不是对象」，
-    // 一个被写成字符串的 star 数会让增量计算静默产出 NaN。
-    for (const [repo, value] of Object.entries(repos)) {
-      if (typeof value !== "number" || !Number.isFinite(value)) {
-        add(problems, `snapshots/stars.json[${date}][${repo}]: expected a finite number, got ${typeof value}`);
-      }
-    }
-  }
-}
-
-const metricSnap = readJson(paths.metricsFile, {});
-if (metricSnap && typeof metricSnap !== "object") add(problems, "snapshots/metrics.json unreadable");
-else if (metricSnap) {
-  // T2.11：关键字段类型检查。这几个字段决定社区 / 实用 / 迭代维度，
-  // 类型不对会让评分把「测不到」当成「很冷清」。
-  const numericOrNull = ["contributors", "prActivity", "issueActivity", "ageDays", "pushDaysAgo", "stars", "forks"];
-  for (const [date, repos] of Object.entries(metricSnap)) {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) add(problems, `snapshots/metrics.json: bad date key ${date}`);
-    if (typeof repos !== "object" || repos === null) {
-      add(problems, `snapshots/metrics.json[${date}] is not an object`);
-      continue;
-    }
-    for (const [repo, record] of Object.entries(repos)) {
-      if (typeof record !== "object" || record === null) {
-        add(problems, `snapshots/metrics.json[${date}][${repo}] is not an object`);
-        continue;
-      }
-      for (const field of numericOrNull) {
-        const value = record[field];
-        if (value !== undefined && value !== null && (typeof value !== "number" || !Number.isFinite(value))) {
-          add(problems, `snapshots/metrics.json[${date}][${repo}].${field}: expected number or null, got ${typeof value}`);
-        }
-      }
-      if (record.partial !== undefined && typeof record.partial !== "boolean") {
-        add(problems, `snapshots/metrics.json[${date}][${repo}].partial: expected boolean`);
-      }
-    }
-  }
-}
+problems.push(...checkStarSnapshot(readJson(paths.starsFile, {})));
+problems.push(...checkMetricSnapshot(readJson(paths.metricsFile, {})));
 
 // 跨日期重复 slug 不再产生冲突（路由已带日期），但值得记录
 const slugDates = new Map();
 for (const date of dates) {
-  const doc = readJson(path.join(paths.dailyDir, `${date}.json`));
-  for (const e of doc?.entries ?? []) {
+  for (const e of docByDate.get(date)?.entries ?? []) {
     if (!slugDates.has(e.slug)) slugDates.set(e.slug, []);
     slugDates.get(e.slug).push(date);
   }

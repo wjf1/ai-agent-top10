@@ -162,6 +162,8 @@ ai-agent-top10
 
 **验证结论**：`npm test` **96/96 通过**；YAML 结构断言通过（逐 job 权限符合预期）；`grep github.token daily.yml` 确认无第三方外发路径。遗留待办：Actions 改 SHA pin（浮动 tag 供应链面）、快照 `readJson` 损坏静默清空历史（`persist.mjs:29`，P1）。
 
+- **P1/P2 逐项加固（同日第二轮）**：`readJson` 损坏硬失败（防快照被残缺数据覆写清空历史）；validate-data 门禁提取 `validate-core.mjs` 纯函数 + 7 用例；主 provider 部分成功也让免费备用补缺；actions 全部 SHA pin + interpret-cache 滚动缓存（CI 不再每日冷跑 LLM）；删死配置 `maxTotalBackoffMs`。核实后跳过：429 Retry-After 已在位（github.mjs）、Node 版本口径漂移不成立。验证：npm test 全绿、validate 70 天通过。**遗留待办**：`check` job 的 `npm run check` 含 build（PR 校验耗时较长，可拆 test/validate 与 build 两步并缓存 dist）。
+
 ### 上一轮交付记录（v0.9.2 · 中文页卡片文案语言归属修复）
 
 修复线上中文页卡片一行「显示英文自述且被截断」的问题，并把 CI 未配置 LLM 期间（2026-10-05 起）产出的 5 天数据回填为 LLM 中文解读。

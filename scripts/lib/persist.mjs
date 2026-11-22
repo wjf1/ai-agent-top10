@@ -23,12 +23,16 @@ export function dataPaths(root) {
 }
 
 export function readJson(file, fallback = null) {
+  if (!fs.existsSync(file)) return fallback;
   try {
-    if (!fs.existsSync(file)) return fallback;
     return JSON.parse(fs.readFileSync(file, "utf8"));
   } catch (e) {
-    console.warn(`  ! failed to read ${path.basename(file)}: ${e.message}`);
-    return fallback;
+    // 文件存在但解析失败（半截 JSON / 非法内容）必须硬失败：静默回退 fallback 会让
+    // saveSnapshots 用残缺数据整文件覆写——一次损坏即静默清空历史并 commit 进仓库。
+    // 抛错让本轮 CI 变红 → alert job 开 issue，人工介入后数据仍可从 git 历史找回。
+    throw new Error(
+      `snapshot 文件损坏（存在但解析失败，拒绝覆写历史）: ${path.basename(file)} — ${e.message}`,
+    );
   }
 }
 

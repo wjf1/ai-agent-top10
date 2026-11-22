@@ -1145,6 +1145,24 @@ test("T1.5: writeJson 原子落盘——内容完整、不留临时文件、可�
   }
 });
 
+test("T1.5b: readJson 损坏文件必须硬失败——绝不静默回退让历史被覆写", () => {
+  const dir = mkdtempSync(join(tmpdir(), "persist-test-"));
+  try {
+    // 文件不存在 → 正常回退 fallback（首次运行路径不受影响）
+    assert.deepEqual(readJson(join(dir, "absent.json"), {}), {});
+
+    // 文件存在但内容损坏 → 必须抛错（静默回退会让 saveSnapshots 清空历史）
+    const corrupt = join(dir, "corrupt.json");
+    writeFileSync(corrupt, '{"date": "2026-11-2', "utf8");
+    assert.throws(
+      () => readJson(corrupt, {}),
+      (e) => e.message.includes("损坏") && e.message.includes("corrupt.json"),
+    );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 
 
 

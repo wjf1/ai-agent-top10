@@ -81,7 +81,6 @@
     "minSearchRemainingBeforeWait": 5,
     "minSearchRemainingBeforeWait_comment": "search API 独立限额 30/分钟；余额低于该值先等待，避免被 403 打回。",
     "requestTimeoutMs": 15000,
-    "maxTotalBackoffMs": 60000,
     "repoTimeoutMs": 90000,
     "repoTimeoutMs_comment": "单个候选的墙钟上限：任一环节永久挂住时跳过该仓库，而不是拖死整轮抓取；可用 REPO_TIMEOUT_MS 覆盖。"
   },

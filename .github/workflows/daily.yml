@@ -32,9 +32,9 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7（SHA pin：浮动 tag 可被覆盖重放）
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7（SHA pin）
         with:
           node-version: 22
           cache: npm
@@ -58,14 +58,23 @@ jobs:
     outputs:
       committed: ${{ steps.commit.outputs.committed }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7（SHA pin：浮动 tag 可被覆盖重放）
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7（SHA pin）
         with:
           node-version: 22
           cache: npm
 
       - run: npm ci
+
+      # 解读缓存跨日复用：README 哈希未变的仓库跳过 LLM 调用。无此缓存时 CI 每日全量冷跑
+      # （缓存文件已 gitignore），用滚动 key（run_id）保存最新、restore-keys 前缀恢复。
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4（SHA pin）
+        with:
+          path: src/data/snapshots/interpret-cache.json
+          key: interpret-cache-${{ github.run_id }}
+          restore-keys: |
+            interpret-cache-
 
       # 前置检查：解读服务未配置时不再「静默降级」。
       # 默认输出 warning 并继续（回落到规则文案）；把仓库变量 LLM_REQUIRED 设为 true，
@@ -140,9 +149,9 @@ jobs:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7（SHA pin：浮动 tag 可被覆盖重放）
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7（SHA pin）
         with:
           node-version: 22
           cache: npm
@@ -157,14 +166,14 @@ jobs:
         env:
           BASE: /${{ github.event.repository.name }}
 
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5（SHA pin）
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3（SHA pin）
         with:
           path: dist
 
       - id: deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4（SHA pin）
 
   # ------------------------------------------------------------------
   # job 3：告警 —— fetch / build 任一失败时开 issue（对齐 coding-plan-radar 的
