@@ -64,6 +64,10 @@ export const L = {
     homepage: "官网",
     archiveEmpty: "暂无历史数据",
     backToList: "返回榜单",
+    dailyEmptyNote:
+      "日榜按当日抓取快照直接生成：该日期缺少抓取快照（当日抓取失败或尚未生成），或快照中没有产出可入选的项目。归档页列出了已有数据的全部日期。",
+    periodEmptyNote:
+      "该周期需要至少一个完整窗口的历史快照才能计算，目前快照序列还不够长。每日抓取的快照会在积累到 7 / 30 天后自动补齐本页。",
     top1of: "No.1：",
     top1Gain: (n: string, days: number) => `近 ${days} 天 +${n} star`,
     entries: "个项目",
@@ -226,6 +230,10 @@ export const L = {
     homepage: "Homepage",
     archiveEmpty: "No archived data yet",
     backToList: "Back to ranking",
+    dailyEmptyNote:
+      "The daily board is generated straight from that day's fetch snapshot: this date is missing a snapshot (the daily fetch failed or hasn't run yet), or the snapshot produced no entries. The archive lists every date that has data.",
+    periodEmptyNote:
+      "This period needs a full window of historical snapshots, and the snapshot series is still too short. It fills in automatically once enough daily snapshots accumulate.",
     top1of: "No.1: ",
     top1Gain: (n: string, days: number) => `+${n} stars in ${days} days`,
     entries: "projects",

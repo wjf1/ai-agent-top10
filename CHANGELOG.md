@@ -32,11 +32,7 @@
 - **暗色模式「accent 底 + 白字」对比度 2.95:1 不达 WCAG AA**：暗色令牌 `--accent: #8b8bf5` 与写死的白色文字对比度实测仅 **2.95:1**（AA 要求 4.5:1），涉及 `.btn`、`PeriodSwitch` 的 `.seg.active`、`SearchView` / `ComparePanel` 的 `.fchip.active`、`EntryCard` 的 `.trend-badge.tb-new`（引用了未定义的 `--accent-ink` 恒回落 `#fff`）与 `.skip-link` 共 6 处。设计令牌表新增成对变量 **`--accent-contrast`**（浅色 `#ffffff`、对比 6.29:1；暗色 `#14161d`、对比 6.12:1，均 AA 通过，令牌注释写明实测值）并补上真实存在的 **`--accent-ink`**（与 accent 底文字色同义，指向 `--accent-contrast`）；上述 6 处统一改为引用令牌。顺带修复 Radar tooltip 同类问题：硬编码白字在暗色反转底色（`--tip-bg: #e8e9f2`）上原对比 1.21:1 完全不可读，`.radar-tip b` 改用 `var(--tip-ink)`（14.94:1），数值强调色在暗色下换用浅色 accent 深值（1.65:1 → 5.20:1）。
 - **榜单空态文案按 period 分支（`RankingPage.astro`）**：空态说明此前硬编码为周 / 月榜口径（「需要至少一个完整窗口的历史快照」），日榜条目为空时口径不符、有误导；且空态标题在日榜下会误标成「周榜」（原三元表达式漏了 daily 分支）。现按 `period` 分支：日榜显示快照缺失 / 当日无入选项目的说明（`data.ts` 新增 `dailyEmptyNote`），周期榜维持窗口积累文案（`periodEmptyNote` 入 strings）；空态标题统一走 `periodLabel`。
 - **卡片视图偏好首屏闪换（FOUC）**：保存了「表格视图」的用户每次进页都先渲染卡片、再由打包后的模块脚本切走，首屏可见明显的视图闪换。新增 `is:inline` 脚本置于两个视图容器之后，HTML 解析到该处即同步执行（先于首次绘制），读 localStorage 直接落初始视图与按钮 `aria-pressed` 状态——模式对齐 Base.astro 的主题前置脚本；原模块脚本保留，负责点击交互并对初态做幂等兜底。
-
-### 变更
-
 - **快照损坏硬失败 + 校验门禁可测化（后端设计专项分析 P1/P2 逐项）**：① `persist.mjs` 的 `readJson` 对"文件存在但解析失败"从 warn + 回退空对象改为**硬失败抛错**——此前一次 JSON 损坏会让 `saveSnapshots` 用残缺数据整文件覆写，静默清空历史并 commit 进仓库；现在 CI 变红 → alert job 开 issue，数据可从 git 历史找回（新增 T1.5b 用例钉住）。② validate-data 的门禁逻辑（index 一致性 / stars / metrics 快照类型 / XSS 与伪协议扫描）从 CLI 主流程提取为 `scripts/lib/validate-core.mjs` 纯函数，新增 `tests/validate-core.test.mjs` **7 用例**（好数据零问题 / 各类坏数据被拦）——此前门禁自身回归时 CI 不会变红。③ 主 provider **部分成功**（如 10 条只回 2 条）时也让免费备用 provider 补缺（复用现有分批 + 缺口补跑机制）——此前只有全败才切备用，部分成功时其余条目直接落规则版。④ workflow 全部 actions 从浮动 tag 改 **SHA pin**（checkout/setup-node v7、configure-pages v5、upload-pages-artifact v3、deploy-pages v4，各带版本注释）；fetch job 加 `actions/cache` 滚动缓存解读文件 `interpret-cache.json`（此前已 gitignore，CI 每日全量冷跑 LLM）。⑤ 删除无引用的死配置 `api.maxTotalBackoffMs`。**核实后跳过**：GitHub 请求的 429 已尊重 `Retry-After` 与 `x-ratelimit-reset`（`github.mjs` 既有实现）；README 无 Node 版本声明段，版本口径漂移不成立。
-- **验证**：`npm test` 全绿（validate-core 7/7、pipeline 78/78 含新增 T1.5b）；`npm run validate` 真实数据 70 天 / 29 项目通过；YAML 逐 job 权限与 SHA 断言通过。
 
 ### 安全
 
@@ -44,9 +40,11 @@
 
 ### 验证
 
+- reliability 轮：`npm test` 全绿（validate-core 7/7、pipeline 78/78 含新增 T1.5b）；`npm run validate` 真实数据 70 天 / 29 项目通过；YAML 逐 job 权限与 SHA 断言通过。
 - `npm test` **94/94 通过**；`npm run check`（test + validate + build）通过，构建产物含 `sitemap-index.xml` 且 URL 前缀正确（线上 `sitemap-index.xml` 已 200）。
 - dispatch 实跑：重试链路按设计退避（retry 1/2 → 8s → retry 2/2 → 16s）、主备切换正常触发；Pollinations 备用通道经本机端到端实测（10 条目完整 JSON、34.5s、finish stop），云端 dispatch 结果见后续 run 记录。`npm test` **95/95**（新增 extraBody 透传用例）。
 - **SEO / 无障碍修复轮验证**：`npm test` **96/96 通过**（含 LLM 重试退避的真实等待，全量约 7 分钟）；`npm run build` 通过（**1722 页** + 22 张 OG 图）。canonical 抽查：日榜 / 项目详情 / 检索（含 `/search/s/stars/`、`/search/p/rising/` 视图）/ 周榜 / 月榜 / 归档 / 分类 / 话题 / 对比 / 导出 / 评分方法论的中英页面均指向各自真实 URL，首页保持语言首页（`/` 与 `/en/`）；`dist` 落盘确认 `.seg.active` / `.fchip.active` / `.btn` / `.skip-link` / `.tb-new` 全部引用 `--accent-contrast`（暗色 `#14161d`、浅色 `#ffffff`），`aria-current="page"` 生效且全站无 `role="tablist"` / `role="tab"` 残留。
+- **P2 修复轮验证（404 / JSON-LD / hreflang / 暗色兜底 / 空态 / FOUC）**：`npm test` **104/104 通过**（全量完整跑约 6.9 分钟；中途一次失败复现排查确认为验证命令 `timeout 300` 恰在收尾截断所致，去掉超时复跑全绿）。`npm run build`（`BASE=/ai-agent-top10` 与 CI 同参）通过：**1873 页** + 22 张 OG 图，`404.html` 落在部署根。dist 抽查：首页与日榜页 JSON-LD 为 `ItemList`（10 项，`position` / `url` / `name` 取自构建期 entries）、详情页为 `Article`（`headline` / `datePublished`（= 榜单日期）/ `inLanguage` / `author` 正确），随机抽样 400 页 ld+json 全部可 `JSON.parse`；日榜（中英）与详情页 head 均有 `zh-CN` / `en` / `x-default` 三条 hreflang 且互指正确（x-default 指默认语言 zh，en 侧页面自指 en、互指 zh）；`/en/search/s/stars/` 的对侧语言链接与 hreflang 均带视图路径。dist CSS 确认 `:root:not([data-theme])` 暗色兜底块与 `color-scheme: light / dark` 声明落盘（grep 验证，未改动 dist）；源码 grep 复核空态分支（`dailyEmptyNote` / `periodEmptyNote` / 标题走 `periodLabel`）与 `is:inline` 视图脚本均已生效。
 
 ---
 

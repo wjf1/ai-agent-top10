@@ -19,9 +19,15 @@ interface Props {
    * 传入时用于拼 canonical，未传时回落语言首页——首页与默认视图无需传。
    */
   canonicalPath?: string;
+  /**
+   * 结构化数据（JSON-LD，schema.org）。由页面按内容类型构建：
+   * 榜单页（含首页）→ ItemList（RankingPage），项目详情页 → Article（ProjectDetail）；
+   * 数据一律取自构建期 props / 数据源，Base 只负责转义序列化后注入 head。
+   */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const { lang = "zh", title, desc, langHref, active, date = null, ogImage, canonicalPath } = Astro.props;
+const { lang = "zh", title, desc, langHref, active, date = null, ogImage, canonicalPath, jsonLd } = Astro.props;
 const t = strings(lang);
 const B = import.meta.env.BASE_URL.replace(/\/$/, "");
 const fullTitle = title ? `${title} · ${t.siteName}` : `${t.siteName} — ${t.tagline}`;
@@ -31,6 +37,17 @@ const ogPath = ogImage ?? `${B}/og/home-${lang}.png`;
 const ogUrl = `${site}${ogPath}`;
 // canonical 必须指向页面自身：非首页视图都要传 canonicalPath，否则整站的 canonical 会全部指向语言首页
 const canonical = new URL(canonicalPath ?? `${B}/${lang === "en" ? "en/" : ""}`, `${site || "https://example.invalid"}/`).toString();
+// hreflang 互指（P2）：self 用与 canonical 同源的 URL，对侧语言复用 langHref——
+// 它由各页面经 src/lib/routes.ts 拼出（与语言切换链接同源），保证指向同一视图的对侧语言页。
+// 仅当中英两侧 URL 都能拼出时才输出整组 hreflang（hreflang 集合要么齐全要么不发，单侧无意义）。
+const otherUrl = langHref ? new URL(langHref, `${site || "https://example.invalid"}/`).toString() : null;
+const zhUrl = lang === "zh" ? canonical : otherUrl;
+const enUrl = lang === "en" ? canonical : otherUrl;
+// x-default 指向默认语言版本：zh 是站点默认语言（路由挂在根路径）
+const xDefault = zhUrl ?? enUrl;
+/** JSON-LD 序列化：< 转义为 \u003c，防止数据内嵌 </script> 逃逸出脚本上下文（数据虽为构建期产物，仍纵深防御） */
+const serializeJsonLd = (value: Record<string, unknown> | Record<string, unknown>[]) =>
+  JSON.stringify(value).replace(/</g, "\\u003c");
 // 首页始终指向最新一期；若当前在某一期日报里，则“日榜”指向该期
 const dailyHref = date && active === "day" ? dayPath(B, lang, date) : homePath(B, lang);
 
@@ -51,6 +68,9 @@ const nav = [
     <title>{fullTitle}</title>
     {desc && <meta name="description" content={desc} />}
     {site && <link rel="canonical" href={canonical} />}
+    {site && zhUrl && enUrl && <link rel="alternate" hreflang="zh-CN" href={zhUrl} />}
+    {site && zhUrl && enUrl && <link rel="alternate" hreflang="en" href={enUrl} />}
+    {site && zhUrl && enUrl && <link rel="alternate" hreflang="x-default" href={xDefault} />}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={t.siteName} />
     <meta property="og:title" content={fullTitle} />
@@ -63,6 +83,7 @@ const nav = [
     {desc && <meta name="twitter:description" content={desc} />}
     <meta name="twitter:image" content={ogUrl} />
     <link rel="alternate" type="application/rss+xml" title={`${t.siteName} RSS`} href={rssPath(B, lang)} />
+    {jsonLd && <script type="application/ld+json" set:html={serializeJsonLd(jsonLd)} />}
     <meta name="color-scheme" content="light dark" />
     <script is:inline>
       // 提前应用主题，避免暗色模式下的白屏闪烁

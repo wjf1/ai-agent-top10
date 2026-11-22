@@ -1,0 +1,72 @@
+---
+/**
+ * 自定义 404 页（P2）：静态构建输出 dist/404.html，GitHub Pages 自动用作全站 404。
+ *
+ * 双语处理方式与 [...lang] 路由不同：Pages 的 404 是部署根的单一文件，
+ * /zh/... 与 /en/... 下的缺失路径都会回落到同一份 404.html，无法按语言分流，
+ * 因此采用单页双语并列（中文块在前、英文块在后），各自带齐三种引导链接。
+ * 页面整体挂 lang="zh-CN"（站点默认语言），英文块用 lang="en" 标注语区。
+ */
+import Base from "../layouts/Base.astro";
+import { strings } from "../lib/data.ts";
+import { archivePath, homePath, searchPath } from "../lib/routes.ts";
+
+const B = import.meta.env.BASE_URL.replace(/\/$/, "");
+const zh = strings("zh");
+const en = strings("en");
+const zhLinks = [
+  { href: homePath(B, "zh"), label: zh.backHome },
+  { href: archivePath(B, "zh"), label: zh.archive },
+  { href: searchPath(B, "zh"), label: zh.searchPage },
+];
+const enLinks = [
+  { href: homePath(B, "en"), label: en.backHome },
+  { href: archivePath(B, "en"), label: en.archive },
+  { href: searchPath(B, "en"), label: en.searchPage },
+];
+---
+
+<Base lang="zh" title={zh.errorTitle} desc={zh.errorBody}>
+  <section class="notfound">
+    <p class="code" aria-hidden="true">404</p>
+    <div class="col">
+      <h1>{zh.errorTitle}</h1>
+      <p>{zh.errorBody}</p>
+      <p class="links">
+        {zhLinks.map((l) => <a class="btn ghost" href={l.href}>{l.label}</a>)}
+      </p>
+    </div>
+    <div class="col alt" lang="en">
+      <h2>{en.errorTitle}</h2>
+      <p>{en.errorBody}</p>
+      <p class="links">
+        {enLinks.map((l) => <a class="btn ghost" href={l.href}>{l.label}</a>)}
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .notfound {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 44px 32px 40px;
+    margin: 44px 0;
+    text-align: center;
+  }
+  .code {
+    margin: 0 0 6px;
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+  }
+  .col { max-width: 640px; margin: 26px auto 0; }
+  .col + .col { border-top: 1px dashed var(--line); padding-top: 24px; }
+  .col h1 { margin: 0 0 8px; font-size: 20px; }
+  .col h2 { margin: 0 0 8px; font-size: 17px; }
+  .col p { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
+  .links { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }
+</style>

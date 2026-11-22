@@ -136,7 +136,22 @@ ai-agent-top10
 
 ---
 
-## 四、最近一轮变更与交付成果 (前端审计 P1 修复 · canonical/对比度/ARIA，2026-11-22)
+## 四、最近一轮变更与交付成果 (前端审计 P2 修复 · 404/SEO/暗色兜底，2026-11-22)
+
+前端设计审计第二轮（P2）修复，均已实测验证：
+
+| 项 | 内容 |
+|---|---|
+| **自定义 404 页** | 新增 `src/pages/404.astro`，静态构建输出 `dist/404.html`（部署根，GitHub Pages 自动用作全站 404；Astro v5 输出不按 base 嵌套，已实测确认）。双语采用单页并列——Pages 的 404 是部署根单一文件、无法按语言分流，中文块在前英文块在后（英文块 `lang="en"`），复用 Base 布局与既有令牌，各自带「回到首页 / 归档页 / 检索页」三条引导链接 |
+| **JSON-LD 结构化数据** | `Base.astro` 新增可选 `jsonLd` prop（head 注入 `application/ld+json`，序列化时 `<` 转义 `\u003c` 防脚本逃逸）。首页与榜单页（共用 RankingPage）输出 `ItemList`：`numberOfItems` / `position` / `name` / `url` 全部取自构建期 entries，无硬编码数值，空态不发；项目详情页输出 `Article`——详情页主体是构建期生成的双语解读 + 8 维评分分析（编辑性内容，成文日期即榜单日期），Article 语义匹配且是 Google 文档化最充分的富结果类型；Dataset 面向可下载数据集的描述页、本页并非数据集页（数据下载入口在 `/export/`），故不选 |
+| **hreflang 互指** | Base head 按 self（与 canonical 同源）+ 对侧 `langHref`（各页经 `routes.ts` 拼的对侧同视图 URL）整组输出 `zh-CN` / `en` / `x-default`（x-default 指默认语言 zh）；仅当中英 URL 齐备才输出（404 页等单侧场景不发）。顺带修正 `search/[...view].astro` 的 `langHref` 丢失视图路径（切语言不再丢排序 / 筛选条件） |
+| **无 JS 暗色兜底** | `global.css` 新增 `@media (prefers-color-scheme: dark) { :root:not([data-theme]) { … } }`：禁用 JS 时跟随系统深色偏好；有 JS 时 `:not([data-theme])` 恒不生效（脚本异常路径也写 light），主题决策仍以 `data-theme` 为准。令牌块原生 CSS 无法跨选择器复用且无 PostCSS/Sass 构建器，取复制方案并以 `DARK-TOKENS` 注释标记两处需同步，切换按钮图标状态一并兜底。`:root` 与 `[data-theme="dark"]` 分别补 `color-scheme: light / dark`（滚动条 / 原生表单控件跟随主题） |
+| **日榜空态文案按 period 分支** | 空态说明原硬编码周 / 月窗口口径、标题在日榜下误标「周榜」（三元表达式漏 daily 分支）。按 `period` 分支：日榜 → `t.dailyEmptyNote`（快照缺失 / 当日无入选项目，`data.ts` 新增），周期榜 → `t.periodEmptyNote`（窗口积累文案入 strings）；标题统一走 `periodLabel` |
+| **卡片视图偏好 FOUC** | 保存「表格视图」的用户进页先渲染卡片再被打包模块脚本切走。新增 `is:inline` 脚本置于两个视图容器之后，HTML 解析到即同步执行（先于首绘），读 localStorage 直接落表格初态与按钮 `aria-pressed`；模式对齐 Base.astro 主题脚本，模块脚本保留负责点击交互并幂等兜底 |
+
+**验证结论**：`npm test` **104/104 通过**（全量完整跑约 6.9 分钟；首轮 1 处失败系验证命令 `timeout 300` 恰在收尾截断所致，复跑全绿）。`npm run build`（BASE=/ai-agent-top10 与 CI 同参）通过：**1873 页** + 22 张 OG 图。dist 抽查：`404.html` 落部署根、双语引导链接齐备；首页 / 日榜 JSON-LD 为 `ItemList`（10 项，position / URL / name 来自 entries）、详情页为 `Article`（headline / datePublished / inLanguage / author 正确），抽样 400 页 ld+json 全部可 `JSON.parse`；日榜（中英）与详情页 head 均有 `zh-CN` / `en` / `x-default` 三条 hreflang 且互指正确；dist CSS 含 `:root:not([data-theme])` 兜底块与 `color-scheme` 声明；源码 grep 复核空态分支与 `is:inline` 视图脚本均落盘。遗留待办：`.dim-num` 调色板深色底白字（约 2.9:1）留待后续轮次。
+
+### 上一轮交付记录 (前端审计 P1 修复 · canonical/对比度/ARIA，2026-11-22)
 
 前端设计审计发现的三项 P1 修复，均已实测验证：
 
@@ -146,7 +161,7 @@ ai-agent-top10
 | **暗色 accent 对比度** | 暗色 `--accent: #8b8bf5` 配白字实测 2.95:1 不达 AA。新增成对令牌 `--accent-contrast`（浅 `#ffffff` 6.29:1 / 暗 `#14161d` 6.12:1，注释写明实测值）并补真实 `--accent-ink`；`.btn`/`.seg.active`/`.fchip.active`×2/`.tb-new`/`.skip-link` 共 6 处改引用令牌；顺带修 Radar tooltip 硬编码白字（1.21:1 → `var(--tip-ink)` 14.94:1） |
 | **ARIA 修正** | PeriodSwitch 误用 `tablist/tab`（无 tabpanel、无方向键交互）→ 普通 `role="group"` + 链接 `aria-current="page"`，与 SearchView chips 做法一致 |
 
-**验证结论**：`npm test` 96/96 通过；`npm run build` 1722 页成功，dist CSS 确认两套 `--accent-contrast` 落盘、全站无 `role="tab` 残留。遗留待办（P2）：自定义 404 页、JSON-LD/hreflang、无 JS 时暗色兜底、日榜空态文案按 period 分支；另 `.dim-num` 调色板深色底白字（约 2.9:1）留待后续轮次。
+**验证结论**：`npm test` 96/96 通过；`npm run build` 1722 页成功，dist CSS 确认两套 `--accent-contrast` 落盘、全站无 `role="tab` 残留。遗留待办（P2）：自定义 404 页、JSON-LD/hreflang、无 JS 时暗色兜底、日榜空态文案按 period 分支；另 `.dim-num` 调色板深色底白字（约 2.9:1）留待后续轮次。（P2 各项已于本轮全部完成，见上方最近一轮记录。）
 
 ### 上一轮交付记录 (安全修复 · CI 令牌外发消除与权限最小化)
 

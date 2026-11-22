@@ -54,11 +54,15 @@ const activeLabel = [activePreset, activeSort].filter(Boolean).map((x: any) => (
 // canonical 指向本视图自身的静态路径：按解析结果重拼（非法路径片段会回落到 /search/ 的规范页）
 const view = viewParts(parsed).join("/");
 const canonicalPath = view ? `${searchPath(B, lang)}${view}/` : searchPath(B, lang);
+// 对侧语言链接带上当前视图：语言切换与 Base 的 hreflang 互指都要落到对侧同视图页，
+// 否则从 /search/s/stars/ 切语言会丢排序条件（hreflang 也会指向未过滤页）。
+const otherLang = lang === "en" ? "zh" : "en";
+const langHref = view ? `${searchPath(B, otherLang)}${view}/` : searchPath(B, otherLang);
 ---
 
 <Base
   {lang}
-  langHref={searchPath(B, lang === "en" ? "zh" : "en")}
+  {langHref}
   canonicalPath={canonicalPath}
   title={`${t.searchPage}${activeLabel ? ` · ${activeLabel}` : ""}`}
   desc={t.search}

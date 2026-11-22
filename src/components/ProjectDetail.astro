@@ -72,6 +72,29 @@ const factors = scoreFactors(entry.scores, dims);
 const scoreSummary = t.scoreSummary(entry.scores.overall, factors.low, factors.high);
 const moments = momentReasons({ ...entry, firstSeen: firstDate || entry.firstSeen }, { streak, date, t });
 const anomaly = forkAnomaly(entry, t);
+
+// JSON-LD Article（P2）：详情页主体是构建期生成的双语解读 + 8 维评分分析（编辑性内容），
+// 成文日期即榜单日期，与 Article 语义匹配且是 Google 文档化最充分的富结果类型；
+// Dataset 面向可下载数据集的描述页（distribution 等字段），本页并非数据集页
+// （数据下载入口在 /export/），故务实选 Article。字段全部取自构建期数据，不硬编码。
+const siteRoot = (import.meta.env.SITE ?? "").replace(/\/$/, "");
+const detailOgPath = ogImage ?? `${B}/og/home-${lang}.png`;
+const jsonLd = siteRoot
+  ? {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: entry.full_name,
+      description: String(entry.intro?.[lang] ?? entry.why?.[lang] ?? "").slice(0, 150),
+      image: `${siteRoot}${detailOgPath}`,
+      datePublished: date,
+      inLanguage: lang === "zh" ? "zh-CN" : "en",
+      author: { "@type": "Organization", name: t.siteName, url: `${siteRoot}${B}/` },
+      mainEntityOfPage: {
+        "@type": "WebPage",
+        "@id": new URL(canonicalPath, `${siteRoot}/`).toString(),
+      },
+    }
+  : null;
 ---
 
 <Base
@@ -83,6 +106,7 @@ const anomaly = forkAnomaly(entry, t);
   date={date}
   {ogImage}
   canonicalPath={canonicalPath}
+  jsonLd={jsonLd}
 >
   <section class="detail-head">
     <div class="crumb">

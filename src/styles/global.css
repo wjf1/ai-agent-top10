@@ -4,6 +4,8 @@
    因此暗色模式下不会出现白屏闪烁。
    --------------------------------------------------------------- */
 :root {
+  /* 无 JS 时的表单控件 / 滚动条主题跟随：默认浅色（暗色由 data-theme 块覆盖） */
+  color-scheme: light;
   --bg: #f7f8fb;
   --card: #ffffff;
   --card-2: #f2f3f8;
@@ -47,6 +49,8 @@
 }
 
 [data-theme="dark"] {
+  /* 表单控件 / 滚动条随暗色主题渲染（Chrome/Firefox 原生控件暗色化） */
+  color-scheme: dark;
   --bg: #0e1017;
   --card: #171a24;
   --card-2: #1e2230;
@@ -87,6 +91,65 @@
   --shadow-2: 0 10px 30px rgba(0, 0, 0, 0.45);
   --shadow: var(--shadow-2);
   --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+}
+
+/* ---------------------------------------------------------------
+   无 JS 暗色兜底（P2）：主题脚本失效 / 被禁用时，跟随系统深色偏好。
+   :not([data-theme]) 保证有 JS 时（Base.astro 内联脚本总会写入 data-theme，
+   异常路径也会写 light）此规则永不生效，主题决策仍以 data-theme 为准。
+   CSS 原生不支持跨选择器复用令牌块，项目又无 PostCSS/Sass 构建器，
+   因此下方令牌与 [data-theme="dark"] 是同一份复制——两处必须同步修改
+   （检索标记：DARK-TOKENS）。
+   --------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    /* DARK-TOKENS BEGIN（与 [data-theme="dark"] 保持同步） */
+    color-scheme: dark;
+    --bg: #0e1017;
+    --card: #171a24;
+    --card-2: #1e2230;
+    --ink: #e8e9f2;
+    --muted: #9aa1b4;
+    --line: #2a2f3f;
+    --accent: #8b8bf5;
+    --accent-soft: #232544;
+    /* accent 底上的文字色：#8b8bf5 与 #14161d 实测对比 6.12:1（WCAG AA 通过）；
+       此前硬编码白字对比仅 2.95:1，不达标（P1 修复） */
+    --accent-contrast: #14161d;
+    --accent-ink: var(--accent-contrast);
+    --good: #34d399;
+    --good-soft: #12331f;
+    --good-ink: #34d399;
+    --warn: #fbbf24;
+    --warn-soft: #3a2a10;
+    --warn-ink: #f5d18a;
+    --cat-tag-ink: #9aa1b4;
+    --data-primary: #818cf8;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 999px;
+    --radius: var(--radius-lg);
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --radar-fill: rgba(129, 140, 248, 0.2);
+    --trend-fill: rgba(129, 140, 248, 0.14);
+    --tip-bg: #e8e9f2;
+    --tip-ink: #14161d;
+    --header-bg: rgba(14, 16, 23, 0.86);
+    --shadow-1: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-2: 0 10px 30px rgba(0, 0, 0, 0.45);
+    --shadow: var(--shadow-2);
+    --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+    /* DARK-TOKENS END */
+  }
+  /* 主题切换按钮图标与 [data-theme="dark"] 状态保持一致（无 JS 下也显示正确的待切换图标） */
+  :root:not([data-theme]) .theme-toggle .icon-light { display: none; }
+  :root:not([data-theme]) .theme-toggle .icon-dark { display: inline; }
 }
 
 * { box-sizing: border-box; }

@@ -86,9 +86,30 @@ const badgesFor = (e: any) => {
 };
 // 周期榜的口径标注：整榜同版本时展示该版本，混合时改走 scoringMixed 提示
 const boardCaliber = !scoringMixed && entries[0] ? caliberTag(entries[0], scoringVersion(), t) : null;
+
+// JSON-LD ItemList（P2）：首页（日榜视图）与各榜单页共用本组件；数据全部取自构建期 entries，
+// 不硬编码数值。仅在有条目时输出——空态页面的空 ItemList 对搜索引擎没有意义。
+const siteRoot = (import.meta.env.SITE ?? "").replace(/\/$/, "");
+const listSelfHref = canonicalPath ?? homePath(B, lang);
+const jsonLd =
+  siteRoot && entries.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        name: title,
+        url: new URL(listSelfHref, `${siteRoot}/`).toString(),
+        numberOfItems: entries.length,
+        itemListElement: entries.map((e: any, i: number) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: e.full_name,
+          url: new URL(projectPath(B, lang, date, e.slug), `${siteRoot}/`).toString(),
+        })),
+      }
+    : null;
 ---
 
-<Base lang={lang} langHref={langHref} title={`${date} ${periodLabel}`} desc={t.heroSub} active={activeNav} date={period === "daily" ? date : null} canonicalPath={canonicalPath}>
+<Base lang={lang} langHref={langHref} title={`${date} ${periodLabel}`} desc={t.heroSub} active={activeNav} date={period === "daily" ? date : null} canonicalPath={canonicalPath} jsonLd={jsonLd}>
   <section class="hero">
     <span class="date-chip"><Icon name="calendar" size={13} /> {date} · {periodLabel} · {rankDesc}</span>
     <h1>{title}</h1>
@@ -135,12 +156,10 @@ const boardCaliber = !scoringMixed && entries[0] ? caliberTag(entries[0], scorin
 
   {entries.length === 0 ? (
     <section class="empty-board">
-      <h2>{period === "monthly" ? t.periodMonthly : t.periodWeekly} · {lang === "zh" ? "暂不可用" : "not available yet"}</h2>
-      <p>
-        {lang === "zh"
-          ? "该周期需要至少一个完整窗口的历史快照才能计算，目前快照序列还不够长。每日抓取的快照会在积累到 7 / 30 天后自动补齐本页。"
-          : "This period needs a full window of historical snapshots, and the snapshot series is still too short. It fills in automatically once enough daily snapshots accumulate."}
-      </p>
+      {/* 空态标题按当前 period 走 periodLabel（原实现周/月硬编码，日榜空态会误标成“周榜”） */}
+      <h2>{periodLabel} · {lang === "zh" ? "暂不可用" : "not available yet"}</h2>
+      {/* 说明文案按数据来源分支：日榜吃当日快照，周期榜吃完整窗口的快照序列 */}
+      <p>{period === "daily" ? t.dailyEmptyNote : t.periodEmptyNote}</p>
       {unavailableReason && <p class="reason"><code>{unavailableReason}</code></p>}
       <p><a class="btn ghost" href={homePath(B, lang)}>{t.backToList}</a></p>
     </section>
@@ -195,6 +214,30 @@ const boardCaliber = !scoringMixed && entries[0] ? caliberTag(entries[0], scorin
       <div class="table-view-wrap hidden" id="table-view-container">
         <ProjectTable projects={entries} {lang} windowDays={effectiveDays} {date} />
       </div>
+
+      <script is:inline>
+        // 视图偏好防闪换（P2 FOUC 修复）：内联脚本在解析到此处时同步执行，先于首次绘制
+        // 把视图切到用户上次的选择，避免「先渲染卡片、模块脚本加载后再切走」的闪换。
+        // 模式与 Base.astro 的主题脚本一致；与下方模块脚本的切换逻辑保持幂等，两处需同步。
+        (function () {
+          try {
+            if (localStorage.getItem("agent-top10-view-mode") !== "table") return;
+            var card = document.getElementById("card-view-container");
+            var table = document.getElementById("table-view-container");
+            var cardBtn = document.querySelector('[data-view="card"]');
+            var tableBtn = document.querySelector('[data-view="table"]');
+            if (!card || !table || !cardBtn || !tableBtn) return;
+            card.classList.add("hidden");
+            table.classList.remove("hidden");
+            cardBtn.classList.remove("active");
+            cardBtn.setAttribute("aria-pressed", "false");
+            tableBtn.classList.add("active");
+            tableBtn.setAttribute("aria-pressed", "true");
+          } catch (e) {
+            /* 隐私模式下 localStorage 不可用，维持默认卡片视图 */
+          }
+        })();
+      </script>
     </>
   )}
 
