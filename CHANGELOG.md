@@ -17,15 +17,26 @@
 - **sitemap.xml 生成（`@astrojs/sitemap` 集成）**：740 页双语站点此前无 sitemap，搜索引擎只能靠内链爬取。集成后构建产出 `sitemap-index.xml` + 分片 sitemap（URL 按构建期 `BASE` 自动带 `/ai-agent-top10` 前缀），并新增 `public/robots.txt` 声明站点地图地址。
 - **每日巡检失败自动开 issue（`daily.yml` 新增 `alert` job）**：fetch / build 任一失败时自动创建当日失败 issue（含 Actions 日志链接，同日防重复）——替代此前的静默失败（2026-11-10 的失败靠下一次成功才被发现），对齐 coding-plan-radar 的「失败可见」机制。
 
+### 变更
+
+- **PeriodSwitch 弃用 tablist/tab 语义（ARIA）**：日 / 周 / 月切换器原用 `<div role="tablist">` + `<a role="tab" aria-selected>`，但页面并无对应 tabpanel、也没有方向键交互，不符合 ARIA APG 对 tab 模式的结构要求，读屏用户会得到"有三个标签页"的错误预期。改为普通链接 + `aria-current="page"` 标记当前项（容器保留 `role="group"` + `aria-label` 提供可及名称），与 SearchView 排序 / 筛选 chips 的既有做法一致。
+
 ### 修复
 
 - **LLM 解读调用重试 + 超时放宽（`scripts/lib/interpret.mjs`）**：火山方舟端点从 GitHub Actions 海外 runner 访问普遍偏慢，单次 45s 超时且无重试，频繁触发 "This operation was aborted" 使整天解读回落规则模板（11-14 实测仍复现）。默认超时放宽至 90s，主 / 备 provider 失败后按指数退避重试（`retries` 默认 2 次、`retryBaseMs` 默认 8s），瞬时故障自愈后才真正回落规则版。
 - **接入 Pollinations.AI 作为免费备用解读 provider**：dispatch 实跑证实火山方舟国内端点从 Actions 海外 runner 直连 `fetch failed`（非慢、是不可达）；GitHub Models 已于 2026-07-30 完全退役（端点恒返 200 "OK" 非 JSON）不可用作兜底。最终接入开源 AGPL 的 **Pollinations.AI**（匿名无鉴权、限速 45s/IP，secret 只需任意非空占位值）：GPT-OSS 20B 为 reasoning 模型，10 条目解读实测必须 `reasoning_effort: "low"`（否则 `output_token_limit_exceeded`）。为此 `interpret.mjs` 做三处增强，主 provider 行为不变：① `resolveProvider` 备用分支不再回落主 provider 的 `LLM_BASE_URL` / `LLM_MODEL` 环境变量（**原 bug**：备用通道继承主端点，Pollinations 配置被完全架空）；② provider 级 `extraBody` 参数透传与 fallback 专属 `retryBaseMs`（45s，重试跨过限速窗口）；③ 备用通道**分批请求**（`fallback.chunkSize=3`、`interBatchDelayMs=45s`）——匿名档单次输出上限实测只产出 1/10 条目，分批后逐批合并、批失败不阻塞后续，且**缺失条目自动补一轮重跑**（补缺前同样跨过限速窗口；实测从 8/10 补到 **10/10**）。主 provider 仍为火山方舟（本机 / 国内环境优先）。`npm test` **97/97**（新增 extraBody 透传、分批合并与缺口补跑用例）。
+- **全站 canonical 固定指向语言首页（SEO）**：`Base.astro` 的 canonical 硬编码为语言首页路径（`${B}/${lang === "en" ? "en/" : ""}`）且不接收页面级参数，1700+ 日榜 / 周月榜 / 项目详情 / 检索 / 分类 / 话题等页面的 `<link rel="canonical">` 全部指向首页（实测 `dist/day/2026-11-15/index.html` 的 canonical 指向站点根），搜索引擎会把整站榜单页视为首页的重复内容。`Base` 新增可选 prop `canonicalPath`：传入时用它拼 canonical，未传保持回落语言首页（首页默认视图不传）。日榜 / 周榜 / 月榜（含指定窗口版）、项目详情（`/project/<date>/<slug>/`）、归档、检索（含排序 / 快捷筛选视图）、分类榜、话题页、对比、导出、评分方法论各视图全部传入自身路径，统一经 `src/lib/routes.ts` 辅助函数拼接（自带 BASE 前缀与 `/en/` 语言前缀、保留尾斜杠）；构建后抽查日榜 / 详情 / 检索 / 周榜等中英页面 canonical 均指向各自真实 URL。
+- **暗色模式「accent 底 + 白字」对比度 2.95:1 不达 WCAG AA**：暗色令牌 `--accent: #8b8bf5` 与写死的白色文字对比度实测仅 **2.95:1**（AA 要求 4.5:1），涉及 `.btn`、`PeriodSwitch` 的 `.seg.active`、`SearchView` / `ComparePanel` 的 `.fchip.active`、`EntryCard` 的 `.trend-badge.tb-new`（引用了未定义的 `--accent-ink` 恒回落 `#fff`）与 `.skip-link` 共 6 处。设计令牌表新增成对变量 **`--accent-contrast`**（浅色 `#ffffff`、对比 6.29:1；暗色 `#14161d`、对比 6.12:1，均 AA 通过，令牌注释写明实测值）并补上真实存在的 **`--accent-ink`**（与 accent 底文字色同义，指向 `--accent-contrast`）；上述 6 处统一改为引用令牌。顺带修复 Radar tooltip 同类问题：硬编码白字在暗色反转底色（`--tip-bg: #e8e9f2`）上原对比 1.21:1 完全不可读，`.radar-tip b` 改用 `var(--tip-ink)`（14.94:1），数值强调色在暗色下换用浅色 accent 深值（1.65:1 → 5.20:1）。
+
+### 安全
+
+- **CI 消除 GITHUB_TOKEN 外发第三方端点（`daily.yml` / `scripts/lib/interpret.mjs`）**：备用解读服务的 key 原写法为 `secrets.LLM_FALLBACK_API_KEY || github.token`——secret 未配置时会把带 `contents: write` / `pages: write` 权限的仓库令牌作为 Bearer 头 POST 给第三方匿名端点（Pollinations，且该服务本就无需真 key，config 注释明言「只需任意非空占位值」）。改为回落字面 `'anonymous'` 占位值：fallback 功能不变、令牌外发路径清零，`github.token` 仅保留官方 GitHub API 用途（抓取数据、失败开 issue）。`interpret.mjs` 备用 provider 密钥同步收紧：只认 `LLM_FALLBACK_API_KEY` 与 config 显式 `apiKeyEnv`，绝不回落主密钥 `LLM_API_KEY`（此前若 config 未写 apiKeyEnv，会把主服务密钥发往备用第三方端点）。同时 workflow 权限按 job 最小化：顶层收敛为 `contents: read`（原为 contents / pages / id-token / models 全量声明），fetch job 单独 `contents: write`（提交数据）、build job 单独 `pages: write` + `id-token: write`，移除无用且误导的 `models: read`（fallback 端点是 Pollinations 非 GitHub Models）；三处 `npm ci || npm install` 改为 `npm ci` 硬失败，lockfile 不同步不再静默降级为未验证依赖版本。
 
 ### 验证
 
 - `npm test` **94/94 通过**；`npm run check`（test + validate + build）通过，构建产物含 `sitemap-index.xml` 且 URL 前缀正确（线上 `sitemap-index.xml` 已 200）。
 - dispatch 实跑：重试链路按设计退避（retry 1/2 → 8s → retry 2/2 → 16s）、主备切换正常触发；Pollinations 备用通道经本机端到端实测（10 条目完整 JSON、34.5s、finish stop），云端 dispatch 结果见后续 run 记录。`npm test` **95/95**（新增 extraBody 透传用例）。
+- **SEO / 无障碍修复轮验证**：`npm test` **96/96 通过**（含 LLM 重试退避的真实等待，全量约 7 分钟）；`npm run build` 通过（**1722 页** + 22 张 OG 图）。canonical 抽查：日榜 / 项目详情 / 检索（含 `/search/s/stars/`、`/search/p/rising/` 视图）/ 周榜 / 月榜 / 归档 / 分类 / 话题 / 对比 / 导出 / 评分方法论的中英页面均指向各自真实 URL，首页保持语言首页（`/` 与 `/en/`）；`dist` 落盘确认 `.seg.active` / `.fchip.active` / `.btn` / `.skip-link` / `.tb-new` 全部引用 `--accent-contrast`（暗色 `#14161d`、浅色 `#ffffff`），`aria-current="page"` 生效且全站无 `role="tablist"` / `role="tab"` 残留。
 
 ---
 

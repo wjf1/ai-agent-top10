@@ -136,7 +136,21 @@ ai-agent-top10
 
 ---
 
-## 四、最近一轮变更与交付成果 (v0.9.2 · 中文页卡片文案语言归属修复)
+## 四、最近一轮变更与交付成果 (安全修复 · CI 令牌外发消除与权限最小化)
+
+**根因**：`daily.yml` 备用解读服务 key 写作 `secrets.LLM_FALLBACK_API_KEY || github.token`，secret 未配置时把带写权限的仓库令牌作为 Bearer 发给第三方匿名端点（Pollinations——本就无需真 key，纯属泄漏面）；workflow 顶层权限对全部 job 过宽。
+
+| 项 | 内容 |
+|---|---|
+| **改动 1（令牌外发）** | `LLM_FALLBACK_API_KEY` 回落值 `github.token` → 字面 `'anonymous'`（Pollinations 匿名可用，fallback 功能不变）；`github.token` 仅剩官方 API 用途（行 93 抓取、行 184 开 issue） |
+| **改动 2（密钥回落）** | `interpret.mjs` 备用 provider 密钥只认 `LLM_FALLBACK_API_KEY` 与 config 显式 `apiKeyEnv`，绝不回落主密钥 `LLM_API_KEY` |
+| **改动 3（权限收敛）** | 顶层 `permissions` 收敛为 `contents: read`；fetch job `contents: write`、build job `pages: write` + `id-token: write`、check job `contents: read`（alert 原有）；移除无用的 `models: read` |
+| **改动 4（供应链）** | 三处 `npm ci || npm install` → `npm ci` 硬失败 |
+| **关键改动文件** | `.github/workflows/daily.yml`、`scripts/lib/interpret.mjs`（仅 `resolveProvider` 备用分支） |
+
+**验证结论**：`npm test` **96/96 通过**；YAML 结构断言通过（逐 job 权限符合预期）；`grep github.token daily.yml` 确认无第三方外发路径。遗留待办：Actions 改 SHA pin（浮动 tag 供应链面）、快照 `readJson` 损坏静默清空历史（`persist.mjs:29`，P1）。
+
+### 上一轮交付记录（v0.9.2 · 中文页卡片文案语言归属修复）
 
 修复线上中文页卡片一行「显示英文自述且被截断」的问题，并把 CI 未配置 LLM 期间（2026-10-05 起）产出的 5 天数据回填为 LLM 中文解读。
 

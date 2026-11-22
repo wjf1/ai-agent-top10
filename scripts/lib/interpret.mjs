@@ -49,10 +49,12 @@ function resolveProvider(cfg, { prefix = "" } = {}) {
     // 备用 provider：只认专用前缀环境变量（LLM_FALLBACK_*）与 config.fallback 块，
     // 绝不回落到主 provider 的 LLM_BASE_URL / LLM_MODEL —— 否则备用通道会继承主端点
     // （实测：主为火山时备用也打火山，Pollinations 配置被完全架空）。
+    // 密钥同理绝不回落主密钥（LLM_API_KEY）：备用端点多为第三方服务，
+    // 回落等于把主服务密钥外发；仅当 config 显式配置 apiKeyEnv 时才读该变量。
     return {
       baseUrl: scoped("BASE_URL") || cfg.baseUrl || "",
       model: scoped("MODEL") || cfg.model || "",
-      apiKey: scoped("API_KEY") || process.env[apiKeyEnv] || "",
+      apiKey: scoped("API_KEY") || (cfg.apiKeyEnv ? process.env[cfg.apiKeyEnv] : "") || "",
     };
   }
   return {

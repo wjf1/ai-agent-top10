@@ -12,12 +12,10 @@ on:
   pull_request:
     branches: [main]
 
+# 顶层默认只给读权限；写权限按 job 最小化声明（fetch 提交数据、build 部署 Pages）。
+# fallback 解读服务是匿名端点（Pollinations，key 仅占位），不需要也不应持有任何 token 权限。
 permissions:
-  contents: write
-  pages: write
-  id-token: write
-  # GitHub Models fallback（LLM_FALLBACK_* 未配专用 key 时回落 GITHUB_TOKEN）需要 models: read
-  models: read
+  contents: read
 
 concurrency:
   # PR 校验按 PR 号分组，不占用生产部署的 pages 队列（否则会互相排队）
@@ -31,6 +29,8 @@ jobs:
   check:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v7
 
@@ -39,7 +39,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - run: npm ci || npm install
+      - run: npm ci
 
       - name: Test, validate data, build site
         run: npm run check
@@ -53,6 +53,8 @@ jobs:
   fetch:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     outputs:
       committed: ${{ steps.commit.outputs.committed }}
     steps:
@@ -63,7 +65,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - run: npm ci || npm install
+      - run: npm ci
 
       # 前置检查：解读服务未配置时不再「静默降级」。
       # 默认输出 warning 并继续（回落到规则文案）；把仓库变量 LLM_REQUIRED 设为 true，
@@ -97,9 +99,9 @@ jobs:
           LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
           LLM_MODEL: ${{ vars.LLM_MODEL }}
           # 备用解读服务（可选）：主服务失败时自动切换。三个变量都可留空。
-          # 未配置专用 key 时回落 GITHUB_TOKEN + GitHub Models（公开仓库免费额度，
-          # 海外 runner 天然可达——火山方舟国内端点从 Actions 抓取实测 fetch failed）。
-          LLM_FALLBACK_API_KEY: ${{ secrets.LLM_FALLBACK_API_KEY || github.token }}
+          # fallback 端点（Pollinations）匿名无鉴权，key 只需非空占位值——未配置 secret
+          # 时用字面 'anonymous'，绝不回落 GITHUB_TOKEN（带写权限的仓库令牌绝不能外发第三方）。
+          LLM_FALLBACK_API_KEY: ${{ secrets.LLM_FALLBACK_API_KEY || 'anonymous' }}
           LLM_FALLBACK_BASE_URL: ${{ vars.LLM_FALLBACK_BASE_URL }}
           LLM_FALLBACK_MODEL: ${{ vars.LLM_FALLBACK_MODEL }}
 
@@ -131,6 +133,9 @@ jobs:
     needs: [fetch]
     if: always() && github.event_name != 'pull_request' && (needs.fetch.result == 'success' || needs.fetch.result == 'skipped')
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
@@ -142,7 +147,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - run: npm ci || npm install
+      - run: npm ci
 
       - name: Validate data before build
         run: node scripts/validate-data.mjs
