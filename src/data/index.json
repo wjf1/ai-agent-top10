@@ -1,7 +1,8 @@
 {
-  "generatedAt": "2026-11-26T15:56:44.192Z",
-  "latest": "2026-11-26",
+  "generatedAt": "2026-11-27T15:50:24.102Z",
+  "latest": "2026-11-27",
   "dates": [
+    "2026-11-27",
     "2026-11-26",
     "2026-11-25",
     "2026-11-24",
@@ -78,6 +79,33 @@
     "2026-09-13"
   ],
   "days": [
+    {
+      "date": "2026-11-27",
+      "count": 10,
+      "totalGain": 43059,
+      "top": {
+        "full_name": "stablyai/orca",
+        "slug": "stablyai-orca",
+        "weeklyGain": 9997
+      },
+      "categories": [
+        "framework",
+        "tool",
+        "app"
+      ],
+      "slugs": [
+        "stablyai-orca",
+        "ebony-vinyl-dsh-our-free-model",
+        "firecrawl-firecrawl",
+        "dietrichgebert-ponytail",
+        "affaan-m-ecc",
+        "heygen-com-hyperframes",
+        "graphify-labs-graphify",
+        "leonxlnx-taste-skill",
+        "blader-humanizer",
+        "tt-a1i-archify"
+      ]
+    },
     {
       "date": "2026-11-26",
       "count": 10,
